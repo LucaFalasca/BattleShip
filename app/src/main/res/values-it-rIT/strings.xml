@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Battagli Navale</string>
+    <string name="start">Inizia una partita</string>
+    <string name="setting">Impostazioni</string>
+</resources>
