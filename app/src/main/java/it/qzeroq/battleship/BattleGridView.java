@@ -1,15 +1,18 @@
 package it.qzeroq.battleship;
 
 import android.content.Context;
-import android.graphics.Canvas;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+
+import it.qzeroq.battleship.enums.Rotation;
+import it.qzeroq.battleship.enums.Ship;
 
 public class BattleGridView extends GridLayout {
 
@@ -101,6 +104,30 @@ public class BattleGridView extends GridLayout {
             param.width = side;
             rows[i].setLayoutParams(param);
         }
+    }
+
+    public void updateCell(int x, int y, Drawable image){
+        cells[x][y].setImageDrawable(image);
+    }
+
+    public void updateCell(int x, int y, int image){
+        cells[x][y].setImageResource(image);
+    }
+
+    public void updateCell(int x, int y, Bitmap image){
+        cells[x][y].setImageBitmap(image);
+    }
+
+    public void placeShip(Ship ship, int x, int y, Rotation rotation){
+        ship.applyRotation(rotation);
+        Drawable[] sprites = ship.getSprites();
+        for(int i = 0; i < sprites.length; i++){
+            cells[x][y].setForeground(sprites[i]);
+        }
+    }
+
+    public void removeShip(){
+
     }
 
 }
