@@ -1,10 +1,12 @@
-package it.qzeroq.battleship;
+package it.qzeroq.battleship.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class Settings extends AppCompatActivity {
+import it.qzeroq.battleship.R;
+
+public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

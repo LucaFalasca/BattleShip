@@ -1,8 +1,10 @@
-package it.qzeroq.battleship;
+package it.qzeroq.battleship.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import it.qzeroq.battleship.R;
 
 public class GameActivity extends AppCompatActivity {
 
