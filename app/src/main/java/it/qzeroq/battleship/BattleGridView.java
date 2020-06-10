@@ -1,6 +1,7 @@
 package it.qzeroq.battleship;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import it.qzeroq.battleship.enums.Rotation;
 
@@ -17,6 +19,8 @@ public class BattleGridView extends GridLayout {
 
     final int CELL_SIDE = 50;
     final int GRID_SIZE = 10;
+    Drawable backgroundCell;
+    Drawable frameCell;
     Context context;
     ImageView[][] cells = new ImageView[GRID_SIZE][GRID_SIZE];
     TextView[] columns = new TextView[GRID_SIZE];
@@ -26,13 +30,23 @@ public class BattleGridView extends GridLayout {
     public BattleGridView(Context context) {
         super(context);
         this.context = context;
+        backgroundCell = ContextCompat.getDrawable(context, R.drawable.background_cell_sea);
+        frameCell = ContextCompat.getDrawable(context, R.drawable.frame_cell);
         init();
     }
 
     public BattleGridView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.BattleGridView);
+        backgroundCell = attributes.getDrawable(R.styleable.BattleGridView_background_cell);
+        frameCell = attributes.getDrawable(R.styleable.BattleGridView_frame_cell);
+        attributes.recycle();
         init();
+    }
+
+    public BattleGridView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, 0);
     }
 
     @Override
@@ -49,10 +63,12 @@ public class BattleGridView extends GridLayout {
     }
 
     private void init(){
+
         int realSize = GRID_SIZE + 1;
         this.setAlignmentMode(GridLayout.ALIGN_MARGINS);
         this.setColumnCount(realSize);
         this.setRowCount(realSize);
+
 
         for(int i = 0; i < GRID_SIZE; i++) {
             for(int j = 0; j < GRID_SIZE; j++) {
@@ -73,7 +89,8 @@ public class BattleGridView extends GridLayout {
                     this.addView(rows[i]);
                 }
                 cells[i][j] = new ImageView(context);
-                cells[i][j].setImageResource(R.drawable.mare_prova_cornice);
+                cells[i][j].setBackground(backgroundCell);
+                cells[i][j].setForeground(frameCell);
                 this.addView(cells[i][j]);
             }
         }
@@ -126,6 +143,14 @@ public class BattleGridView extends GridLayout {
     }
 
     public void removeShip(){
+
+    }
+
+    public void markCellMissed(){
+
+    }
+
+    public void markCellHit(){
 
     }
 
