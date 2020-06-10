@@ -73,7 +73,7 @@ public class BattleGridView extends GridLayout {
                     this.addView(rows[i]);
                 }
                 cells[i][j] = new ImageView(context);
-                cells[i][j].setImageResource(R.drawable.ic_prova);
+                cells[i][j].setImageResource(R.drawable.mare_prova_cornice);
                 this.addView(cells[i][j]);
             }
         }
