@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if(v.getId() == R.id.btnStart){
-                Intent intent = new Intent(MainActivity.this, BattleGrid.class);
+                Intent intent = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(intent);
             }
             else{

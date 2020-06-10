@@ -1,6 +1,9 @@
-package it.qzeroq.battleship.enums;
+package it.qzeroq.battleship;
 
 import android.graphics.drawable.Drawable;
+
+import it.qzeroq.battleship.enums.LengthShip;
+import it.qzeroq.battleship.enums.Rotation;
 
 public class Ship {
 

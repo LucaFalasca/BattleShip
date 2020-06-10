@@ -12,7 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 
 import it.qzeroq.battleship.enums.Rotation;
-import it.qzeroq.battleship.enums.Ship;
 
 public class BattleGridView extends GridLayout {
 
