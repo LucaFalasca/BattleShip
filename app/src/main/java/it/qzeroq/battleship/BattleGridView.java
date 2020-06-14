@@ -49,6 +49,22 @@ public class BattleGridView extends GridLayout {
         super(context, attrs, 0);
     }
 
+    public Drawable getBackgroundCell() {
+        return backgroundCell;
+    }
+
+    public void setBackgroundCell(Drawable backgroundCell) {
+        this.backgroundCell = backgroundCell;
+    }
+
+    public Drawable getFrameCell() {
+        return frameCell;
+    }
+
+    public void setFrameCell(Drawable frameCell) {
+        this.frameCell = frameCell;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
