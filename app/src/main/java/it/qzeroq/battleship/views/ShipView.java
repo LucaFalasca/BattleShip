@@ -1,4 +1,4 @@
-package it.qzeroq.battleship;
+package it.qzeroq.battleship.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+
+import it.qzeroq.battleship.R;
+import it.qzeroq.battleship.Ship;
 
 public class ShipView extends LinearLayout {
 

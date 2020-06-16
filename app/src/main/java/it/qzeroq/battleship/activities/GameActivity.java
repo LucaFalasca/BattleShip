@@ -8,10 +8,10 @@ import android.view.DragEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import it.qzeroq.battleship.BattleGridView;
+import it.qzeroq.battleship.views.BattleGridView;
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
-import it.qzeroq.battleship.ShipView;
+import it.qzeroq.battleship.views.ShipView;
 import it.qzeroq.battleship.enums.Rotation;
 
 public class GameActivity extends AppCompatActivity {

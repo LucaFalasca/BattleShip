@@ -1,4 +1,4 @@
-package it.qzeroq.battleship;
+package it.qzeroq.battleship.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -13,6 +13,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
+import it.qzeroq.battleship.R;
+import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.enums.Rotation;
 
 public class BattleGridView extends GridLayout {
