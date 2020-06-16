@@ -26,6 +26,7 @@ public class BattleGridView extends GridLayout {
     TextView[] columns = new TextView[GRID_SIZE];
     TextView[] rows = new TextView[GRID_SIZE];
     TextView uselessCell;
+    int side;
 
     public BattleGridView(Context context) {
         super(context);
@@ -65,10 +66,13 @@ public class BattleGridView extends GridLayout {
         this.frameCell = frameCell;
     }
 
+    public int getSide() {
+        return side;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        int side;
         if(getMeasuredWidth() > getMeasuredHeight()){
             side = getMeasuredHeight() / (GRID_SIZE + 1);
         }
@@ -76,6 +80,7 @@ public class BattleGridView extends GridLayout {
             side = getMeasuredWidth() / (GRID_SIZE + 1);
         }
         setSizeCells(side);
+
     }
 
     private void init(){
@@ -138,23 +143,11 @@ public class BattleGridView extends GridLayout {
         }
     }
 
-    public void updateCell(int x, int y, Drawable image){
-        cells[x][y].setImageDrawable(image);
-    }
-
-    public void updateCell(int x, int y, int image){
-        cells[x][y].setImageResource(image);
-    }
-
-    public void updateCell(int x, int y, Bitmap image){
-        cells[x][y].setImageBitmap(image);
-    }
-
     public void placeShip(Ship ship, int x, int y, Rotation rotation){
         ship.applyRotation(rotation);
         Drawable[] sprites = ship.getSprites();
         for(int i = 0; i < sprites.length; i++){
-            cells[x][y].setForeground(sprites[i]);
+            cells[x][y + i].setImageDrawable(sprites[i]);
         }
     }
 

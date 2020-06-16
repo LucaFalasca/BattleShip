@@ -1,6 +1,9 @@
 package it.qzeroq.battleship;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+
+import androidx.core.content.ContextCompat;
 
 import it.qzeroq.battleship.enums.LengthShip;
 import it.qzeroq.battleship.enums.Rotation;
@@ -9,21 +12,28 @@ public class Ship {
 
     private Drawable[] sprites;
 
-    public Ship(LengthShip lengthShip){
+
+    public Ship(Context context, int lengthShip){
         switch(lengthShip){
-            case X_TWO:
+            case 2:
                 sprites = new Drawable[]{
-
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
                 };
                 break;
-            case X_THREE:
+            case 3:
                 sprites = new Drawable[]{
-
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
                 };
                 break;
-            case X_FOUR:
+            case 4:
                 sprites = new Drawable[]{
-
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
                 };
                 break;
         }

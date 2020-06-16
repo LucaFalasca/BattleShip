@@ -4,4 +4,12 @@
         <attr name="background_cell" format="reference" />
         <attr name="frame_cell" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="ShipView">
+        <attr name="lenght" format="enum">
+            <enum name="TWO" value="2"/>
+            <enum name="THREE" value="3"/>
+            <enum name="FOUR" value="4"/>
+        </attr>
+    </declare-styleable>
 </resources>
