@@ -6,26 +6,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <it.qzeroq.battleship.views.BattleGridView
-        android:id="@+id/battleGridView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/shipView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </it.qzeroq.battleship.views.BattleGridView>
-
     <it.qzeroq.battleship.views.ShipView
-        android:id="@+id/shipView"
+        android:id="@+id/swFour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_row="0"
         android:layout_column="0"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lenght="FOUR"/>
+
+    <it.qzeroq.battleship.views.ShipView
+        android:id="@+id/swThree"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swFour"
+        app:lenght="THREE"/>
+
+    <it.qzeroq.battleship.views.ShipView
+        android:id="@+id/swTwo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swThree"
+        app:lenght="TWO"/>
+
+    <it.qzeroq.battleship.views.BattleGridView
+        android:id="@+id/battleGridView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/swTwo"
+        app:layout_constraintVertical_bias="0.49">
+
+    </it.qzeroq.battleship.views.BattleGridView>
 </androidx.constraintlayout.widget.ConstraintLayout>

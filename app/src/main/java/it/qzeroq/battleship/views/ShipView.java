@@ -47,6 +47,11 @@ public class ShipView extends LinearLayout {
         }
     }
 
+    public void setLenghtShip(int lenghtShip) {
+        this.lenghtShip = lenghtShip;
+        init();
+    }
+
     public int getLenghtShip() {
         return lenghtShip;
     }

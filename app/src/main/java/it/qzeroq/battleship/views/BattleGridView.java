@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -97,14 +98,14 @@ public class BattleGridView extends GridLayout {
                     for(int k = 0; k < GRID_SIZE; k++) {
                         columns[k] = new TextView(context);
                         columns[k].setText(String.valueOf(k + 1));
-                        columns[k].setGravity(View.TEXT_ALIGNMENT_GRAVITY);
+                        columns[k].setGravity(Gravity.CENTER);
                         this.addView(columns[k]);
                     }
                 }
                 if(j == 0){
                     rows[i] = new TextView(context);
                     rows[i].setText(Character.toString((char) (65 + i)));
-                    rows[i].setGravity(View.TEXT_ALIGNMENT_GRAVITY);
+                    rows[i].setGravity(Gravity.CENTER);
                     this.addView(rows[i]);
                 }
                 cells[j][i] = new ImageView(context);
@@ -193,4 +194,11 @@ public class BattleGridView extends GridLayout {
 
     }
 
+    public boolean thereIsAShipAt(int xIndex, int yIndex) {
+        return false;
+    }
+
+    public Ship getShipAt(int xIndex, int yIndex) {
+        return new Ship(context, 4);
+    }
 }
