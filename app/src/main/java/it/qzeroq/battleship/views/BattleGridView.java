@@ -157,6 +157,12 @@ public class BattleGridView extends GridLayout {
                 cells[x + i][y].setImageDrawable(sprites[i]);
             }
         }
+        else{
+            for (int i = 0; i < ship.getLenghtShip(); i++) {
+                int q = GRID_SIZE - ship.getLenghtShip();
+                cells[q + i][y].setImageDrawable(sprites[i]);
+            }
+        }
     }
 
     public void showSelection(Ship ship, int x, int y, Rotation rotation){
@@ -164,6 +170,12 @@ public class BattleGridView extends GridLayout {
         if(x + ship.getLenghtShip() <= GRID_SIZE ) {
             for (int i = 0; i < ship.getLenghtShip(); i++) {
                 cells[x + i][y].setForeground(selectionCell);
+            }
+        }
+        else{
+            for (int i = 0; i < ship.getLenghtShip(); i++) {
+                int q = GRID_SIZE - ship.getLenghtShip();
+                cells[q + i][y].setForeground(selectionCell);
             }
         }
     }

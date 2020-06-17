@@ -72,7 +72,7 @@ public class GameActivity extends AppCompatActivity {
 
                     x = calculateIndex(event.getX(), battleGrid.getX(), battleGrid.getSide(), ship.getWidth());
                     y = calculateIndex(event.getY(), battleGrid.getY(), battleGrid.getSide(), ship.getHeight());
-                    if(x < 0 || x > 9 || y < 0 || y > 9)
+                    if(x < 0 || y < 0)
                         return false;
                     else
                         battleGrid.showSelection(new Ship(context, lenghtShip), x, y, Rotation.ROTATION_0);
@@ -92,7 +92,7 @@ public class GameActivity extends AppCompatActivity {
 
                     x = calculateIndex(event.getX(), battleGrid.getX(), battleGrid.getSide(), ship.getWidth());
                     y = calculateIndex(event.getY(), battleGrid.getY(), battleGrid.getSide(), ship.getHeight());
-                    if(x < 0 || x > 9 || y < 0 || y > 9)
+                    if(x < 0 || y < 0)
                         return false;
                     else
                         battleGrid.placeShip(new Ship(context, lenghtShip), x, y, Rotation.ROTATION_0);
@@ -124,6 +124,9 @@ public class GameActivity extends AppCompatActivity {
             }
             else {
                 int index = Math.round(relativePosition / sideCell);
+                if(index > 9){
+                    System.out.println("°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°°  " + index);
+                }
                 return index;
             }
         }
