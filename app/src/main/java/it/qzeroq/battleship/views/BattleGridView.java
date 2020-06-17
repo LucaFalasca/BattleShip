@@ -152,15 +152,19 @@ public class BattleGridView extends GridLayout {
         removeSelection();
         ship.applyRotation(rotation);
         Drawable[] sprites = ship.getSprites();
-        for(int i = 0; i < sprites.length; i++){
-            cells[x + i][y].setImageDrawable(sprites[i]);
+        if(x + ship.getLenghtShip() <= GRID_SIZE ) {
+            for (int i = 0; i < sprites.length; i++) {
+                cells[x + i][y].setImageDrawable(sprites[i]);
+            }
         }
     }
 
     public void showSelection(Ship ship, int x, int y, Rotation rotation){
         ship.applyRotation(rotation);
-        for(int i = 0; i < ship.getLenghtShip(); i++){
-            cells[x + i][y].setForeground(selectionCell);
+        if(x + ship.getLenghtShip() <= GRID_SIZE ) {
+            for (int i = 0; i < ship.getLenghtShip(); i++) {
+                cells[x + i][y].setForeground(selectionCell);
+            }
         }
     }
 

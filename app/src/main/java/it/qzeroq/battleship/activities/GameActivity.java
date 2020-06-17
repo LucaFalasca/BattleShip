@@ -62,9 +62,6 @@ public class GameActivity extends AppCompatActivity {
                     return true;
 
                 case DragEvent.ACTION_DRAG_LOCATION:
-                    System.out.println("X: " + calculateIndex(event.getX(), 0, 78));
-                    System.out.println("Y: " + calculateIndex(event.getY(), 0, 78));
-
                     ship = (ShipView) event.getLocalState();
 
                     lenghtShip = ship.getLenghtShip();
@@ -73,10 +70,12 @@ public class GameActivity extends AppCompatActivity {
 
                     battleGrid.removeSelection();
 
-                    x = calculateIndex(event.getX(), battleGrid.getX(), battleGrid.getSide());
-                    y = calculateIndex(event.getY(), battleGrid.getY(), battleGrid.getSide());
-
-                    battleGrid.showSelection(new Ship(context, lenghtShip), x - 1, y, Rotation.ROTATION_0);
+                    x = calculateIndex(event.getX(), battleGrid.getX(), battleGrid.getSide(), ship.getWidth());
+                    y = calculateIndex(event.getY(), battleGrid.getY(), battleGrid.getSide(), ship.getHeight());
+                    if(x < 0 || x > 9 || y < 0 || y > 9)
+                        return false;
+                    else
+                        battleGrid.showSelection(new Ship(context, lenghtShip), x, y, Rotation.ROTATION_0);
 
 
                     return true;
@@ -91,10 +90,12 @@ public class GameActivity extends AppCompatActivity {
 
                     battleGrid = (BattleGridView) v;
 
-                    x = calculateIndex(event.getX(), battleGrid.getX(), battleGrid.getSide());
-                    y = calculateIndex(event.getY(), battleGrid.getY(), battleGrid.getSide());
-
-                    battleGrid.placeShip(new Ship(context, lenghtShip), x - 1, y, Rotation.ROTATION_0);
+                    x = calculateIndex(event.getX(), battleGrid.getX(), battleGrid.getSide(), ship.getWidth());
+                    y = calculateIndex(event.getY(), battleGrid.getY(), battleGrid.getSide(), ship.getHeight());
+                    if(x < 0 || x > 9 || y < 0 || y > 9)
+                        return false;
+                    else
+                        battleGrid.placeShip(new Ship(context, lenghtShip), x, y, Rotation.ROTATION_0);
                     return true;
 
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -104,24 +105,25 @@ public class GameActivity extends AppCompatActivity {
             return false;
         }
 
-        private int calculateIndex(float absolutePosition, float battleGridPosition, int sideCell) {
+        private int calculateIndex(float absolutePosition, float battleGridPosition, int sideCell, float sizeShip) {
 
             float trueGridPosition = battleGridPosition + sideCell;
-            float relativePosition = absolutePosition - trueGridPosition;
+            float trueAbsolutePosition = absolutePosition - sizeShip / 2;
+            float relativePosition = trueAbsolutePosition - trueGridPosition;
 
-            int sideGrid = sideCell * 10;
+            int sideGrid = sideCell * 9;
 
-            float min = trueGridPosition;
-            float max = trueGridPosition + sideGrid;
+            float min = trueGridPosition - sizeShip / 2;
+            float max = trueGridPosition + sideGrid + sizeShip / 2;
 
-            if(absolutePosition < min){
-                return 0;
+            if(trueAbsolutePosition < min){
+                return -1;
             }
-            else if(absolutePosition > max){
-                return 9;
+            else if(trueAbsolutePosition > max){
+                return -1;
             }
             else {
-                int index = Math.round(relativePosition / sideCell) - 1;
+                int index = Math.round(relativePosition / sideCell);
                 return index;
             }
         }
