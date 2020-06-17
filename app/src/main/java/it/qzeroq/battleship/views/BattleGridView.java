@@ -23,6 +23,7 @@ public class BattleGridView extends GridLayout {
     final int GRID_SIZE = 10;
     Drawable backgroundCell;
     Drawable frameCell;
+    Drawable selectionCell;
     Context context;
     ImageView[][] cells = new ImageView[GRID_SIZE][GRID_SIZE];
     TextView[] columns = new TextView[GRID_SIZE];
@@ -35,6 +36,7 @@ public class BattleGridView extends GridLayout {
         this.context = context;
         backgroundCell = ContextCompat.getDrawable(context, R.drawable.background_cell_sea);
         frameCell = ContextCompat.getDrawable(context, R.drawable.frame_cell);
+        selectionCell = ContextCompat.getDrawable(context, R.drawable.selection_cell);
         init();
     }
 
@@ -44,6 +46,7 @@ public class BattleGridView extends GridLayout {
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.BattleGridView);
         backgroundCell = attributes.getDrawable(R.styleable.BattleGridView_background_cell);
         frameCell = attributes.getDrawable(R.styleable.BattleGridView_frame_cell);
+        selectionCell = ContextCompat.getDrawable(context, R.drawable.selection_cell);
         attributes.recycle();
         init();
     }
@@ -111,10 +114,10 @@ public class BattleGridView extends GridLayout {
                     rows[i].setGravity(View.TEXT_ALIGNMENT_GRAVITY);
                     this.addView(rows[i]);
                 }
-                cells[i][j] = new ImageView(context);
-                cells[i][j].setBackground(backgroundCell);
-                cells[i][j].setForeground(frameCell);
-                this.addView(cells[i][j]);
+                cells[j][i] = new ImageView(context);
+                cells[j][i].setBackground(backgroundCell);
+                cells[j][i].setForeground(frameCell);
+                this.addView(cells[j][i]);
             }
         }
         setSizeCells(CELL_SIDE);
@@ -146,10 +149,26 @@ public class BattleGridView extends GridLayout {
     }
 
     public void placeShip(Ship ship, int x, int y, Rotation rotation){
+        removeSelection();
         ship.applyRotation(rotation);
         Drawable[] sprites = ship.getSprites();
         for(int i = 0; i < sprites.length; i++){
-            cells[x][y + i].setImageDrawable(sprites[i]);
+            cells[x + i][y].setImageDrawable(sprites[i]);
+        }
+    }
+
+    public void showSelection(Ship ship, int x, int y, Rotation rotation){
+        ship.applyRotation(rotation);
+        for(int i = 0; i < ship.getLenghtShip(); i++){
+            cells[x + i][y].setForeground(selectionCell);
+        }
+    }
+
+    public void removeSelection(){
+        for(int i = 0; i < GRID_SIZE; i++){
+            for(int j = 0; j < GRID_SIZE; j++) {
+                cells[i][j].setForeground(frameCell);
+            }
         }
     }
 

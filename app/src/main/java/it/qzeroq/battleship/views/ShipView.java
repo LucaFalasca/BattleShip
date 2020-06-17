@@ -51,6 +51,7 @@ public class ShipView extends LinearLayout {
         this.setOrientation(HORIZONTAL);
         ship = new Ship(context, lenghtShip);
 
+
         Drawable[] sprites = ship.getSprites();
 
         for(int i = 0; i < sprites.length; i++) {
@@ -59,5 +60,9 @@ public class ShipView extends LinearLayout {
             this.addView(img);
         }
 
+    }
+
+    public int getLenghtShip() {
+        return lenghtShip;
     }
 }

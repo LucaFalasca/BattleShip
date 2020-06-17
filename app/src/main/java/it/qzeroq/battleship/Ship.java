@@ -11,7 +11,7 @@ import it.qzeroq.battleship.enums.Rotation;
 public class Ship {
 
     private Drawable[] sprites;
-
+    private int lenghtShip;
 
     public Ship(Context context, int lengthShip){
         switch(lengthShip){
@@ -37,11 +37,15 @@ public class Ship {
                 };
                 break;
         }
-
+        this.lenghtShip = lengthShip;
     }
 
     public Drawable[] getSprites() {
         return sprites;
+    }
+
+    public int getLenghtShip() {
+        return lenghtShip;
     }
 
     public void applyRotation(Rotation rotation) {
