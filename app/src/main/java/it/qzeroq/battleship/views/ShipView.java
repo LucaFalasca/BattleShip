@@ -14,52 +14,37 @@ import it.qzeroq.battleship.Ship;
 
 public class ShipView extends LinearLayout {
 
-    Ship ship;
-    int lenghtShip;
-    Context context;
+    private Ship ship;
+    private int lenghtShip;
+    private Context context;
 
     public ShipView(Context context) {
-        super(context);
+        super(context, null, R.style.ShipDefault);
         this.context = context;
         init();
     }
 
     public ShipView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        super(context, attrs, R.style.ShipDefault);
         this.context = context;
-        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.ShipView);
+
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.ShipView, 0, R.style.ShipDefault);
         lenghtShip = attributes.getInt(R.styleable.ShipView_lenght, 4);
         attributes.recycle();
-        init();
-    }
 
-    public ShipView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.context = context;
-        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.ShipView);
-        lenghtShip = attributes.getInt(R.styleable.ShipView_lenght, 4);
-        attributes.recycle();
-        init();
-    }
-
-    public ShipView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
 
     private void init(){
         this.setOrientation(HORIZONTAL);
+
         ship = new Ship(context, lenghtShip);
-
-
         Drawable[] sprites = ship.getSprites();
-
         for(int i = 0; i < sprites.length; i++) {
             ImageView img = new ImageView(context);
             img.setImageDrawable(sprites[i]);
             this.addView(img);
         }
-
     }
 
     public int getLenghtShip() {

@@ -3,6 +3,7 @@
     <declare-styleable name="BattleGridView">
         <attr name="background_cell" format="reference" />
         <attr name="frame_cell" format="reference" />
+        <attr name="selection_cell" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="ShipView">
@@ -12,4 +13,5 @@
             <enum name="FOUR" value="4"/>
         </attr>
     </declare-styleable>
+
 </resources>

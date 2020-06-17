@@ -10,8 +10,6 @@
         android:id="@+id/battleGridView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:background_cell="@drawable/background_cell_sea"
-        app:frame_cell="@drawable/frame_cell"
         app:layout_constraintBottom_toTopOf="@+id/shipView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -29,6 +27,5 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:lenght="FOUR" />
+        app:layout_constraintStart_toStartOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

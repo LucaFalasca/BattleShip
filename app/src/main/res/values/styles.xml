@@ -8,4 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="BattleGridDefault">
+        <item name="background_cell">@drawable/background_cell_sea</item>
+        <item name="frame_cell">@drawable/frame_cell</item>
+        <item name="selection_cell">@drawable/selection_cell</item>
+    </style>
+
+    <style name="ShipDefault">
+        <item name="lenght">FOUR</item>
+    </style>
+
 </resources>

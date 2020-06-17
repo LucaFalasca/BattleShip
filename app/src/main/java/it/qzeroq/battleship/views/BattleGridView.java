@@ -2,7 +2,6 @@ package it.qzeroq.battleship.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
@@ -19,40 +17,35 @@ import it.qzeroq.battleship.enums.Rotation;
 
 public class BattleGridView extends GridLayout {
 
-    final int CELL_SIDE = 50;
-    final int GRID_SIZE = 10;
-    Drawable backgroundCell;
-    Drawable frameCell;
-    Drawable selectionCell;
-    Context context;
-    ImageView[][] cells = new ImageView[GRID_SIZE][GRID_SIZE];
-    TextView[] columns = new TextView[GRID_SIZE];
-    TextView[] rows = new TextView[GRID_SIZE];
-    TextView uselessCell;
-    int side;
+    private final int CELL_SIDE = 50;
+    private final int GRID_SIZE = 10;
+    private Drawable backgroundCell;
+    private Drawable frameCell;
+    private Drawable selectionCell;
+    private Context context;
+    private ImageView[][] cells = new ImageView[GRID_SIZE][GRID_SIZE];
+    private TextView[] columns = new TextView[GRID_SIZE];
+    private TextView[] rows = new TextView[GRID_SIZE];
+    private TextView uselessCell;
+    private int side;
 
     public BattleGridView(Context context) {
-        super(context);
+        super(context, null, R.style.BattleGridDefault);
         this.context = context;
-        backgroundCell = ContextCompat.getDrawable(context, R.drawable.background_cell_sea);
-        frameCell = ContextCompat.getDrawable(context, R.drawable.frame_cell);
-        selectionCell = ContextCompat.getDrawable(context, R.drawable.selection_cell);
         init();
     }
 
     public BattleGridView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+        super(context, attrs, R.style.BattleGridDefault);
         this.context = context;
-        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.BattleGridView);
+
+        TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.BattleGridView, 0, R.style.BattleGridDefault);
         backgroundCell = attributes.getDrawable(R.styleable.BattleGridView_background_cell);
         frameCell = attributes.getDrawable(R.styleable.BattleGridView_frame_cell);
-        selectionCell = ContextCompat.getDrawable(context, R.drawable.selection_cell);
+        selectionCell = attributes.getDrawable(R.styleable.BattleGridView_selection_cell);
         attributes.recycle();
-        init();
-    }
 
-    public BattleGridView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, 0);
+        init();
     }
 
     public Drawable getBackgroundCell() {
