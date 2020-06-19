@@ -30,48 +30,66 @@ public class GameActivity extends AppCompatActivity {
         ShipView swFour, swThree, swTwo;
         float xClick, yClick;
 
+        View.DragShadowBuilder o;
+
         Holder(Context context){
             this.context = context;
 
             swFour = findViewById(R.id.swFour);
-            swFour.setOnLongClickListener(this);
-            swFour = findViewById(R.id.swThree);
-            swFour.setOnLongClickListener(this);
-            swFour = findViewById(R.id.swTwo);
-            swFour.setOnLongClickListener(this);
+            swFour.setOnTouchListener(this);
+            swThree = findViewById(R.id.swThree);
+            swThree.setOnTouchListener(this);
+            swTwo = findViewById(R.id.swTwo);
+            swTwo.setOnTouchListener(this);
+
+            o = new View.DragShadowBuilder(swFour);
 
             battleGridView = findViewById(R.id.battleGridView);
             battleGridView.setOnDragListener(this);
             battleGridView.setOnTouchListener(this);
+            battleGridView.setOnLongClickListener(this);
             battleGridView.setTag("grid");
         }
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            System.out.println("X: " + event.getX() + " Y: " + event.getY());
-            xClick = event.getX();
-            yClick = event.getY();
-            return true;
+            if(v.getTag() != "grid") {
+                v.startDragAndDrop(null, new View.DragShadowBuilder(v), v, 0);
+            }else{
+                xClick = event.getX();
+                yClick = event.getY();
+            }
+            return false;
         }
 
         @Override
         public boolean onLongClick(View v) {
-            if(v.getTag() == "grid"){
-                int xIndex = calculateIndex(xClick, 16, battleGridView.getSide(), 0);
-                int yIndex = calculateIndex(yClick, 16, battleGridView.getSide(), 0);
-                if(battleGridView.thereIsAShipAt(xIndex, yIndex)){
-                    Ship ship = battleGridView.getShipAt(xIndex, yIndex);
-                    ShipView shipView = new ShipView(context);
-                    shipView.setLenghtShip(ship.getLenghtShip());
-                    shipView.setOnLongClickListener(this);
-                    onLongClick(shipView);
+            int xIndex = calculateIndex(xClick, 16, battleGridView.getSide(), 0);
+            int yIndex = calculateIndex(yClick, 16, battleGridView.getSide(), 0);
+            System.out.println("WHEIUHEIUHWEIUHWIUEHIUWHEIUHWEU:  " + battleGridView.thereIsAShipAt(xIndex, yIndex));
+            if(battleGridView.thereIsAShipAt(xIndex, yIndex)){
+                Ship ship = battleGridView.getShipAt(xIndex, yIndex);
+                boolean q = false;
+                switch(ship.getLenghtShip()){
+                    case 2:
+                        q = swTwo.startDragAndDrop(null, new View.DragShadowBuilder(swTwo), swTwo, 0);
+                        break;
+                    case 3:
+                        q = swThree.startDragAndDrop(null, new View.DragShadowBuilder(swThree), swThree, 0);
+                        break;
+                    case 4:
+                        q = swFour.startDragAndDrop(null, new View.DragShadowBuilder(swFour), swFour, 0);
+                        break;
+                }
+                battleGridView.removeShipAt(xIndex, yIndex);
+
+                if(!q){
+                    
                 }
 
+
             }
-            else {
-                v.startDragAndDrop(null, new View.DragShadowBuilder(v), v, 0);
-            }
-            return true;
+            return false;
         }
 
         @Override

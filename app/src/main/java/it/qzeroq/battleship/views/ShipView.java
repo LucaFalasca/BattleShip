@@ -19,9 +19,7 @@ public class ShipView extends LinearLayout {
     private Context context;
 
     public ShipView(Context context) {
-        super(context, null, R.style.ShipDefault);
-        this.context = context;
-        init();
+        this(context, null);
     }
 
     public ShipView(Context context, @Nullable AttributeSet attrs) {

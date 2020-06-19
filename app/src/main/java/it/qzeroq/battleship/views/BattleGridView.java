@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,8 +22,10 @@ public class BattleGridView extends GridLayout {
     private Drawable backgroundCell;
     private Drawable frameCell;
     private Drawable selectionCell;
+    private Drawable selectionCellWrong;
     private Context context;
     private ImageView[][] cells = new ImageView[GRID_SIZE][GRID_SIZE];
+    private Ship[][] ships = new Ship[GRID_SIZE][GRID_SIZE];
     private TextView[] columns = new TextView[GRID_SIZE];
     private TextView[] rows = new TextView[GRID_SIZE];
     private TextView uselessCell;
@@ -44,6 +45,7 @@ public class BattleGridView extends GridLayout {
         backgroundCell = attributes.getDrawable(R.styleable.BattleGridView_background_cell);
         frameCell = attributes.getDrawable(R.styleable.BattleGridView_frame_cell);
         selectionCell = attributes.getDrawable(R.styleable.BattleGridView_selection_cell);
+        selectionCellWrong = attributes.getDrawable(R.styleable.BattleGridView_selection_cell_wrong);
         attributes.recycle();
 
         init();
@@ -142,34 +144,59 @@ public class BattleGridView extends GridLayout {
         }
     }
 
-    public void placeShip(Ship ship, int x, int y, Rotation rotation){
+    public boolean placeShip(Ship ship, int x, int y, Rotation rotation){
         removeSelection();
         ship.applyRotation(rotation);
         Drawable[] sprites = ship.getSprites();
         if(x + ship.getLenghtShip() <= GRID_SIZE ) {
+            for(int i = 0; i < ship.getLenghtShip(); i++){
+                if(thereIsAShipAt(x + i, y)){
+                    return false;
+                }
+            }
+            ships[x][y] = ship;
             for (int i = 0; i < sprites.length; i++) {
                 cells[x + i][y].setImageDrawable(sprites[i]);
+
             }
         }
         else{
+            int q = GRID_SIZE - ship.getLenghtShip();
+            for(int i = 0; i < ship.getLenghtShip(); i++){
+                if(thereIsAShipAt(q + i, y)){
+                    return false;
+                }
+            }
             for (int i = 0; i < ship.getLenghtShip(); i++) {
-                int q = GRID_SIZE - ship.getLenghtShip();
+                ships[q][y] = ship;
                 cells[q + i][y].setImageDrawable(sprites[i]);
             }
         }
+        return true;
     }
 
     public void showSelection(Ship ship, int x, int y, Rotation rotation){
         ship.applyRotation(rotation);
         if(x + ship.getLenghtShip() <= GRID_SIZE ) {
             for (int i = 0; i < ship.getLenghtShip(); i++) {
-                cells[x + i][y].setForeground(selectionCell);
+                if(thereIsAShipAt(x + i, y)){
+                    cells[x + i][y].setForeground(selectionCellWrong);
+                }
+                else {
+                    cells[x + i][y].setForeground(selectionCell);
+                }
             }
         }
         else{
             for (int i = 0; i < ship.getLenghtShip(); i++) {
                 int q = GRID_SIZE - ship.getLenghtShip();
-                cells[q + i][y].setForeground(selectionCell);
+                if(thereIsAShipAt(q + i, y)){
+                    cells[q + i][y].setForeground(selectionCellWrong);
+                }
+                else {
+                    cells[q + i][y].setForeground(selectionCell);
+                }
+
             }
         }
     }
@@ -182,8 +209,25 @@ public class BattleGridView extends GridLayout {
         }
     }
 
-    public void removeShip(){
-
+    public void removeShipAt(int x, int y){
+        for(int k = 0; k < GRID_SIZE; k++){
+            if(ships[x][k] != null){
+                if(Math.abs(y - k) < ships[x][k].getLenghtShip()){
+                    for(int i = 0; i < ships[x][k].getLenghtShip(); i++){
+                        cells[x + i][k].setImageDrawable(null);
+                    }
+                    ships[x][k] = null;
+                }
+            }
+            if(ships[k][y] != null){
+                if(Math.abs(x - k) < ships[k][y].getLenghtShip()){
+                    for(int i = 0; i < ships[k][y].getLenghtShip(); i++){
+                        cells[k + i][y].setImageDrawable(null);
+                    }
+                    ships[k][y] = null;
+                }
+            }
+        }
     }
 
     public void markCellMissed(){
@@ -194,11 +238,28 @@ public class BattleGridView extends GridLayout {
 
     }
 
-    public boolean thereIsAShipAt(int xIndex, int yIndex) {
-        return false;
+    public boolean thereIsAShipAt(int x, int y) {
+        if(cells[x][y].getDrawable() != null){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
-    public Ship getShipAt(int xIndex, int yIndex) {
-        return new Ship(context, 4);
+    public Ship getShipAt(int x, int y) {
+        for(int k = 0; k < GRID_SIZE; k++){
+            if(ships[x][k] != null){
+                if(Math.abs(y - k) < ships[x][k].getLenghtShip()){
+                    return ships[x][k];
+                }
+            }
+            if(ships[k][y] != null){
+                if(Math.abs(x - k) < ships[k][y].getLenghtShip()){
+                    return ships[k][y];
+                }
+            }
+        }
+        return null;
     }
 }

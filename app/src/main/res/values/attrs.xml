@@ -4,6 +4,7 @@
         <attr name="background_cell" format="reference" />
         <attr name="frame_cell" format="reference" />
         <attr name="selection_cell" format="reference" />
+        <attr name="selection_cell_wrong" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="ShipView">
