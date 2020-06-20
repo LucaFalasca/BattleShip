@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -120,28 +121,20 @@ public class BattleGridView extends GridLayout {
     }
 
     private void setSizeCells(int side) {
-
         for(int i = 0; i < 10; i++) {
+            setSideView(side, columns[i]);
+            setSideView(side, rows[i]);
             for (int j = 0; j < 10; j++) {
-                GridLayout.LayoutParams param = new GridLayout.LayoutParams();
-                param.height = side ;
-                param.width = side;
-                cells[i][j].setLayoutParams(param);
+                setSideView(side, cells[i][j]);
             }
         }
-        for(int i = 0; i < GRID_SIZE; i++){
-            GridLayout.LayoutParams param = new GridLayout.LayoutParams();
-            param.height = side;
-            param.width = side;
-            columns[i].setLayoutParams(param);
-        }
+    }
 
-        for(int i = 0; i < GRID_SIZE; i++){
-            GridLayout.LayoutParams param = new GridLayout.LayoutParams();
-            param.height = side ;
-            param.width = side;
-            rows[i].setLayoutParams(param);
-        }
+    private void setSideView(int side, View view){
+        GridLayout.LayoutParams param = new GridLayout.LayoutParams();
+        param.height = side ;
+        param.width = side;
+        view.setLayoutParams(param);
     }
 
     public boolean placeShip(Ship ship, int x, int y, Rotation rotation){

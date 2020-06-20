@@ -84,7 +84,7 @@ public class GameActivity extends AppCompatActivity {
                 battleGridView.removeShipAt(xIndex, yIndex);
 
                 if(!q){
-                    
+
                 }
 
 
