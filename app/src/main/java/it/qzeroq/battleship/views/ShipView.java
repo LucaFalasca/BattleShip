@@ -15,7 +15,7 @@ import it.qzeroq.battleship.Ship;
 public class ShipView extends LinearLayout {
 
     private Ship ship;
-    private int lenghtShip;
+    private int lengthShip;
     private Context context;
 
     public ShipView(Context context) {
@@ -27,7 +27,7 @@ public class ShipView extends LinearLayout {
         this.context = context;
 
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.ShipView, 0, R.style.ShipDefault);
-        lenghtShip = attributes.getInt(R.styleable.ShipView_lenght, 4);
+        lengthShip = attributes.getInt(R.styleable.ShipView_lenght, 4);
         attributes.recycle();
 
         init();
@@ -36,7 +36,7 @@ public class ShipView extends LinearLayout {
     private void init(){
         this.setOrientation(HORIZONTAL);
 
-        ship = new Ship(context, lenghtShip);
+        ship = new Ship(context, lengthShip);
         Drawable[] sprites = ship.getSprites();
         for(int i = 0; i < sprites.length; i++) {
             ImageView img = new ImageView(context);
@@ -45,12 +45,7 @@ public class ShipView extends LinearLayout {
         }
     }
 
-    public void setLenghtShip(int lenghtShip) {
-        this.lenghtShip = lenghtShip;
-        init();
-    }
-
-    public int getLenghtShip() {
-        return lenghtShip;
+    public Ship getShip() {
+        return ship;
     }
 }

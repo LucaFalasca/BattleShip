@@ -19,7 +19,7 @@ import it.qzeroq.battleship.enums.Rotation;
 public class BattleGridView extends GridLayout {
 
     private final int CELL_SIDE = 50;
-    private final int GRID_SIZE = 10;
+    public final int GRID_SIZE = 10;
     private Drawable backgroundCell;
     private Drawable frameCell;
     private Drawable selectionCell;
@@ -137,90 +137,126 @@ public class BattleGridView extends GridLayout {
         view.setLayoutParams(param);
     }
 
-    public boolean placeShip(Ship ship, int x, int y, Rotation rotation){
+    public boolean placeShip(Ship ship, int startX, int startY){
         removeSelection();
-        ship.applyRotation(rotation);
-        Drawable[] sprites = ship.getSprites();
-        if(x + ship.getLenghtShip() <= GRID_SIZE ) {
-            for(int i = 0; i < ship.getLenghtShip(); i++){
-                if(thereIsAShipAt(x + i, y)){
-                    return false;
-                }
-            }
-            ships[x][y] = ship;
-            for (int i = 0; i < sprites.length; i++) {
-                cells[x + i][y].setImageDrawable(sprites[i]);
 
-            }
+        int length = ship.getLength();
+
+        int[][] coords = calculateCoordsOfShip(ship, startX, startY);
+
+        int[] xCoords = coords[0];
+        int[] yCoords = coords[1];
+
+        Drawable[] sprites = ship.getSprites();
+
+        for(int i = 0; i < length; i++){
+            int x = xCoords[i];
+            int y = yCoords[i];
+
+            if(thereIsAShipAt(x, y))
+                return false;
         }
-        else{
-            int q = GRID_SIZE - ship.getLenghtShip();
-            for(int i = 0; i < ship.getLenghtShip(); i++){
-                if(thereIsAShipAt(q + i, y)){
-                    return false;
-                }
-            }
-            for (int i = 0; i < ship.getLenghtShip(); i++) {
-                ships[q][y] = ship;
-                cells[q + i][y].setImageDrawable(sprites[i]);
-            }
+
+        for(int i = 0; i < ship.getLength(); i++){
+            int x = xCoords[i];
+            int y = yCoords[i];
+
+            setImageCell(sprites[i], x, y);
         }
+
+        ships[xCoords[0]][yCoords[0]] = ship;
+
         return true;
     }
 
-    public void showSelection(Ship ship, int x, int y, Rotation rotation){
-        ship.applyRotation(rotation);
-        if(x + ship.getLenghtShip() <= GRID_SIZE ) {
-            for (int i = 0; i < ship.getLenghtShip(); i++) {
-                if(thereIsAShipAt(x + i, y)){
-                    cells[x + i][y].setForeground(selectionCellWrong);
-                }
-                else {
-                    cells[x + i][y].setForeground(selectionCell);
-                }
-            }
-        }
-        else{
-            for (int i = 0; i < ship.getLenghtShip(); i++) {
-                int q = GRID_SIZE - ship.getLenghtShip();
-                if(thereIsAShipAt(q + i, y)){
-                    cells[q + i][y].setForeground(selectionCellWrong);
-                }
-                else {
-                    cells[q + i][y].setForeground(selectionCell);
-                }
+    public void showSelection(Ship ship, int startX, int startY){
+        int length = ship.getLength();
 
+        int[][] coords = calculateCoordsOfShip(ship, startX, startY);
+
+        int[] xCoords = coords[0];
+        int[] yCoords = coords[1];
+
+        for(int i = 0; i < length; i++){
+            int x = xCoords[i];
+            int y = yCoords[i];
+            if(thereIsAShipAt(x, y)){
+                setForegroundCell(selectionCellWrong, x, y);
+            }
+            else{
+                setForegroundCell(selectionCell, x, y);
             }
         }
+    }
+
+    private int adaptCoord(int k, int length) {
+        int max = k + length;
+
+        if(max > GRID_SIZE)
+            return k - (max - GRID_SIZE);
+        else{
+            return k;
+        }
+    }
+
+    private void setImageCell(Drawable fgImage, int x, int y){
+        cells[x][y].setImageDrawable(fgImage);
+    }
+
+    private void setForegroundCell(Drawable fgImage, int x, int y){
+        cells[x][y].setForeground(fgImage);
+    }
+
+    private int[][] calculateCoordsOfShip(Ship ship, int startX, int startY){
+        int angleRotation = ship.getAngleRotation();
+        int length = ship.getLength();
+
+        int cos = (int) Math.cos(Math.toRadians(angleRotation));
+        int sin = (int) Math.sin(Math.toRadians(angleRotation));
+
+        if(cos == 1)
+             startX = adaptCoord(startX, length);
+        else if(sin == 1)
+             startY = adaptCoord(startY, length);
+
+        int[] x = new int[length];
+        int[] y = new int[length];
+
+        for(int i = 0; i < length; i++){
+            x[i] = startX + i * cos;
+            y[i] = startY + i * sin;
+        }
+
+        return new int[][]{x, y};
     }
 
     public void removeSelection(){
         for(int i = 0; i < GRID_SIZE; i++){
             for(int j = 0; j < GRID_SIZE; j++) {
-                cells[i][j].setForeground(frameCell);
+                setForegroundCell(frameCell, i, j);
             }
         }
     }
 
-    public void removeShipAt(int x, int y){
-        for(int k = 0; k < GRID_SIZE; k++){
-            if(ships[x][k] != null){
-                if(Math.abs(y - k) < ships[x][k].getLenghtShip()){
-                    for(int i = 0; i < ships[x][k].getLenghtShip(); i++){
-                        cells[x + i][k].setImageDrawable(null);
-                    }
-                    ships[x][k] = null;
-                }
-            }
-            if(ships[k][y] != null){
-                if(Math.abs(x - k) < ships[k][y].getLenghtShip()){
-                    for(int i = 0; i < ships[k][y].getLenghtShip(); i++){
-                        cells[k + i][y].setImageDrawable(null);
-                    }
-                    ships[k][y] = null;
-                }
-            }
+    public void removeShipAt(int xPoint, int yPoint){
+        Ship ship = getShipAt(xPoint, yPoint);
+
+        int startingX = getXShip(ship);
+        int startingY = getYShip(ship);
+
+        int[][] coords = calculateCoordsOfShip(ship, startingX, startingY);
+
+        int[] xCoords = coords[0];
+        int[] yCoords = coords[1];
+
+        for(int i = 0; i < ship.getLength(); i++){
+            int x = xCoords[i];
+            int y = yCoords[i];
+
+            setImageCell(null, x, y);
         }
+
+        ships[startingX][startingY] = null;
     }
 
     public void markCellMissed(){
@@ -243,16 +279,56 @@ public class BattleGridView extends GridLayout {
     public Ship getShipAt(int x, int y) {
         for(int k = 0; k < GRID_SIZE; k++){
             if(ships[x][k] != null){
-                if(Math.abs(y - k) < ships[x][k].getLenghtShip()){
+                if(Math.abs(y - k) < ships[x][k].getLength()){
                     return ships[x][k];
                 }
             }
             if(ships[k][y] != null){
-                if(Math.abs(x - k) < ships[k][y].getLenghtShip()){
+                if(Math.abs(x - k) < ships[k][y].getLength()){
                     return ships[k][y];
                 }
             }
         }
         return null;
+    }
+
+    private int getXShip(Ship ship){
+        for(int i = 0; i < GRID_SIZE; i++){
+            for(int j = 0; j < GRID_SIZE; j++){
+                if(ships[i][j] == ship){
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    private int getYShip(Ship ship){
+        for(int i = 0; i < GRID_SIZE; i++){
+            for(int j = 0; j < GRID_SIZE; j++){
+                if(ships[i][j] == ship){
+                    return j;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public boolean rotateShipAt(int x, int y){
+        if(thereIsAShipAt(x, y)){
+            Ship ship = getShipAt(x, y);
+            int xShip = getXShip(ship);
+            int yShip = getYShip(ship);
+            removeShipAt(x, y);
+            ship.changeRotation();
+            placeShip(ship, xShip, yShip);
+            /*if(!placeShip(ship, x, y)){
+                ship.changeRotation();
+                placeShip(ship, x, y);
+                return false;
+            }*/
+            return true;
+        }
+        return false;
     }
 }
