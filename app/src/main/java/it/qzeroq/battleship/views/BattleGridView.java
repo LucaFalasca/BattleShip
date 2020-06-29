@@ -267,6 +267,10 @@ public class BattleGridView extends GridLayout {
 
     }
 
+    public void removeMarkCell(){
+
+    }
+
     public boolean thereIsAShipAt(int x, int y) {
         if(cells[x][y].getDrawable() != null){
             return true;
@@ -322,11 +326,6 @@ public class BattleGridView extends GridLayout {
             removeShipAt(x, y);
             ship.changeRotation();
             placeShip(ship, xShip, yShip);
-            /*if(!placeShip(ship, x, y)){
-                ship.changeRotation();
-                placeShip(ship, x, y);
-                return false;
-            }*/
             return true;
         }
         return false;

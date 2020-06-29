@@ -2,6 +2,7 @@ package it.qzeroq.battleship.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.DragEvent;
@@ -18,16 +19,16 @@ import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.views.ShipView;
 
-public class GameActivity extends AppCompatActivity {
+public class PositionShipActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_game);
+        setContentView(R.layout.activity_position_ship);
         new Holder(this);
     }
 
-    class Holder implements View.OnLongClickListener, View.OnTouchListener, View.OnDragListener{
+    class Holder implements View.OnLongClickListener, View.OnTouchListener, View.OnDragListener, View.OnClickListener{
 
         Context context;
         BattleGridView battleGridView;
@@ -37,10 +38,9 @@ public class GameActivity extends AppCompatActivity {
 
         View.DragShadowBuilder o;
 
+        @SuppressLint("ClickableViewAccessibility")
         Holder(Context context){
             this.context = context;
-
-
 
             swFour = findViewById(R.id.swFour);
             swFour.setOnTouchListener(this);
@@ -49,7 +49,7 @@ public class GameActivity extends AppCompatActivity {
             swTwo = findViewById(R.id.swTwo);
             swTwo.setOnTouchListener(this);
 
-            shipViews= new HashMap<>();
+            shipViews = new HashMap<>();
             shipViews.put(2, swTwo);
             shipViews.put(3, swThree);
             shipViews.put(4, swFour);
@@ -59,6 +59,7 @@ public class GameActivity extends AppCompatActivity {
             battleGridView = findViewById(R.id.battleGridView);
             battleGridView.setOnDragListener(this);
             battleGridView.setOnTouchListener(this);
+            battleGridView.setOnClickListener(this);
             battleGridView.setOnLongClickListener(this);
             battleGridView.setTag("grid");
         }
@@ -68,46 +69,38 @@ public class GameActivity extends AppCompatActivity {
             xClick = event.getX();
             yClick = event.getY();
 
-            if(v.getTag() != "grid")
-                v.startDragAndDrop(null, new View.DragShadowBuilder(v), ((ShipView)v).getShip(), 0);
-
-            switch(event.getAction()){
-                case MotionEvent.ACTION_UP:
-
-                        int xIndex = calculateIndex(xClick, 16, battleGridView.getSide(), 0);
-                        int yIndex = calculateIndex(yClick, 16, battleGridView.getSide(), 0);
-                        battleGridView.rotateShipAt(xIndex, yIndex);
-                        return true;
+            if(v.getTag() != "grid") {
+                Ship newShip = ((ShipView) v).getShip();
+                v.startDragAndDrop(null, new View.DragShadowBuilder(v), new Ship(context, newShip.getLength(), newShip.getRotation()), 0);
             }
             return false;
         }
 
+
+        @Override
+        public void onClick(View v) {
+            int[] coords = calculateIndexs(xClick, yClick, battleGridView);
+
+            int xIndex = coords[0];
+            int yIndex = coords[1];
+            battleGridView.rotateShipAt(xIndex, yIndex);
+
+        }
+
         @Override
         public boolean onLongClick(View v) {
-            int xIndex = calculateIndex(xClick, 16, battleGridView.getSide(), 0);
-            int yIndex = calculateIndex(yClick, 16, battleGridView.getSide(), 0);
+            int[] coords = calculateIndexs(xClick, yClick, battleGridView);
+
+            int xIndex = coords[0];
+            int yIndex = coords[1];
 
             if(battleGridView.thereIsAShipAt(xIndex, yIndex)){
                 Ship ship = battleGridView.getShipAt(xIndex, yIndex);
-                boolean q = true;
-                switch(ship.getLength()){
-                    case 2:
-                        q = swTwo.startDragAndDrop(null, new ShadowBuilderRotation(swTwo, ship.getRotation()), ship, 0);
-                        break;
-                    case 3:
-                        q = swThree.startDragAndDrop(null, new ShadowBuilderRotation(swThree, ship.getRotation()), ship, 0);
-                        break;
-                    case 4:
-                        q = swFour.startDragAndDrop(null, new ShadowBuilderRotation(swFour, ship.getRotation()), ship, 0);
-                        break;
-                }
+                ShipView sv = shipViews.get(ship.getLength());
+
+                assert sv != null;
+                sv.startDragAndDrop(null, new ShadowBuilderRotation(sv, ship.getRotation()), ship, 0);
                 battleGridView.removeShipAt(xIndex, yIndex);
-
-                if(!q){
-
-                }
-
-
             }
             return false;
         }
@@ -117,26 +110,16 @@ public class GameActivity extends AppCompatActivity {
             int action = event.getAction();
 
             Ship ship;
-            int lenghtShip;
             BattleGridView battleGrid;
             int x, y;
 
             switch(action) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    return true;
-
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    return true;
-
                 case DragEvent.ACTION_DRAG_LOCATION:
 
                     ship = (Ship) event.getLocalState();
-                    lenghtShip = ship.getLength();
 
                     battleGrid = (BattleGridView) v;
 
-                    /*x = calculateIndex(event.getX(), 16, battleGrid.getSide(), ship.getWidth());
-                    y = calculateIndex(event.getY(), 16, battleGrid.getSide(), ship.getHeight());*/
                     int[] c = calculateIndexs(event.getX(), event.getY(), battleGrid, ship);
                     System.out.println(c[0] + " " + c[1]);
                     x = c[0];
@@ -146,62 +129,33 @@ public class GameActivity extends AppCompatActivity {
 
                     if(x < 0 || y < 0) return false;
 
-                    battleGrid.showSelection(new Ship(context, lenghtShip), x, y);
-                    return true;
-
-                case DragEvent.ACTION_DRAG_EXITED:
+                    battleGrid.showSelection(ship, x, y);
                     return true;
 
                 case DragEvent.ACTION_DROP:
 
                     ship = (Ship) event.getLocalState();
-                    lenghtShip = ship.getLength();
 
                     battleGrid = (BattleGridView) v;
 
-                    /*
-                    x = calculateIndex(event.getX(), 16, battleGrid.getSide(), ship.getWidth());
-                    y = calculateIndex(event.getY(), 16, battleGrid.getSide(), ship.getHeight());*/
                     c = calculateIndexs(event.getX(), event.getY(), battleGrid, ship);
                     System.out.println(c[0] + " " + c[1]);
                     x = c[0];
                     y = c[1];
 
-                    if(x < 0 || y < 0)
-                        return false;
+                    if(x < 0 || y < 0) return false;
 
-                    if(!battleGrid.placeShip(new Ship(context, lenghtShip), x, y))
+                    if(!battleGrid.placeShip(ship, x, y))
                         return false;
 
                     return true;
 
-                case DragEvent.ACTION_DRAG_ENDED:
+                case DragEvent.ACTION_DRAG_STARTED:
+                case DragEvent.ACTION_DRAG_ENTERED:
+                case DragEvent.ACTION_DRAG_EXITED:
                     return true;
             }
             return false;
-        }
-
-        private int calculateIndex(float positionOfFinger, float battleGridMargin, int sideCell, float sizeShip) {
-
-            float startPositionOfGrid = battleGridMargin + sideCell;
-            float positionOfShip = positionOfFinger - sizeShip / 2;
-            float relativePosition = positionOfShip - startPositionOfGrid;
-
-            int sideGrid = sideCell * 9;
-
-            float min = startPositionOfGrid - sizeShip / 2;
-            float max = startPositionOfGrid + sideGrid + sizeShip / 2;
-
-            if(positionOfShip < min){
-                return -1;
-            }
-            else if(positionOfShip > max){
-                return -1;
-            }
-            else {
-                int index = Math.round(relativePosition / sideCell);
-                return index;
-            }
         }
 
         private int[] calculateIndexs(float xPosition, float yPosition, BattleGridView grid, Ship ship){
@@ -241,6 +195,36 @@ public class GameActivity extends AppCompatActivity {
 
             return new int[]{xIndex, yIndex};
         }
+
+        private int[] calculateIndexs(float xPosition, float yPosition, BattleGridView grid){
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) grid.getLayoutParams();
+            int marginTop = params.topMargin / 3;
+            int marginLeft = params.leftMargin / 3;
+
+            int sideCell = grid.getSide();
+
+            float xGrid = marginTop + sideCell;
+            float yGrid = marginLeft + sideCell;
+
+            float relativeX = xPosition - xGrid;
+            float relativeY = yPosition - yGrid;
+
+            int xIndex = (int)(relativeX / sideCell);
+            int yIndex = (int)(relativeY / sideCell);
+
+            int sideGrid = sideCell * battleGridView.GRID_SIZE;
+
+            float xMax = xGrid + sideGrid;
+            float yMax = yGrid + sideGrid;
+
+            if(relativeX < 0 || relativeX > xMax)
+                xIndex = -1;
+            if(relativeY < 0 || relativeY > yMax)
+                yIndex = -1;
+
+            return new int[]{xIndex, yIndex};
+        }
+
 
 
     }
