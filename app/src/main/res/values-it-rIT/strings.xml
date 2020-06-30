@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Battaglia Navale</string>
-    <string name="start">Gioca</string>
+    <string name="start">Crea una partita</string>
+    <string name="wait">Cerca una partita</string>
     <string name="setting">Impostazioni</string>
+    <string name="no_permission">Senza concedere il permesso all\'app, non puoi giocare</string>
+    <string name="not_connected">Connessione scaduta</string>
 </resources>

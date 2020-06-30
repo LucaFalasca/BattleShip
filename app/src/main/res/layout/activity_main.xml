@@ -10,11 +10,11 @@
         android:id="@+id/btnStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="84dp"
+        android:layout_marginBottom="60dp"
         android:text="@string/start"
-        app:layout_constraintBottom_toTopOf="@+id/btnSetting"
+        app:layout_constraintBottom_toTopOf="@+id/btnWait"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -39,4 +39,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.642"
         app:srcCompat="@android:drawable/dialog_frame" />
+
+    <Button
+        android:id="@+id/btnWait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="52dp"
+        android:text="@string/wait"
+        app:layout_constraintBottom_toTopOf="@+id/btnSetting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
