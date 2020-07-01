@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if(v.getId() == R.id.btnSetting){
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                Intent intent = new Intent(MainActivity.this, PositionShipActivity.class);
                 startActivity(intent);
             }
         }

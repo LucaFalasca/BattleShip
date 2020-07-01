@@ -190,6 +190,22 @@ public class BattleGridView extends GridLayout {
         }
     }
 
+    public boolean rotateShipAt(int x, int y){
+        if(thereIsAShipAt(x, y)){
+            Ship ship = getShipAt(x, y);
+            int xShip = getXShip(ship);
+            int yShip = getYShip(ship);
+            removeShipAt(x, y);
+            ship.changeRotation();
+            if(!placeShip(ship, xShip, yShip)){
+                ship.changeRotation();
+                placeShip(ship, xShip, yShip);
+            }
+            return true;
+        }
+        return false;
+    }
+
     // Implementation
 
     @Override
@@ -284,19 +300,6 @@ public class BattleGridView extends GridLayout {
         }
 
         return new int[][]{x, y};
-    }
-
-    public boolean rotateShipAt(int x, int y){
-        if(thereIsAShipAt(x, y)){
-            Ship ship = getShipAt(x, y);
-            int xShip = getXShip(ship);
-            int yShip = getYShip(ship);
-            removeShipAt(x, y);
-            ship.changeRotation();
-            placeShip(ship, xShip, yShip);
-            return true;
-        }
-        return false;
     }
 
     // Getters and Setters

@@ -9,9 +9,11 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import it.qzeroq.battleship.ShadowBuilderRotation;
 import it.qzeroq.battleship.views.BattleGridView;
@@ -33,28 +35,26 @@ public class PositionShipActivity extends AppCompatActivity {
         Context context;
         BattleGridView battleGridView;
         Map<Integer, ShipView> shipViews;
-        ShipView swFour, swThree, swTwo;
+        Map<Integer, TextView> tvCounts;
         float xClick, yClick;
-
-        View.DragShadowBuilder o;
 
         @SuppressLint("ClickableViewAccessibility")
         Holder(Context context){
             this.context = context;
 
-            swFour = findViewById(R.id.swFour);
-            swFour.setOnTouchListener(this);
-            swThree = findViewById(R.id.swThree);
-            swThree.setOnTouchListener(this);
-            swTwo = findViewById(R.id.swTwo);
-            swTwo.setOnTouchListener(this);
+            tvCounts = new HashMap<>();
+            tvCounts.put(2, (TextView) findViewById(R.id.tvCountTwo));
+            tvCounts.put(3, (TextView) findViewById(R.id.tvCountThree));
+            tvCounts.put(4, (TextView) findViewById(R.id.tvCountFour));
 
             shipViews = new HashMap<>();
-            shipViews.put(2, swTwo);
-            shipViews.put(3, swThree);
-            shipViews.put(4, swFour);
+            shipViews.put(2, (ShipView) findViewById(R.id.swTwo));
+            shipViews.put(3, (ShipView) findViewById(R.id.swThree));
+            shipViews.put(4, (ShipView) findViewById(R.id.swFour));
 
-            o = new View.DragShadowBuilder(swFour);
+            Objects.requireNonNull(shipViews.get(2)).setOnTouchListener(this);
+            Objects.requireNonNull(shipViews.get(3)).setOnTouchListener(this);
+            Objects.requireNonNull(shipViews.get(4)).setOnTouchListener(this);
 
             battleGridView = findViewById(R.id.battleGridView);
             battleGridView.setOnDragListener(this);
@@ -64,18 +64,23 @@ public class PositionShipActivity extends AppCompatActivity {
             battleGridView.setTag("grid");
         }
 
+        @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
         @Override
         public boolean onTouch(View v, MotionEvent event) {
-            xClick = event.getX();
-            yClick = event.getY();
-
-            if(v.getTag() != "grid") {
+            if(v.getTag() == "grid") {
+                xClick = event.getX();
+                yClick = event.getY();
+            }
+            else {
                 Ship newShip = ((ShipView) v).getShip();
-                v.startDragAndDrop(null, new View.DragShadowBuilder(v), new Ship(context, newShip.getLength(), newShip.getRotation()), 0);
+                String c = Objects.requireNonNull(tvCounts.get(newShip.getLength())).getText().toString();
+                if(!c.endsWith("0")) {
+                    v.startDragAndDrop(null, new View.DragShadowBuilder(v), new Ship(context, newShip.getLength(), newShip.getRotation()), 0);
+                    removeOneToCount(tvCounts.get(newShip.getLength()));
+                }
             }
             return false;
         }
-
 
         @Override
         public void onClick(View v) {
@@ -105,6 +110,7 @@ public class PositionShipActivity extends AppCompatActivity {
             return false;
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         public boolean onDrag(View v, DragEvent event) {
             int action = event.getAction();
@@ -143,16 +149,22 @@ public class PositionShipActivity extends AppCompatActivity {
                     x = c[0];
                     y = c[1];
 
-                    if(x < 0 || y < 0) return false;
-
-                    if(!battleGrid.placeShip(ship, x, y))
+                    if(x < 0 || y < 0 || !battleGrid.placeShip(ship, x, y)) {
+                        addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));
                         return false;
+                    }
 
                     return true;
 
                 case DragEvent.ACTION_DRAG_STARTED:
                 case DragEvent.ACTION_DRAG_ENTERED:
-                case DragEvent.ACTION_DRAG_EXITED:
+                    return true;
+                    
+                case DragEvent.ACTION_DRAG_ENDED:
+                    if(!event.getResult()){
+                        ship = (Ship) event.getLocalState();
+                        addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));
+                    }
                     return true;
             }
             return false;
@@ -174,6 +186,7 @@ public class PositionShipActivity extends AppCompatActivity {
 
             ShipView shipView = shipViews.get(ship.getLength());
 
+            assert shipView != null;
             float xShip = xPosition - (shipView.getWidth() * cos + shipView.getHeight() * sin) / 2;
             float yShip = yPosition - (shipView.getWidth() * sin + shipView.getHeight() * cos) / 2;
 
@@ -225,7 +238,22 @@ public class PositionShipActivity extends AppCompatActivity {
             return new int[]{xIndex, yIndex};
         }
 
+        @SuppressLint("SetTextI18n")
+        private void addOneToCount(TextView tvCount){
+            String count = tvCount.getText().toString();
+            String lastLetter = count.substring(count.length() - 1);
+            int number = Integer.parseInt(lastLetter);
 
+            tvCount.setText("x " + (number + 1));
+        }
 
+        @SuppressLint("SetTextI18n")
+        private void removeOneToCount(TextView tvCount){
+            String count = tvCount.getText().toString();
+            String lastLetter = count.substring(count.length() - 1);
+            int number = Integer.parseInt(lastLetter);
+
+            tvCount.setText("x " + (number - 1));
+        }
     }
 }
