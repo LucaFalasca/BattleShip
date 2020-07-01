@@ -37,6 +37,7 @@ public class PositionShipActivity extends AppCompatActivity {
         Map<Integer, ShipView> shipViews;
         Map<Integer, TextView> tvCounts;
         float xClick, yClick;
+        boolean q = false;
 
         @SuppressLint("ClickableViewAccessibility")
         Holder(Context context){
@@ -88,7 +89,8 @@ public class PositionShipActivity extends AppCompatActivity {
 
             int xIndex = coords[0];
             int yIndex = coords[1];
-            battleGridView.rotateShipAt(xIndex, yIndex);
+            if(xIndex >= 0 && xIndex < 10 && yIndex >= 0 && yIndex < 10)
+                battleGridView.rotateShipAt(xIndex, yIndex);
 
         }
 
@@ -102,6 +104,8 @@ public class PositionShipActivity extends AppCompatActivity {
             if(battleGridView.thereIsAShipAt(xIndex, yIndex)){
                 Ship ship = battleGridView.getShipAt(xIndex, yIndex);
                 ShipView sv = shipViews.get(ship.getLength());
+
+                q = true;
 
                 assert sv != null;
                 sv.startDragAndDrop(null, new ShadowBuilderRotation(sv, ship.getRotation()), ship, 0);
@@ -133,7 +137,7 @@ public class PositionShipActivity extends AppCompatActivity {
 
                     battleGrid.removeSelection();
 
-                    if(x < 0 || y < 0) return false;
+                    if(x < 0 || y < 0 || y > 9 || x > 9) return false;
 
                     battleGrid.showSelection(ship, x, y);
                     return true;
@@ -149,7 +153,7 @@ public class PositionShipActivity extends AppCompatActivity {
                     x = c[0];
                     y = c[1];
 
-                    if(x < 0 || y < 0 || !battleGrid.placeShip(ship, x, y)) {
+                    if(x < 0 || y < 0 || y > 9 || x > 9 || !battleGrid.placeShip(ship, x, y)) {
                         addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));
                         return false;
                     }
@@ -159,11 +163,19 @@ public class PositionShipActivity extends AppCompatActivity {
                 case DragEvent.ACTION_DRAG_STARTED:
                 case DragEvent.ACTION_DRAG_ENTERED:
                     return true;
-                    
+
                 case DragEvent.ACTION_DRAG_ENDED:
                     if(!event.getResult()){
-                        ship = (Ship) event.getLocalState();
-                        addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));
+                        if(q){
+                            /*c = calculateIndexs(startX, startY, battleGridView);
+                            x = c[0];
+                            y = c[1];*/
+                            ship = (Ship) event.getLocalState();
+                            battleGridView.placeShip(ship, 1, 1);
+                        }else {
+                            ship = (Ship) event.getLocalState();
+                            addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));
+                        }
                     }
                     return true;
             }
@@ -187,8 +199,8 @@ public class PositionShipActivity extends AppCompatActivity {
             ShipView shipView = shipViews.get(ship.getLength());
 
             assert shipView != null;
-            float xShip = xPosition - (shipView.getWidth() * cos + shipView.getHeight() * sin) / 2;
-            float yShip = yPosition - (shipView.getWidth() * sin + shipView.getHeight() * cos) / 2;
+            float xShip = xPosition - (shipView.getWidth() * cos + shipView.getHeight() * sin) / 2.6f;
+            float yShip = yPosition - (shipView.getWidth() * sin + shipView.getHeight() * cos) / 2.6f;
 
             float relativeX = xShip - xGrid;
             float relativeY = yShip - yGrid;

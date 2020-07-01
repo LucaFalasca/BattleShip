@@ -1,4 +1,4 @@
-package it.qzeroq.battleship.activities;
+package it.qzeroq.battleship.bluetooth;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,9 +21,6 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import it.qzeroq.battleship.R;
-
-import static it.qzeroq.battleship.activities.BluetoothService.STATE_CONNECTED;
-import static it.qzeroq.battleship.activities.BluetoothService.getState;
 
 public class ChooseDevice extends AppCompatActivity {
 

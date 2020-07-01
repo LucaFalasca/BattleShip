@@ -1,4 +1,4 @@
-package it.qzeroq.battleship.activities;
+package it.qzeroq.battleship.bluetooth;
 
 
 import android.annotation.SuppressLint;
@@ -12,21 +12,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import it.qzeroq.battleship.R;
+import it.qzeroq.battleship.activities.MainActivity;
+import it.qzeroq.battleship.activities.PositionShipActivity;
 
 
 /**

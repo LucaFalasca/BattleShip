@@ -15,7 +15,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import it.qzeroq.battleship.R;
-
+import it.qzeroq.battleship.bluetooth.BluetoothChat;
+import it.qzeroq.battleship.bluetooth.BluetoothService;
 
 
 public class MainActivity extends AppCompatActivity {
