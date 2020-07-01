@@ -129,7 +129,6 @@ public class BluetoothService {
         Log.d(TAG, "BluetoothService connect(): starting connectThread");
 
         setState(STATE_CONNECTING);
-        Log.d(TAG, "staffa");
     }
 
     /**
@@ -347,6 +346,7 @@ public class BluetoothService {
             try {
                 // This is a blocking call and will only return on a successful connection or an exception
                 mmSocket.connect();
+                mState = STATE_CONNECTED;
             } catch (IOException e) {
                 connectionFailed();
                 // Close the socket

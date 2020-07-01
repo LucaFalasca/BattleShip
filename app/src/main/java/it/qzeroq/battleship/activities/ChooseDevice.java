@@ -141,12 +141,10 @@ public class ChooseDevice extends AppCompatActivity {
             if (parent.getId() == R.id.lvPrevDevices) {
                 Log.d(TAG, "ChooseDevice onItemClick(): device = " + prevDeviceList.get(position).getName());
                 data.putExtra("device", prevDeviceList.get(position));
-                data.putExtra("layout", R.layout.activity_choosedevice);
             }
             else if (parent.getId() == R.id.lvDiscoveredDevices) {
                 Log.d(TAG, "ChooseDevice onItemClick(): device = " + discoveredDeviceList.get(position).getName());
                 data.putExtra("device", discoveredDeviceList.get(position));
-                data.putExtra("layout", R.layout.activity_choosedevice);
             }
 
             // Set result and finish this Activity

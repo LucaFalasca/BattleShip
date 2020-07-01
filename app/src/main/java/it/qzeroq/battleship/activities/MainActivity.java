@@ -9,14 +9,14 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import it.qzeroq.battleship.R;
 
-import static it.qzeroq.battleship.activities.BluetoothService.STATE_CONNECTED;
-import static it.qzeroq.battleship.activities.BluetoothService.getState;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,34 +47,40 @@ public class MainActivity extends AppCompatActivity {
     class Holder implements View.OnClickListener {
         Button btnStart;
         Button btnSetting;
+        Button btnWait;
 
         Holder(){
             btnStart = findViewById(R.id.btnStart);
             btnSetting = findViewById(R.id.btnSetting);
+            btnWait = findViewById(R.id.btnWait);
 
             btnStart.setOnClickListener(this);
             btnSetting.setOnClickListener(this);
+            btnWait.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            switch(v.getId()){
-                case R.id.btnStart:
-                                    Intent i = new Intent(MainActivity.this, BluetoothService.class);
-                                    startActivity(i);
-                case R.id.btnWait:
-                                    /*while(true){
-                                        if(getState() == STATE_CONNECTED){
-                                            Intent Int = new Intent(MainActivity.this, GameActivity.class);
-                                            startActivity(Int);
-                                        }
-                                        else{
-                                            Toast(getApplicationContext(),"Try to connecting",);
-                                        }
-                                    }*/
-                case R.id.btnSetting:
-                                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                                    startActivity(intent);
+            Handler handler = new Handler();
+            BluetoothService bs = new BluetoothService(handler);
+            if(v.getId() == R.id.btnStart) {
+                Intent i = new Intent(MainActivity.this, BluetoothChat.class);
+                startActivity(i);
+            }
+            if(v.getId() == R.id.btnWait){
+                Toast.makeText(getApplicationContext(), "Trying to connect", Toast.LENGTH_SHORT).show();
+                bs.start();
+                while(true){
+                    if(bs.getState() == bs.STATE_CONNECTED){
+                        Intent Int = new Intent(MainActivity.this, PositionShipActivity.class);
+                        startActivity(Int);
+                        break;
+                    }
+                }
+            }
+            if(v.getId() == R.id.btnSetting){
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
             }
         }
     }
