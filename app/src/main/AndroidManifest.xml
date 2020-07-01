@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.SettingsActivity" />
-        <activity android:name=".activities.GameActivity" />
+        <activity android:name=".activities.PositionShipActivity" />
         <activity android:name=".activities.BluetoothChat" />
         <activity android:name=".activities.ChooseDevice"/>
         <activity android:name=".activities.MainActivity">

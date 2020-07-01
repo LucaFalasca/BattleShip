@@ -142,7 +142,6 @@ public class BluetoothChat extends AppCompatActivity {
 
 
         Intent i = new Intent(getApplicationContext(), ChooseDevice.class);
-        i.putExtra("layout", R.layout.activity_choosedevice);
         startActivityForResult(i, PAIR_BT_DEVICE);
 
 
@@ -302,14 +301,13 @@ public class BluetoothChat extends AppCompatActivity {
                     Log.d(TAG, "BluetoothChat onActivityResult: target device is null");
                 else {
                     try {
-                        Intent i = new Intent(this, GameActivity.class);
+                        Intent i = new Intent(this, PositionShipActivity.class);
                         if (targetDevice.createBond()) {
                             Log.d(TAG, "BluetoothChat onActivityResult: createBond()");
                             IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
                             registerReceiver(receiver, filter);
 
                             mChatService.connect(targetDevice);
-
                             startActivity(i);
 
                         } else if (mBluetoothAdapter.getBondedDevices().contains(targetDevice)) {
