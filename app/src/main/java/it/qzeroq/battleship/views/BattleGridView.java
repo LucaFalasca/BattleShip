@@ -32,6 +32,8 @@ public class BattleGridView extends GridLayout {
     private TextView uselessCell;
     private int side;
 
+    // Constructors
+
     public BattleGridView(Context context) {
         super(context, null, R.style.BattleGridDefault);
         this.context = context;
@@ -52,25 +54,143 @@ public class BattleGridView extends GridLayout {
         init();
     }
 
-    public Drawable getBackgroundCell() {
-        return backgroundCell;
+    // Public methods
+
+    /**
+     * Place a ship in the Grid
+     * @param ship Ship that must be placed
+     * @param startX starting x in the grid
+     * @param startY starting y in the grid
+     */
+    public boolean placeShip(Ship ship, int startX, int startY){
+        removeSelection();
+
+        int length = ship.getLength();
+
+        int[][] coords = calculateCoordsOfShip(ship, startX, startY);
+
+        int[] xCoords = coords[0];
+        int[] yCoords = coords[1];
+
+        Drawable[] sprites = ship.getSprites();
+
+        for(int i = 0; i < length; i++){
+            int x = xCoords[i];
+            int y = yCoords[i];
+
+            if(thereIsAShipAt(x, y))
+                return false;
+        }
+
+        for(int i = 0; i < ship.getLength(); i++){
+            int x = xCoords[i];
+            int y = yCoords[i];
+
+            setImageCell(sprites[i], x, y);
+        }
+
+        ships[xCoords[0]][yCoords[0]] = ship;
+
+        return true;
     }
 
-    public void setBackgroundCell(Drawable backgroundCell) {
-        this.backgroundCell = backgroundCell;
+    /**
+     * Show where the ship  will be positioned
+     * @param ship ship from where teh method takes the size
+     * @param startX starting x in the grid
+     * @param startY starting y in the grid
+     */
+    public void showSelection(Ship ship, int startX, int startY){
+        int length = ship.getLength();
+
+        int[][] coords = calculateCoordsOfShip(ship, startX, startY);
+
+        int[] xCoords = coords[0];
+        int[] yCoords = coords[1];
+
+        for(int i = 0; i < length; i++){
+            int x = xCoords[i];
+            int y = yCoords[i];
+            if(thereIsAShipAt(x, y)){
+                setForegroundCell(selectionCellWrong, x, y);
+            }
+            else{
+                setForegroundCell(selectionCell, x, y);
+            }
+        }
     }
 
-    public Drawable getFrameCell() {
-        return frameCell;
+    /**
+     * Remove all the selection active
+     */
+    public void removeSelection(){
+        for(int i = 0; i < GRID_SIZE; i++){
+            for(int j = 0; j < GRID_SIZE; j++) {
+                setForegroundCell(frameCell, i, j);
+            }
+        }
     }
 
-    public void setFrameCell(Drawable frameCell) {
-        this.frameCell = frameCell;
+    /**
+     * Remove a ship from specific point of the grid
+     */
+    public void removeShipAt(int xPoint, int yPoint){
+        Ship ship = getShipAt(xPoint, yPoint);
+
+        int startingX = getXShip(ship);
+        int startingY = getYShip(ship);
+
+        int[][] coords = calculateCoordsOfShip(ship, startingX, startingY);
+
+        int[] xCoords = coords[0];
+        int[] yCoords = coords[1];
+
+        for(int i = 0; i < ship.getLength(); i++){
+            int x = xCoords[i];
+            int y = yCoords[i];
+
+            setImageCell(null, x, y);
+        }
+
+        ships[startingX][startingY] = null;
     }
 
-    public int getSide() {
-        return side;
+    /**
+     * Add a mark that represent that this cell was a sea cell
+     */
+    public void markCellMissed(){
+
     }
+
+    /**
+     * Add a mark that represent that this cell was a ship cell
+     */
+    public void markCellHit(){
+
+    }
+
+    /**
+     * Remove a mark from cell
+     */
+    public void removeMarkCell(){
+
+    }
+
+    /**
+     * @param x x position
+     * @param y y position
+     * @return true if there is a Ship in this position
+     */
+    public boolean thereIsAShipAt(int x, int y) {
+        if(cells[x][y].getDrawable() != null){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    // Implementation
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -85,6 +205,11 @@ public class BattleGridView extends GridLayout {
 
     }
 
+    /**
+     * This method initialize the GridView adding images that represent
+     * the cells and the Text views that represent the numbers and letters
+     * in a battle ship grid
+     */
     private void init(){
 
         int realSize = GRID_SIZE + 1;
@@ -118,75 +243,6 @@ public class BattleGridView extends GridLayout {
             }
         }
         setSizeCells(CELL_SIDE);
-    }
-
-    private void setSizeCells(int side) {
-        for(int i = 0; i < 10; i++) {
-            setSideView(side, columns[i]);
-            setSideView(side, rows[i]);
-            for (int j = 0; j < 10; j++) {
-                setSideView(side, cells[i][j]);
-            }
-        }
-    }
-
-    private void setSideView(int side, View view){
-        GridLayout.LayoutParams param = new GridLayout.LayoutParams();
-        param.height = side ;
-        param.width = side;
-        view.setLayoutParams(param);
-    }
-
-    public boolean placeShip(Ship ship, int startX, int startY){
-        removeSelection();
-
-        int length = ship.getLength();
-
-        int[][] coords = calculateCoordsOfShip(ship, startX, startY);
-
-        int[] xCoords = coords[0];
-        int[] yCoords = coords[1];
-
-        Drawable[] sprites = ship.getSprites();
-
-        for(int i = 0; i < length; i++){
-            int x = xCoords[i];
-            int y = yCoords[i];
-
-            if(thereIsAShipAt(x, y))
-                return false;
-        }
-
-        for(int i = 0; i < ship.getLength(); i++){
-            int x = xCoords[i];
-            int y = yCoords[i];
-
-            setImageCell(sprites[i], x, y);
-        }
-
-        ships[xCoords[0]][yCoords[0]] = ship;
-
-        return true;
-    }
-
-    public void showSelection(Ship ship, int startX, int startY){
-        int length = ship.getLength();
-
-        int[][] coords = calculateCoordsOfShip(ship, startX, startY);
-
-        int[] xCoords = coords[0];
-        int[] yCoords = coords[1];
-
-        for(int i = 0; i < length; i++){
-            int x = xCoords[i];
-            int y = yCoords[i];
-            if(thereIsAShipAt(x, y)){
-                setForegroundCell(selectionCellWrong, x, y);
-            }
-            else{
-                setForegroundCell(selectionCell, x, y);
-            }
-        }
     }
 
     private int adaptCoord(int k, int length) {
@@ -230,54 +286,56 @@ public class BattleGridView extends GridLayout {
         return new int[][]{x, y};
     }
 
-    public void removeSelection(){
-        for(int i = 0; i < GRID_SIZE; i++){
-            for(int j = 0; j < GRID_SIZE; j++) {
-                setForegroundCell(frameCell, i, j);
+    public boolean rotateShipAt(int x, int y){
+        if(thereIsAShipAt(x, y)){
+            Ship ship = getShipAt(x, y);
+            int xShip = getXShip(ship);
+            int yShip = getYShip(ship);
+            removeShipAt(x, y);
+            ship.changeRotation();
+            placeShip(ship, xShip, yShip);
+            return true;
+        }
+        return false;
+    }
+
+    // Getters and Setters
+
+    public Drawable getBackgroundCell() {
+        return backgroundCell;
+    }
+
+    public void setBackgroundCell(Drawable backgroundCell) {
+        this.backgroundCell = backgroundCell;
+    }
+
+    public Drawable getFrameCell() {
+        return frameCell;
+    }
+
+    public void setFrameCell(Drawable frameCell) {
+        this.frameCell = frameCell;
+    }
+
+    private void setSizeCells(int side) {
+        for(int i = 0; i < 10; i++) {
+            setSideView(side, columns[i]);
+            setSideView(side, rows[i]);
+            for (int j = 0; j < 10; j++) {
+                setSideView(side, cells[i][j]);
             }
         }
     }
 
-    public void removeShipAt(int xPoint, int yPoint){
-        Ship ship = getShipAt(xPoint, yPoint);
-
-        int startingX = getXShip(ship);
-        int startingY = getYShip(ship);
-
-        int[][] coords = calculateCoordsOfShip(ship, startingX, startingY);
-
-        int[] xCoords = coords[0];
-        int[] yCoords = coords[1];
-
-        for(int i = 0; i < ship.getLength(); i++){
-            int x = xCoords[i];
-            int y = yCoords[i];
-
-            setImageCell(null, x, y);
-        }
-
-        ships[startingX][startingY] = null;
+    private void setSideView(int side, View view){
+        GridLayout.LayoutParams param = new GridLayout.LayoutParams();
+        param.height = side ;
+        param.width = side;
+        view.setLayoutParams(param);
     }
 
-    public void markCellMissed(){
-
-    }
-
-    public void markCellHit(){
-
-    }
-
-    public void removeMarkCell(){
-
-    }
-
-    public boolean thereIsAShipAt(int x, int y) {
-        if(cells[x][y].getDrawable() != null){
-            return true;
-        }
-        else{
-            return false;
-        }
+    public int getSide() {
+        return side;
     }
 
     public Ship getShipAt(int x, int y) {
@@ -318,16 +376,4 @@ public class BattleGridView extends GridLayout {
         return -1;
     }
 
-    public boolean rotateShipAt(int x, int y){
-        if(thereIsAShipAt(x, y)){
-            Ship ship = getShipAt(x, y);
-            int xShip = getXShip(ship);
-            int yShip = getYShip(ship);
-            removeShipAt(x, y);
-            ship.changeRotation();
-            placeShip(ship, xShip, yShip);
-            return true;
-        }
-        return false;
-    }
 }
