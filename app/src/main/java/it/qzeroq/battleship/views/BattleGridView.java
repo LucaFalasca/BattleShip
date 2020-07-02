@@ -211,7 +211,7 @@ public class BattleGridView extends GridLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if(getMeasuredWidth() > getMeasuredHeight()){
+        if(getMeasuredWidth() < getMeasuredHeight()){
             side = getMeasuredHeight() / (GRID_SIZE + 1);
         }
         else{

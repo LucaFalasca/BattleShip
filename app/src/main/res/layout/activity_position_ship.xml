@@ -41,15 +41,12 @@
     <it.qzeroq.battleship.views.BattleGridView
         android:id="@+id/battleGridView"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/swTwo"
-        app:layout_constraintVertical_bias="0.45">
+        app:layout_constraintTop_toBottomOf="@+id/swTwo">
 
     </it.qzeroq.battleship.views.BattleGridView>
 
