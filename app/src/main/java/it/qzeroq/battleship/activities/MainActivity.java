@@ -64,11 +64,14 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             Handler handler = new Handler();
             BluetoothService bs = new BluetoothService(handler);
-            if(v.getId() == R.id.btnStart) {
+            if(v.getId() == R.id.btnStart && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Intent i = new Intent(MainActivity.this, BluetoothChat.class);
                 startActivity(i);
             }
-            if(v.getId() == R.id.btnWait){
+            else {
+                requestGPS();
+            }
+            if(v.getId() == R.id.btnWait && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
                 Toast.makeText(getApplicationContext(), "Trying to connect", Toast.LENGTH_SHORT).show();
                 bs.start();
                 while(true){
@@ -79,8 +82,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+            else{
+                requestGPS();
+            }
             if(v.getId() == R.id.btnSetting){
-                Intent intent = new Intent(MainActivity.this, PositionShipActivity.class);
+                Intent intent = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(intent);
             }
         }

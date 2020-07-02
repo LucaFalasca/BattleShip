@@ -9,6 +9,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -41,6 +42,7 @@ public class PositionShipActivity extends AppCompatActivity {
         BattleGridView battleGridView;
         Map<Integer, ShipView> shipViews;
         Map<Integer, TextView> tvCounts;
+        Button btnConfirm;
         float xClick, yClick;
         boolean q = false;
 
@@ -68,6 +70,9 @@ public class PositionShipActivity extends AppCompatActivity {
             battleGridView.setOnClickListener(this);
             battleGridView.setOnLongClickListener(this);
             battleGridView.setTag("grid");
+
+            btnConfirm = findViewById(R.id.btnConfirm);
+            btnConfirm.setOnClickListener(this);
         }
 
         @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
@@ -90,13 +95,17 @@ public class PositionShipActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            int[] coords = calculateIndexs(xClick, yClick, battleGridView);
+            if(v.getId() == R.id.btnConfirm) {
 
-            int xIndex = coords[0];
-            int yIndex = coords[1];
-            if(xIndex >= 0 && xIndex < 10 && yIndex >= 0 && yIndex < 10)
-                battleGridView.rotateShipAt(xIndex, yIndex);
+            }
+            else {
+                int[] coords = calculateIndexs(xClick, yClick, battleGridView);
 
+                int xIndex = coords[0];
+                int yIndex = coords[1];
+                if (xIndex >= 0 && xIndex < 10 && yIndex >= 0 && yIndex < 10)
+                    battleGridView.rotateShipAt(xIndex, yIndex);
+            }
         }
 
         @Override
