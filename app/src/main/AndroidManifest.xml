@@ -12,11 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.GameActivity"></activity>
+        <activity android:name=".activities.GameActivity"/>
         <activity android:name=".activities.SettingsActivity" />
         <activity android:name=".activities.PositionShipActivity" />
-        <activity android:name=".bluetooth.BluetoothChat" />
-        <activity android:name=".bluetooth.ChooseDevice" />
+        <activity android:name=".bluetooth.BluetoothGameActivity" />
+        <activity android:name=".bluetooth.ChooseDeviceActivity" />
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

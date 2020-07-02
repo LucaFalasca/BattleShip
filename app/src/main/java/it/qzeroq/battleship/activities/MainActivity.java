@@ -9,24 +9,39 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import it.qzeroq.battleship.R;
-import it.qzeroq.battleship.bluetooth.BluetoothChat;
 import it.qzeroq.battleship.bluetooth.BluetoothService;
+import it.qzeroq.battleship.bluetooth.BluetoothGameActivity;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    // Debugging
+    private static final String TAG = "btsample";
+
+    private static final int CREATE_MATCH = 1;
+    private static final int CONNECT_MATCH = 2;
+
+
+    //WaitingDialog waitingDialog = new WaitingDialog(MainActivity.this);
+
+    //Handler handler = new Handler();
+    //BluetoothService bs = new BluetoothService(handler);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.e(TAG, "MainActivity: ON CREATE");
+
         new Holder();
-        requestGPS();
+        requestGPS();   //-------------meglio metterla quando si ricercano dispositivi---------------
     }
 
     private void requestGPS(){
@@ -51,9 +66,9 @@ public class MainActivity extends AppCompatActivity {
         Button btnWait;
 
         Holder(){
-            btnStart = findViewById(R.id.btnStart);
+            btnStart = findViewById(R.id.btnCreate);
             btnSetting = findViewById(R.id.btnSetting);
-            btnWait = findViewById(R.id.btnWait);
+            btnWait = findViewById(R.id.btnConnect);
 
             btnStart.setOnClickListener(this);
             btnSetting.setOnClickListener(this);
@@ -62,25 +77,35 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Handler handler = new Handler();
-            BluetoothService bs = new BluetoothService(handler);
-            if(v.getId() == R.id.btnStart) {
-                Intent i = new Intent(MainActivity.this, BluetoothChat.class);
+            //Handler handler = new Handler();
+            //BluetoothService bs = new BluetoothService(handler);
+            if(v.getId() == R.id.btnConnect) {
+                Log.d(TAG, "MainActivity: click on btnConnect");
+                Intent i = new Intent(MainActivity.this, BluetoothGameActivity.class);
+                i.putExtra("match", CONNECT_MATCH);
                 startActivity(i);
             }
-            if(v.getId() == R.id.btnWait){
-                Toast.makeText(getApplicationContext(), "Trying to connect", Toast.LENGTH_SHORT).show();
+            else if(v.getId() == R.id.btnCreate){
+                Log.d(TAG, "MainActivity: click on btnCreate");
+                Intent i = new Intent(MainActivity.this, BluetoothGameActivity.class);
+                i.putExtra("match", CREATE_MATCH);
+                startActivity(i);
+                /*
+                waitingDialog.startWaitingDialog();
+                //Toast.makeText(getApplicationContext(), "Trying to connect", Toast.LENGTH_SHORT).show();
                 bs.start();
                 while(true){
-                    if(bs.getState() == bs.STATE_CONNECTED){
+                    if(bs.getState() == BluetoothService.STATE_CONNECTED){
+                        waitingDialog.dismissWaitingDialog();
                         Intent Int = new Intent(MainActivity.this, PositionShipActivity.class);
                         startActivity(Int);
                         break;
                     }
-                }
+                }*/
             }
-            if(v.getId() == R.id.btnSetting){
-                Intent intent = new Intent(MainActivity.this, PositionShipActivity.class);
+            else if(v.getId() == R.id.btnSetting){
+                Log.d(TAG, "MainActivity: click on btnSetting");
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
         }
