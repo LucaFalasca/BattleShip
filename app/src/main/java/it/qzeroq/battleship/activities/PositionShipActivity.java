@@ -30,6 +30,11 @@ public class PositionShipActivity extends AppCompatActivity {
         new Holder(this);
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     class Holder implements View.OnLongClickListener, View.OnTouchListener, View.OnDragListener, View.OnClickListener{
 
         Context context;
@@ -77,7 +82,7 @@ public class PositionShipActivity extends AppCompatActivity {
                 String c = Objects.requireNonNull(tvCounts.get(newShip.getLength())).getText().toString();
                 if(!c.endsWith("0")) {
                     v.startDragAndDrop(null, new View.DragShadowBuilder(v), new Ship(context, newShip.getLength(), newShip.getRotation()), 0);
-                    removeOneToCount(tvCounts.get(newShip.getLength()));
+                    removeOneToCount(Objects.requireNonNull(tvCounts.get(newShip.getLength())));
                 }
             }
             return false;
@@ -161,6 +166,7 @@ public class PositionShipActivity extends AppCompatActivity {
                     return true;
 
                 case DragEvent.ACTION_DRAG_STARTED:
+
                 case DragEvent.ACTION_DRAG_ENTERED:
                     return true;
 
