@@ -22,7 +22,10 @@ import java.util.Set;
 
 import it.qzeroq.battleship.R;
 
-public class ChooseDevice extends AppCompatActivity {
+//import static it.qzeroq.battleship.activities.bluetooth.BluetoothService.STATE_CONNECTED;
+//import static it.qzeroq.battleship.activities.BluetoothService.getState;
+
+public class ChooseDeviceActivity extends AppCompatActivity {
 
     // Debugging
     private static final String TAG = "btsample";

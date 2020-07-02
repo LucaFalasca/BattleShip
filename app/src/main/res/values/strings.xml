@@ -1,9 +1,10 @@
 <resources>
     <string name="app_name">BattleShip</string>
-    <string name="start">Create a match</string>
-    <string name="wait">Find a match</string>
+    <string name="start">Create match</string>
+    <string name="wait">Connect to the match</string>
     <string name="setting">Settings</string>
     <string name="logo" translatable="false">Logo</string>
-    <string name="no_permission">Withuot the permission, you cannot play at this game</string>
-    <string name="not_connected">Connection exipired</string>
+    <string name="no_permission">Without the permission, you cannot play at this game</string>
+    <string name="not_connected">Connection expired</string>
+    <string name="waiting">Waiting for enemy…</string>
 </resources>

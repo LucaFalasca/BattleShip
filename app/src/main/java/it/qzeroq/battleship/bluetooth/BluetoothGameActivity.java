@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import it.qzeroq.battleship.R;
+import it.qzeroq.battleship.WaitingDialog;
 import it.qzeroq.battleship.activities.MainActivity;
 import it.qzeroq.battleship.activities.PositionShipActivity;
 
@@ -29,7 +30,7 @@ import it.qzeroq.battleship.activities.PositionShipActivity;
 /**
  * This is the main Activity that displays the current chat session.
  */
-public class BluetoothChat extends AppCompatActivity {
+public class BluetoothGameActivity extends AppCompatActivity {
     // Debugging
     private static final String TAG = "btsample";
 
@@ -47,6 +48,9 @@ public class BluetoothChat extends AppCompatActivity {
     // Intent request codes
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int PAIR_BT_DEVICE = 2;
+
+    private static final int CREATE_MATCH = 1;
+    private static final int CONNECT_MATCH = 2;
 
     // Layout Views
     private ListView mConversationView;
@@ -67,11 +71,20 @@ public class BluetoothChat extends AppCompatActivity {
     // Member object for the chat services
     private BluetoothService mChatService = null;
 
+    private int match = 0;
+
+    WaitingDialog waitingDialog = new WaitingDialog(BluetoothGameActivity.this);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choosedevice);
+
+        if (match == CONNECT_MATCH)
+            setContentView(R.layout.activity_choosedevice);
+        else if (match == CREATE_MATCH) {
+            setContentView(R.layout.activity_main); // così sotto rimane mostrato il layout della mainactivity
+            waitingDialog.startWaitingDialog();
+        }
 
         Log.e(TAG, "BluetoothChat ON CREATE");
 
@@ -90,7 +103,6 @@ public class BluetoothChat extends AppCompatActivity {
 
         if (mChatService == null)
             setupConnection();
-
 
     }
 
@@ -131,23 +143,30 @@ public class BluetoothChat extends AppCompatActivity {
                 mChatService.start();
             }
         }
+
+        while(true){
+            if(mChatService.getState() == BluetoothService.STATE_CONNECTED){
+                Intent Int = new Intent(BluetoothGameActivity.this, PositionShipActivity.class);
+                startActivity(Int);
+                break;
+            }
+        }
     }
 
 
     private void setupConnection() {
         Log.d(TAG, "setupChat()");
 
-
-        Intent i = new Intent(getApplicationContext(), ChooseDevice.class);
-        startActivityForResult(i, PAIR_BT_DEVICE);
-
+        if (match == CONNECT_MATCH) {
+            Intent i = new Intent(getApplicationContext(), ChooseDeviceActivity.class);
+            startActivityForResult(i, PAIR_BT_DEVICE);
+        }
 
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothService(mHandler);
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer();
-
     }
 
 
@@ -165,7 +184,8 @@ public class BluetoothChat extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(BluetoothChat.this, MainActivity.class);
+        onDestroy();
+        Intent i = new Intent(BluetoothGameActivity.this, MainActivity.class);
         startActivity(i);
     }
 
