@@ -109,6 +109,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     private void checkBluetooth() {
         Log.d(TAG, "checkBluetooth(): start");
 

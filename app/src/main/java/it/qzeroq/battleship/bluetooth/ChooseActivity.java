@@ -207,7 +207,11 @@ public class ChooseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        onDestroy();
+        if (mChatService != null)
+            mChatService.stop();
+        Log.e(TAG, "--- ONBACKPRESSED ---");
+
+        unregisterReceiver(receiver);
         Intent i = new Intent(ChooseActivity.this, MainActivity.class);
         startActivity(i);
     }
@@ -281,11 +285,12 @@ public class ChooseActivity extends AppCompatActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 assert device != null;
                 Log.d(TAG, "ChooseDevice BroadcastReceiver: device found " + device.getName()+" "+ device.getAddress() );
-                discoveredDeviceName.add(device.getName());
-                Log.d(TAG, "LISTAAAAAAAAAAAAAAAAAAAAAAAAA " + discoveredDeviceName);
-                discoveredDeviceList.add(device);
+                if(!(discoveredDeviceName.contains(device)) && !(prevDeviceList.contains(device))) {
+                    discoveredDeviceName.add(device.getName());
+                    discoveredDeviceList.add(device);
 
-                discoveredArrayAdapter.notifyDataSetChanged();
+                    discoveredArrayAdapter.notifyDataSetChanged();
+                }
             }
         }
     };
@@ -411,6 +416,14 @@ public class ChooseActivity extends AppCompatActivity {
                     Log.d(TAG, "BluetoothChat onActivityResult: device already paired");
 
                     mChatService.connect(targetDevice);
+                    while(true){
+                        if(mChatService.getState() == BluetoothService.STATE_CONNECTED){
+                            Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
+                            startActivity(i);
+                            break;
+                        }
+                    }
+
                 } else {
                     Log.d(TAG, "BluetoothChat onActivityResult: unable to pair device");
                     Toast.makeText(getApplicationContext(), "Unable to pair device.", Toast.LENGTH_LONG).show();

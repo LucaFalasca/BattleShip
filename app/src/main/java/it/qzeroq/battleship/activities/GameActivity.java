@@ -9,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import it.qzeroq.battleship.R;
+import it.qzeroq.battleship.bluetooth.BluetoothService;
 import it.qzeroq.battleship.views.BattleGridView;
 
 public class GameActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +85,11 @@ public class GameActivity extends AppCompatActivity {
 
             return new int[]{xIndex, yIndex};
         }
+
+    }
+
+    @Override
+    public void onBackPressed() {
 
     }
 }

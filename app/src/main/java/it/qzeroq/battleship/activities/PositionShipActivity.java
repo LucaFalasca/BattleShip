@@ -78,7 +78,9 @@ public class PositionShipActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        bluetoothService.stop();
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
     }
 
     class Holder implements View.OnLongClickListener, View.OnTouchListener, View.OnDragListener, View.OnClickListener{

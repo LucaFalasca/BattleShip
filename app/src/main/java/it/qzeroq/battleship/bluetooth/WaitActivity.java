@@ -11,6 +11,7 @@ import android.os.Message;
 import android.util.Log;
 
 import it.qzeroq.battleship.R;
+import it.qzeroq.battleship.activities.MainActivity;
 import it.qzeroq.battleship.activities.PositionShipActivity;
 
 public class WaitActivity extends AppCompatActivity {
@@ -50,7 +51,12 @@ public class WaitActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        mChatService.stop();
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+    }
 
     // The Handler that gets information back from the BluetoothChatService
     @SuppressLint("HandlerLeak")
