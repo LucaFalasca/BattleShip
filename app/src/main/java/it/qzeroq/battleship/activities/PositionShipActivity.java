@@ -4,7 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,19 +21,60 @@ import java.util.Map;
 import java.util.Objects;
 
 import it.qzeroq.battleship.ShadowBuilderRotation;
+import it.qzeroq.battleship.bluetooth.BluetoothService;
 import it.qzeroq.battleship.views.BattleGridView;
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.views.ShipView;
 
+import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_READ;
+import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_STATE_CHANGE;
+import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_WRITE;
+
 public class PositionShipActivity extends AppCompatActivity {
+
+    BluetoothService bluetoothService;
+    @SuppressLint("HandlerLeak")
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_STATE_CHANGE:
+                    //Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+                    switch (msg.arg1) {
+                        case BluetoothService.STATE_CONNECTED:
+                        case BluetoothService.STATE_CONNECTING:
+                        case BluetoothService.STATE_LISTEN:
+                        case BluetoothService.STATE_NONE:
+                            break;
+                    }
+                    break;
+                case MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    String writeMessage = new String(writeBuf);
+
+                    break;
+                case MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+
+                    break;
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_position_ship);
         new Holder(this);
+
+        bluetoothService = BluetoothService.getInstance();
+        bluetoothService.setHandler(handler);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -96,7 +141,7 @@ public class PositionShipActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if(v.getId() == R.id.btnConfirm) {
-
+                //bluetoothService.write();
             }
             else {
                 int[] coords = calculateIndexs(xClick, yClick, battleGridView);

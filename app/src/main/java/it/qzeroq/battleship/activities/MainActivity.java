@@ -1,11 +1,13 @@
 package it.qzeroq.battleship.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,8 +17,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import it.qzeroq.battleship.R;
-import it.qzeroq.battleship.bluetooth.BluetoothService;
-import it.qzeroq.battleship.bluetooth.BluetoothGameActivity;
+import it.qzeroq.battleship.bluetooth.ChooseActivity;
+import it.qzeroq.battleship.bluetooth.WaitActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,7 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int CREATE_MATCH = 1;
     private static final int CONNECT_MATCH = 2;
-
+    private static final int REQUEST_ENABLE_BT = 1;
+    boolean q = false;
+    Holder holder;
+    BluetoothAdapter mBluetoothAdapter;
 
     //WaitingDialog waitingDialog = new WaitingDialog(MainActivity.this);
 
@@ -39,9 +44,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Log.e(TAG, "MainActivity: ON CREATE");
-
-        new Holder();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        holder = new Holder();
         requestGPS();   //-------------meglio metterla quando si ricercano dispositivi---------------
+        checkBluetooth();
+
     }
 
     private void requestGPS(){
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnSetting;
         Button btnWait;
 
+
         Holder(){
             btnStart = findViewById(R.id.btnCreate);
             btnSetting = findViewById(R.id.btnSetting);
@@ -79,34 +87,59 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             //Handler handler = new Handler();
             //BluetoothService bs = new BluetoothService(handler);
+
+
             if(v.getId() == R.id.btnConnect) {
                 Log.d(TAG, "MainActivity: click on btnConnect");
-                Intent i = new Intent(MainActivity.this, BluetoothGameActivity.class);
-                i.putExtra("match", CONNECT_MATCH);
+                Intent i = new Intent(MainActivity.this, ChooseActivity.class);
                 startActivity(i);
             }
             else if(v.getId() == R.id.btnCreate){
                 Log.d(TAG, "MainActivity: click on btnCreate");
-                Intent i = new Intent(MainActivity.this, BluetoothGameActivity.class);
-                i.putExtra("match", CREATE_MATCH);
+                Intent i = new Intent(MainActivity.this, WaitActivity.class);
                 startActivity(i);
-                /*
-                waitingDialog.startWaitingDialog();
-                //Toast.makeText(getApplicationContext(), "Trying to connect", Toast.LENGTH_SHORT).show();
-                bs.start();
-                while(true){
-                    if(bs.getState() == BluetoothService.STATE_CONNECTED){
-                        waitingDialog.dismissWaitingDialog();
-                        Intent Int = new Intent(MainActivity.this, PositionShipActivity.class);
-                        startActivity(Int);
-                        break;
-                    }
-                }*/
             }
             else if(v.getId() == R.id.btnSetting){
                 Log.d(TAG, "MainActivity: click on btnSetting");
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
+            }
+        }
+
+
+    }
+
+    private void checkBluetooth() {
+        Log.d(TAG, "checkBluetooth(): start");
+
+        if (mBluetoothAdapter == null) {
+            //Bluetooth not supported by the device
+            Toast.makeText(MainActivity.this, "This device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "checkBluetooth(): btAdapter == null");
+            finish();
+        }
+        else {
+            //request to enable Bluetooth if it isn't on
+            if (!mBluetoothAdapter.isEnabled()) {
+                Log.d(TAG, "checkBluetooth(): start request to enable BT");
+                Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(i, REQUEST_ENABLE_BT);
+            }
+        }
+    }
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //result of request if BT is enabled or not
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT OK");
+                Toast.makeText(this, "Bluetooth is enable", Toast.LENGTH_SHORT).show();
+                //setupChat();
+//                q = true;
+            } else {
+                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT CANCELED");
+                Toast.makeText(this, "Bluetooth enabling cancelled. Leaving the chat", Toast.LENGTH_SHORT).show();
+                finish();
             }
         }
     }

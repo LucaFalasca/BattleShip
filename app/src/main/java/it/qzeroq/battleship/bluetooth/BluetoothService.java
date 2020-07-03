@@ -22,6 +22,8 @@ import java.util.UUID;
  * thread for performing data transmissions when connected.
  */
 public class BluetoothService {
+
+    private static BluetoothService bs;
     // Debugging
     private static final String TAG = "btsample";
 
@@ -33,7 +35,7 @@ public class BluetoothService {
 
     // Member fields
     private static BluetoothAdapter mAdapter;
-    private final Handler mHandler;
+    private Handler mHandler;
     private AcceptThread mAcceptThread;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
@@ -55,6 +57,21 @@ public class BluetoothService {
         mHandler = handler;
     }
 
+
+    public static BluetoothService getInstance() {
+        if(bs == null){
+            bs = new BluetoothService(new Handler());
+        }
+        return bs;
+    }
+
+    public void setHandler(Handler handler){
+        mHandler = handler;
+    }
+
+
+
+
     /**
      * Set the current state of the chat connection
      * @param state  An integer defining the current connection state
@@ -62,7 +79,7 @@ public class BluetoothService {
     private synchronized void setState(int state) {
         mState = state;
 
-        mHandler.obtainMessage(BluetoothGameActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(ChooseActivity.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
     }
 
     /**
@@ -158,9 +175,9 @@ public class BluetoothService {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(BluetoothGameActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(ChooseActivity.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
-        bundle.putString(BluetoothGameActivity.DEVICE_NAME, device.getName());
+        bundle.putString(ChooseActivity.DEVICE_NAME, device.getName());
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
@@ -216,9 +233,9 @@ public class BluetoothService {
         setState(STATE_LISTEN);
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(BluetoothGameActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(ChooseActivity.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(BluetoothGameActivity.TOAST, "Unable to connect device");
+        bundle.putString(ChooseActivity.TOAST, "Unable to connect device");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -230,9 +247,9 @@ public class BluetoothService {
         setState(STATE_LISTEN);
 
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(BluetoothGameActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(ChooseActivity.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
-        bundle.putString(BluetoothGameActivity.TOAST, "Device connection was lost");
+        bundle.putString(ChooseActivity.TOAST, "Device connection was lost");
         msg.setData(bundle);
         mHandler.sendMessage(msg);
     }
@@ -336,7 +353,7 @@ public class BluetoothService {
             Log.d(TAG, "BluetoothService ConnectThread run()");
 
             // Always cancel discovery because it will slow down a connection
-            mAdapter.cancelDiscovery();
+            //mAdapter.cancelDiscovery();
 
             // Make a connection to the BluetoothSocket
             try {
@@ -353,8 +370,10 @@ public class BluetoothService {
                 }
                 // Start the service over to restart listening mode
                 BluetoothService.this.start();
-                return;
+
             }
+
+
 
             // Reset the ConnectThread because we're done
             synchronized (BluetoothService.this) {
@@ -414,7 +433,7 @@ public class BluetoothService {
                     bytes = mmInStream.read(buffer);
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BluetoothGameActivity.MESSAGE_READ, bytes, -1, buffer)
+                    mHandler.obtainMessage(ChooseActivity.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "BluetoothService ConnectedThread run(): STATE_DISCONNECTED", e);
@@ -433,7 +452,7 @@ public class BluetoothService {
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(BluetoothGameActivity.MESSAGE_WRITE, -1, -1, buffer)
+                mHandler.obtainMessage(ChooseActivity.MESSAGE_WRITE, -1, -1, buffer)
                         .sendToTarget();
             } catch (IOException e) {
                 Log.e(TAG, "BluetoothService ConnectedThread write(): ERROR", e);

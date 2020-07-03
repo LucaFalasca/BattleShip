@@ -25,7 +25,7 @@ import it.qzeroq.battleship.R;
 //import static it.qzeroq.battleship.activities.bluetooth.BluetoothService.STATE_CONNECTED;
 //import static it.qzeroq.battleship.activities.BluetoothService.getState;
 
-public class ChooseDeviceActivity extends AppCompatActivity {
+public class DaCancellare extends AppCompatActivity {
 
     // Debugging
     private static final String TAG = "btsample";
@@ -39,7 +39,6 @@ public class ChooseDeviceActivity extends AppCompatActivity {
     ArrayList<BluetoothDevice> prevDeviceList;
     ArrayList<String> prevDeviceName = new ArrayList<>();
     ArrayAdapter<String> prevArrayAdapter;
-    Holder holder;
 
 
 
@@ -56,7 +55,6 @@ public class ChooseDeviceActivity extends AppCompatActivity {
         registerReceiver(receiver, filter);
 
 
-        holder = new Holder();
     }
 
     public BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -93,66 +91,5 @@ public class ChooseDeviceActivity extends AppCompatActivity {
         setResult(Activity.RESULT_CANCELED);
     }
 
-    class Holder implements AdapterView.OnItemClickListener {
-        TextView tvPrevBtDevices;
-        TextView tvNoPrevDevices;
-        TextView tvDiscoveredBTDevices;
-        ListView lvPrevDevices;
-        ListView lvDiscoveredDevices;
 
-        Holder() {
-            tvPrevBtDevices = findViewById(R.id.tvPrevBtDevices);
-            tvNoPrevDevices = findViewById(R.id.tvNoPrevDevices);
-            tvDiscoveredBTDevices = findViewById(R.id.tvDiscoveredBTDevices);
-            lvPrevDevices = findViewById(R.id.lvPrevDevices);
-            lvDiscoveredDevices = findViewById(R.id.lvDiscoveredDevices);
-
-
-            //setting previously connected BT devices
-            if (prevDevices.size() > 0) {
-                prevDeviceList = new ArrayList<>(prevDevices);
-                for (BluetoothDevice device : prevDeviceList) {
-                    prevDeviceName.add(device.getName());
-                }
-                prevArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, prevDeviceName);
-                lvPrevDevices.setAdapter(prevArrayAdapter);
-                lvPrevDevices.setOnItemClickListener(this);
-            }
-            else {
-                tvNoPrevDevices.setText("No previously connected devices.");
-            }
-
-            //setting the adapter for the ListView
-            discoveredArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, discoveredDeviceName);
-            lvDiscoveredDevices.setAdapter(discoveredArrayAdapter);
-            lvDiscoveredDevices.setOnItemClickListener(this);
-
-        }
-
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            btAdapter.cancelDiscovery();
-
-            Intent data = new Intent();
-
-            //putting the information of the chosen device into the Intent
-            if (parent.getId() == R.id.lvPrevDevices) {
-                Log.d(TAG, "ChooseDevice onItemClick(): device = " + prevDeviceList.get(position).getName());
-                data.putExtra("device", prevDeviceList.get(position));
-            }
-            else if (parent.getId() == R.id.lvDiscoveredDevices) {
-                Log.d(TAG, "ChooseDevice onItemClick(): device = " + discoveredDeviceList.get(position).getName());
-                data.putExtra("device", discoveredDeviceList.get(position));
-            }
-
-            // Set result and finish this Activity
-            Log.d(TAG, "ChooseDevice onItemClick(): setResult()");
-            setResult(Activity.RESULT_OK, data);
-            finish();
-
-        }
-
-
-    }
 }
