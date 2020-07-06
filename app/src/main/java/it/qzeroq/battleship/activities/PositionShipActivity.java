@@ -45,6 +45,8 @@ public class PositionShipActivity extends AppCompatActivity {
     //String writeMessage;
     String readMessage;
 
+    Holder holder;
+
 
     @SuppressLint("HandlerLeak")
     private final Handler handler = new Handler() {
@@ -65,7 +67,8 @@ public class PositionShipActivity extends AppCompatActivity {
                     */
                     if (enemyFinish) {
                         Intent i = new Intent(getApplicationContext(), GameActivity.class);
-                        //i.putExtra("ships", ); ------------VARIABILE CONTENENTE POSIZIONE DELLE PROPRIE NAVI------------
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("ships", holder.battleGridView.getShips());
                         startActivity(i);
                     }
                     break;
@@ -79,7 +82,10 @@ public class PositionShipActivity extends AppCompatActivity {
                     }
                     if (finish) {
                         Intent i = new Intent(getApplicationContext(), GameActivity.class);
-                        //i.putExtra("ships", ); ------------VARIABILE CONTENENTE POSIZIONE DELLE PROPRIE NAVI------------
+
+                        //bisogna vedere se funziona
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("ships", holder.battleGridView.getShips());
                         startActivity(i);
                     }
                     break;
@@ -92,7 +98,7 @@ public class PositionShipActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_position_ship);
-        new Holder(this);
+        holder = new Holder(this);
 
         bluetoothService = BluetoothService.getInstance();
         bluetoothService.setHandler(handler);

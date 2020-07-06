@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import it.qzeroq.battleship.R;
+import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.bluetooth.BluetoothService;
 import it.qzeroq.battleship.views.BattleGridView;
 
@@ -30,26 +31,33 @@ public class GameActivity extends AppCompatActivity {
     String writeMessage;
     String readMessage;
 
+    Ship[][] ships;
+
     Boolean hit;
 
     Intent i;
 
+    Holder holder;
     boolean itsMyTurn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
-        
+
+        holder = new Holder();
 
         i = getIntent();
-        //Ship (?) ships = i.getExtra("ships");
-        // ---------- POI PASSARE LE NAVI ALLA GRID ---------
+
+        //tocca vedere se funziona
+        ships = (Ship[][]) i.getExtras().getSerializable("ships");
+        holder.bgMine.replaceAllShip(ships);
+
 
         bluetoothService = BluetoothService.getInstance();
         bluetoothService.setHandler(handler);
 
-        new Holder();
+
     }
 
     @SuppressLint("HandlerLeak")
@@ -77,6 +85,7 @@ public class GameActivity extends AppCompatActivity {
                         itsMyTurn = true;
                         Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_LONG).show();
                     }
+                    //-------BISOGNA PASSARE LE COORDINATE, NON HIT O MISS PERCHè ALTRIMENTI NON SI SA QUALE CELLA MARCARE ----------
                     else if (message.equals("HIT")) {
                         hit = true;
                         //--------- MARCARE CELLA HIT ------------
