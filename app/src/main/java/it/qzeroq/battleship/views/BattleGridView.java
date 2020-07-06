@@ -206,6 +206,17 @@ public class BattleGridView extends GridLayout {
         return false;
     }
 
+    public void replaceAllShip(Ship[][] ships){
+        for(int i = 0; i < GRID_SIZE; i++){
+            for(int j = 0; j < GRID_SIZE; j++){
+                Ship ship = ships[i][j];
+                if(ship != null){
+                    placeShip(ship, i, j);
+                }
+            }
+        }
+    }
+
     // Implementation
 
     @Override
@@ -379,4 +390,7 @@ public class BattleGridView extends GridLayout {
         return -1;
     }
 
+    public Ship[][] getShips() {
+        return ships;
+    }
 }

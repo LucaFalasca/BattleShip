@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(v.getId() == R.id.btnSetting){
                 Log.d(TAG, "MainActivity: click on btnSetting");
-                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                Intent intent = new Intent(MainActivity.this, PositionShipActivity.class);
                 startActivity(intent);
             }
         }

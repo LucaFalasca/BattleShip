@@ -1,4 +1,4 @@
-package it.qzeroq.battleship.activities;
+package it.qzeroq.battleship;
 
 import android.app.Activity;
 import android.app.AlertDialog;

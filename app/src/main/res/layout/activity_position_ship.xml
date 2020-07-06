@@ -13,10 +13,10 @@
         android:layout_row="0"
         android:layout_column="0"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:lenght="FOUR"/>
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toEndOf="@+id/tvCountFour"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:lenght="FOUR" />
 
     <it.qzeroq.battleship.views.ShipView
         android:id="@+id/swThree"
@@ -24,19 +24,31 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvCountThree"
         app:layout_constraintTop_toBottomOf="@+id/swFour"
-        app:lenght="THREE"/>
+        app:lenght="THREE" />
 
     <it.qzeroq.battleship.views.ShipView
         android:id="@+id/swTwo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintStart_toEndOf="@+id/tvCountTwo"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
+        app:lenght="TWO">
+
+    </it.qzeroq.battleship.views.ShipView>
+
+    <it.qzeroq.battleship.views.ShipView
+        android:id="@+id/swOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/swThree"
-        app:lenght="TWO"/>
+        app:layout_constraintStart_toEndOf="@+id/tvCountOne"
+        app:layout_constraintTop_toBottomOf="@+id/swTwo"
+        app:lenght="ONE" />
 
     <it.qzeroq.battleship.views.BattleGridView
         android:id="@+id/battleGridView"
@@ -46,7 +58,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/swTwo">
+        app:layout_constraintTop_toBottomOf="@+id/swThree">
 
     </it.qzeroq.battleship.views.BattleGridView>
 
@@ -54,41 +66,63 @@
         android:id="@+id/tvCountFour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="x 2"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:text="x 1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <TextView
+        android:id="@+id/tvCountOne"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:text="x 3"
         app:layout_constraintStart_toEndOf="@+id/swFour"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tvCountTwo" />
 
     <TextView
         android:id="@+id/tvCountThree"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
-        android:text="x 3"
-        app:layout_constraintStart_toEndOf="@+id/swFour"
+        android:text="x 1"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCountFour" />
 
     <TextView
         android:id="@+id/tvCountTwo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:text="x 3"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:text="x 2"
         app:layout_constraintStart_toEndOf="@+id/swFour"
-        app:layout_constraintTop_toBottomOf="@+id/tvCountThree" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <Button
         android:id="@+id/btnConfirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
+        android:text="Confirm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/battleGridView"
         app:layout_constraintVertical_bias="0.712" />
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Place your ships"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

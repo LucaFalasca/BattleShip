@@ -15,6 +15,11 @@ public class Ship {
 
     public Ship(Context context, int length){
         switch(length){
+            case 1:
+                sprites = new Drawable[]{
+                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
+                };
+                break;
             case 2:
                 sprites = new Drawable[]{
                         ContextCompat.getDrawable(context, R.drawable.ic_prova),
@@ -42,30 +47,7 @@ public class Ship {
     }
 
     public Ship(Context context, int lengthShip, Rotation rotation){
-        switch(lengthShip){
-            case 2:
-                sprites = new Drawable[]{
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
-                };
-                break;
-            case 3:
-                sprites = new Drawable[]{
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
-                };
-                break;
-            case 4:
-                sprites = new Drawable[]{
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
-                };
-                break;
-        }
-        this.length = lengthShip;
+        this(context, lengthShip);
         this.rotation = rotation;
     }
 

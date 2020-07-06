@@ -141,15 +141,18 @@ public class PositionShipActivity extends AppCompatActivity {
             this.context = context;
 
             tvCounts = new HashMap<>();
+            tvCounts.put(1, (TextView) findViewById(R.id.tvCountOne));
             tvCounts.put(2, (TextView) findViewById(R.id.tvCountTwo));
             tvCounts.put(3, (TextView) findViewById(R.id.tvCountThree));
             tvCounts.put(4, (TextView) findViewById(R.id.tvCountFour));
 
             shipViews = new HashMap<>();
+            shipViews.put(1, (ShipView) findViewById(R.id.swOne));
             shipViews.put(2, (ShipView) findViewById(R.id.swTwo));
             shipViews.put(3, (ShipView) findViewById(R.id.swThree));
             shipViews.put(4, (ShipView) findViewById(R.id.swFour));
 
+            Objects.requireNonNull(shipViews.get(1)).setOnTouchListener(this);
             Objects.requireNonNull(shipViews.get(2)).setOnTouchListener(this);
             Objects.requireNonNull(shipViews.get(3)).setOnTouchListener(this);
             Objects.requireNonNull(shipViews.get(4)).setOnTouchListener(this);
@@ -308,8 +311,8 @@ public class PositionShipActivity extends AppCompatActivity {
             ShipView shipView = shipViews.get(ship.getLength());
 
             assert shipView != null;
-            float xShip = xPosition - (shipView.getWidth() * cos + shipView.getHeight() * sin) / 2.6f;
-            float yShip = yPosition - (shipView.getWidth() * sin + shipView.getHeight() * cos) / 2.6f;
+            float xShip = xPosition - (shipView.getWidth() * cos + shipView.getHeight() * sin) / 2;
+            float yShip = yPosition - (shipView.getWidth() * sin + shipView.getHeight() * cos) / 2;
 
             float relativeX = xShip - xGrid;
             float relativeY = yShip - yGrid;
