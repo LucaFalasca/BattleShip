@@ -4,31 +4,127 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import it.qzeroq.battleship.ShadowBuilderRotation;
+import it.qzeroq.battleship.bluetooth.BluetoothService;
 import it.qzeroq.battleship.views.BattleGridView;
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.views.ShipView;
 
+import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_READ;
+import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_STATE_CHANGE;
+import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_WRITE;
+
 public class PositionShipActivity extends AppCompatActivity {
+
+    BluetoothService bluetoothService;
+
+    // Reset out string buffer to zero and clear the edit text field
+    //private StringBuffer mOutStringBuffer = new StringBuffer();
+
+    Boolean finish = false;
+    Boolean enemyFinish = false;
+
+    //String writeMessage;
+    String readMessage;
+
+
+    @SuppressLint("HandlerLeak")
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_WRITE:
+                    /*
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+
+                    writeMessage = new String(writeBuf);
+                    if (writeMessage.equals(readMessage)) {
+                        Intent i = new Intent(getApplicationContext(), GameActivity.class);
+                        //i.putExtra("ships", ); ------------VARIABILE CONTENENTE POSIZIONE DELLE NAVI------------
+                        startActivity(i);
+                    }
+                    */
+                    if (enemyFinish) {
+                        Intent i = new Intent(getApplicationContext(), GameActivity.class);
+                        //i.putExtra("ships", ); ------------VARIABILE CONTENENTE POSIZIONE DELLE PROPRIE NAVI------------
+                        startActivity(i);
+                    }
+                    break;
+                case MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    readMessage = new String(readBuf, 0, msg.arg1);
+                    if (readMessage.equals("Finished positioning")) {
+                        Toast.makeText(getApplicationContext(), "Your enemy finished positioning", Toast.LENGTH_LONG).show();
+                        enemyFinish = true;
+                    }
+                    if (finish) {
+                        Intent i = new Intent(getApplicationContext(), GameActivity.class);
+                        //i.putExtra("ships", ); ------------VARIABILE CONTENENTE POSIZIONE DELLE PROPRIE NAVI------------
+                        startActivity(i);
+                    }
+                    break;
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_position_ship);
         new Holder(this);
+
+        bluetoothService = BluetoothService.getInstance();
+        bluetoothService.setHandler(handler);
     }
+
+
+    @Override
+    public void onBackPressed() {
+        bluetoothService.stop();
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i);
+    }
+
+
+    private void sendMessage(String message) {
+        // Check that we're actually connected before trying anything
+        if (bluetoothService.getState() != bluetoothService.STATE_CONNECTED) {
+            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+        if (message.length() > 0) {
+            // Get the message bytes and tell the BluetoothChatService to write
+            byte[] send = message.getBytes();
+            bluetoothService.write(send);
+
+            // Reset out string buffer to zero
+            //mOutStringBuffer.setLength(0);
+        }
+    }
+
 
     class Holder implements View.OnLongClickListener, View.OnTouchListener, View.OnDragListener, View.OnClickListener{
 
@@ -36,6 +132,7 @@ public class PositionShipActivity extends AppCompatActivity {
         BattleGridView battleGridView;
         Map<Integer, ShipView> shipViews;
         Map<Integer, TextView> tvCounts;
+        Button btnConfirm;
         float xClick, yClick;
         boolean q = false;
 
@@ -63,6 +160,9 @@ public class PositionShipActivity extends AppCompatActivity {
             battleGridView.setOnClickListener(this);
             battleGridView.setOnLongClickListener(this);
             battleGridView.setTag("grid");
+
+            btnConfirm = findViewById(R.id.btnConfirm);
+            btnConfirm.setOnClickListener(this);
         }
 
         @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
@@ -77,7 +177,7 @@ public class PositionShipActivity extends AppCompatActivity {
                 String c = Objects.requireNonNull(tvCounts.get(newShip.getLength())).getText().toString();
                 if(!c.endsWith("0")) {
                     v.startDragAndDrop(null, new View.DragShadowBuilder(v), new Ship(context, newShip.getLength(), newShip.getRotation()), 0);
-                    removeOneToCount(tvCounts.get(newShip.getLength()));
+                    removeOneToCount(Objects.requireNonNull(tvCounts.get(newShip.getLength())));
                 }
             }
             return false;
@@ -85,13 +185,21 @@ public class PositionShipActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            int[] coords = calculateIndexes(xClick, yClick, battleGridView);
+            if(v.getId() == R.id.btnConfirm) {
+                //bluetoothService.write();
+                String message = "Finished positioning";
+                sendMessage(message);
 
-            int xIndex = coords[0];
-            int yIndex = coords[1];
-            if(xIndex >= 0 && xIndex < 10 && yIndex >= 0 && yIndex < 10)
-                battleGridView.rotateShipAt(xIndex, yIndex);
+                finish = true;
+            }
+            else {
+                int[] coords = calculateIndexes(xClick, yClick, battleGridView);
 
+                int xIndex = coords[0];
+                int yIndex = coords[1];
+                if (xIndex >= 0 && xIndex < 10 && yIndex >= 0 && yIndex < 10)
+                    battleGridView.rotateShipAt(xIndex, yIndex);
+            }
         }
 
         @Override
@@ -161,13 +269,14 @@ public class PositionShipActivity extends AppCompatActivity {
                     return true;
 
                 case DragEvent.ACTION_DRAG_STARTED:
+
                 case DragEvent.ACTION_DRAG_ENTERED:
                     return true;
 
                 case DragEvent.ACTION_DRAG_ENDED:
                     if(!event.getResult()){
                         if(q){
-                            /*c = calculateIndexs(startX, startY, battleGridView);
+                            /*c = calculateIndexes(startX, startY, battleGridView);
                             x = c[0];
                             y = c[1];*/
                             ship = (Ship) event.getLocalState();

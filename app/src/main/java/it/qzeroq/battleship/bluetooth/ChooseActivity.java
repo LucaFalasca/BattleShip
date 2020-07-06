@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import it.qzeroq.battleship.R;
-import it.qzeroq.battleship.WaitingDialog;
 import it.qzeroq.battleship.activities.MainActivity;
 import it.qzeroq.battleship.activities.PositionShipActivity;
 
