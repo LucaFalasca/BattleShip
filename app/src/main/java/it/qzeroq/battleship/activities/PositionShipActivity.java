@@ -4,16 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -21,66 +16,18 @@ import java.util.Map;
 import java.util.Objects;
 
 import it.qzeroq.battleship.ShadowBuilderRotation;
-import it.qzeroq.battleship.bluetooth.BluetoothService;
 import it.qzeroq.battleship.views.BattleGridView;
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.views.ShipView;
 
-import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_READ;
-import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_STATE_CHANGE;
-import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_WRITE;
-
 public class PositionShipActivity extends AppCompatActivity {
-
-    BluetoothService bluetoothService;
-    @SuppressLint("HandlerLeak")
-    private final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MESSAGE_STATE_CHANGE:
-                    //Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1) {
-                        case BluetoothService.STATE_CONNECTED:
-                        case BluetoothService.STATE_CONNECTING:
-                        case BluetoothService.STATE_LISTEN:
-                        case BluetoothService.STATE_NONE:
-                            break;
-                    }
-                    break;
-                case MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-
-                    break;
-                case MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_position_ship);
         new Holder(this);
-
-        bluetoothService = BluetoothService.getInstance();
-        bluetoothService.setHandler(handler);
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        bluetoothService.stop();
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i);
     }
 
     class Holder implements View.OnLongClickListener, View.OnTouchListener, View.OnDragListener, View.OnClickListener{
@@ -89,7 +36,6 @@ public class PositionShipActivity extends AppCompatActivity {
         BattleGridView battleGridView;
         Map<Integer, ShipView> shipViews;
         Map<Integer, TextView> tvCounts;
-        Button btnConfirm;
         float xClick, yClick;
         boolean q = false;
 
@@ -117,9 +63,6 @@ public class PositionShipActivity extends AppCompatActivity {
             battleGridView.setOnClickListener(this);
             battleGridView.setOnLongClickListener(this);
             battleGridView.setTag("grid");
-
-            btnConfirm = findViewById(R.id.btnConfirm);
-            btnConfirm.setOnClickListener(this);
         }
 
         @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
@@ -134,7 +77,7 @@ public class PositionShipActivity extends AppCompatActivity {
                 String c = Objects.requireNonNull(tvCounts.get(newShip.getLength())).getText().toString();
                 if(!c.endsWith("0")) {
                     v.startDragAndDrop(null, new View.DragShadowBuilder(v), new Ship(context, newShip.getLength(), newShip.getRotation()), 0);
-                    removeOneToCount(Objects.requireNonNull(tvCounts.get(newShip.getLength())));
+                    removeOneToCount(tvCounts.get(newShip.getLength()));
                 }
             }
             return false;
@@ -142,22 +85,18 @@ public class PositionShipActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if(v.getId() == R.id.btnConfirm) {
-                //bluetoothService.write();
-            }
-            else {
-                int[] coords = calculateIndexs(xClick, yClick, battleGridView);
+            int[] coords = calculateIndexes(xClick, yClick, battleGridView);
 
-                int xIndex = coords[0];
-                int yIndex = coords[1];
-                if (xIndex >= 0 && xIndex < 10 && yIndex >= 0 && yIndex < 10)
-                    battleGridView.rotateShipAt(xIndex, yIndex);
-            }
+            int xIndex = coords[0];
+            int yIndex = coords[1];
+            if(xIndex >= 0 && xIndex < 10 && yIndex >= 0 && yIndex < 10)
+                battleGridView.rotateShipAt(xIndex, yIndex);
+
         }
 
         @Override
         public boolean onLongClick(View v) {
-            int[] coords = calculateIndexs(xClick, yClick, battleGridView);
+            int[] coords = calculateIndexes(xClick, yClick, battleGridView);
 
             int xIndex = coords[0];
             int yIndex = coords[1];
@@ -191,7 +130,7 @@ public class PositionShipActivity extends AppCompatActivity {
 
                     battleGrid = (BattleGridView) v;
 
-                    int[] c = calculateIndexs(event.getX(), event.getY(), battleGrid, ship);
+                    int[] c = calculateIndexes(event.getX(), event.getY(), battleGrid, ship);
                     System.out.println(c[0] + " " + c[1]);
                     x = c[0];
                     y = c[1];
@@ -209,7 +148,7 @@ public class PositionShipActivity extends AppCompatActivity {
 
                     battleGrid = (BattleGridView) v;
 
-                    c = calculateIndexs(event.getX(), event.getY(), battleGrid, ship);
+                    c = calculateIndexes(event.getX(), event.getY(), battleGrid, ship);
                     System.out.println(c[0] + " " + c[1]);
                     x = c[0];
                     y = c[1];
@@ -222,7 +161,6 @@ public class PositionShipActivity extends AppCompatActivity {
                     return true;
 
                 case DragEvent.ACTION_DRAG_STARTED:
-
                 case DragEvent.ACTION_DRAG_ENTERED:
                     return true;
 
@@ -244,7 +182,7 @@ public class PositionShipActivity extends AppCompatActivity {
             return false;
         }
 
-        private int[] calculateIndexs(float xPosition, float yPosition, BattleGridView grid, Ship ship){
+        private int[] calculateIndexes(float xPosition, float yPosition, BattleGridView grid, Ship ship){
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) grid.getLayoutParams();
             int marginTop = params.topMargin / 3;
             int marginLeft = params.leftMargin / 3;
@@ -283,7 +221,7 @@ public class PositionShipActivity extends AppCompatActivity {
             return new int[]{xIndex, yIndex};
         }
 
-        private int[] calculateIndexs(float xPosition, float yPosition, BattleGridView grid){
+        private int[] calculateIndexes(float xPosition, float yPosition, BattleGridView grid){
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) grid.getLayoutParams();
             int marginTop = params.topMargin / 3;
             int marginLeft = params.leftMargin / 3;

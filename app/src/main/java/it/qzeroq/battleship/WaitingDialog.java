@@ -1,10 +1,13 @@
-package it.qzeroq.battleship;
+package it.qzeroq.battleship.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
+
+import it.qzeroq.battleship.R;
 
 public class WaitingDialog {
 
@@ -12,11 +15,11 @@ public class WaitingDialog {
     private AlertDialog waitDialog;
     private ImageButton btnCancel;
 
-    public WaitingDialog(Activity activity) {
+    WaitingDialog(Activity activity) {
         this.activity = activity;
     }
 
-    public void startWaitingDialog() {
+    void startWaitingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater =  activity.getLayoutInflater();
@@ -37,7 +40,7 @@ public class WaitingDialog {
         waitDialog.show();
     }
 
-    public void dismissWaitingDialog() {
+    void dismissWaitingDialog() {
         waitDialog.dismiss();
     }
 
