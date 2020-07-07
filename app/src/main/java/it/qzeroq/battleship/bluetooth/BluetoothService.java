@@ -23,17 +23,19 @@ import java.util.UUID;
  */
 public class BluetoothService {
 
+    // instance of BluetoothService
     private static BluetoothService bs;
-    // Debugging
+
+    // debugging
     private static final String TAG = "btsample";
 
-    // Name for the SDP record when creating server socket
-    private static final String NAME = "BluetoothChat";
+    // name for the SDP record when creating server socket
+    private static final String NAME = "BattleShip";
 
-    // Unique UUID for this application
+    // UUID for this application
     private static final UUID MY_UUID = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
-    // Member fields
+    // member fields
     private static BluetoothAdapter mAdapter;
     private Handler mHandler;
     private AcceptThread mAcceptThread;
@@ -41,7 +43,7 @@ public class BluetoothService {
     private ConnectedThread mConnectedThread;
     private static int mState;
 
-    // Constants that indicate the current connection state
+    // constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
     public static final int STATE_CONNECTING = 2; // now initiating an outgoing connection
@@ -59,7 +61,7 @@ public class BluetoothService {
 
 
     public static BluetoothService getInstance() {
-        if(bs == null){
+        if (bs == null) {
             bs = new BluetoothService(new Handler());
         }
         return bs;

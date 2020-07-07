@@ -1,9 +1,11 @@
 package it.qzeroq.battleship.activities;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.bluetooth.BluetoothService;
+import it.qzeroq.battleship.database.GameHistoryActivity;
 import it.qzeroq.battleship.views.BattleGridView;
 
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_READ;
@@ -35,7 +38,9 @@ public class GameActivity extends AppCompatActivity {
 
     Ship[][] ships;
 
-    Boolean hit;
+    int[] coord;
+
+    //Boolean hit;
 
     Intent i;
 
@@ -50,6 +55,7 @@ public class GameActivity extends AppCompatActivity {
         holder = new Holder();
 
         i = getIntent();
+        itsMyTurn = i.getBooleanExtra("itsMyTurn", false);
 
         //tocca vedere se funziona
         ArrayList<Ship> ships = i.getParcelableArrayListExtra("ships");
@@ -60,11 +66,8 @@ public class GameActivity extends AppCompatActivity {
             holder.bgMine.placeShip(new Ship(this, ships.get(k).getLength(), ships.get(k).getRotation()), x.get(k), y.get(k));
         }
 
-
         bluetoothService = BluetoothService.getInstance();
         bluetoothService.setHandler(handler);
-
-
     }
 
     @SuppressLint("HandlerLeak")
@@ -92,30 +95,52 @@ public class GameActivity extends AppCompatActivity {
                         itsMyTurn = true;
                         Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_LONG).show();
                     }
-                    //-------BISOGNA PASSARE LE COORDINATE, NON HIT O MISS PERCHè ALTRIMENTI NON SI SA QUALE CELLA MARCARE ----------
                     else if (message.equals("HIT")) {
-                        hit = true;
-                        //--------- MARCARE CELLA HIT ------------
-                        itsMyTurn = false;
-                        //--------- INVIO MESSAGGIO "YOUR TURN" ---------
+                        hit(coord);
                     }
                     else if (message.equals("MISS")) {
-                        hit = false;
-                        //--------- MARCARE CELLA MISS -----------
-                        itsMyTurn = false;
-                        //--------- INVIO MESSAGGIO "YOUR TURN" ---------
+                        miss(coord);
                     }
                     else {
                         String[] coordString = readMessage.split(" ");
-                        int[] coordInt = {Integer.parseInt(coordString[0]), Integer.parseInt(coordString[1])};
+                        coord = new int[]{Integer.parseInt(coordString[0]), Integer.parseInt(coordString[1])};
 
-                        //-------- INSERIRE CONTROLLO CHE coordInt SIA UN HIT O UN MISS NELLA PROPRIA GRIDVIEW -------
-                        //-------- E INVIO MESSAGGIO HIT O MISS ---------------
+                        int x = coord[0];
+                        int y = coord[1];
+
+                        checkShip(x, y);
                     }
                     break;
             }
         }
     };
+
+    private void hit(int[] coord) {
+        holder.bgOpponent.markCellHit(coord[0], coord[1]);
+
+        itsMyTurn = false;
+
+        sendMessage("your turn");
+    }
+
+    private void miss(int[] coord) {
+        holder.bgOpponent.markCellMissed(coord[0], coord[1]);
+
+        itsMyTurn = false;
+
+        sendMessage("your turn");
+    }
+
+    private void checkShip(int x, int y) {
+        if (holder.bgMine.thereIsAShipAt(x, y)) {
+            holder.bgMine.markCellHit(x, y);
+            sendMessage("HIT");
+        }
+        else {
+            holder.bgMine.markCellMissed(x, y);
+            sendMessage("MISS");
+        }
+    }
 
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
@@ -139,8 +164,7 @@ public class GameActivity extends AppCompatActivity {
         BattleGridView bgMine;
         BattleGridView bgOpponent;
 
-
-        Holder(){
+        Holder() {
             bgMine = findViewById(R.id.bgMine);
             bgOpponent = findViewById(R.id.bgEnemy);
             bgOpponent.setOnTouchListener(this);
@@ -153,28 +177,13 @@ public class GameActivity extends AppCompatActivity {
                     int x = (int) event.getX();
                     int y = (int) event.getY();
 
-                    int[] coord = calculateIndexes(x, y, bgOpponent);
+                    coord = calculateIndexes(x, y, bgOpponent);
 
                     String xString = String.valueOf(x);
                     String yString = String.valueOf(y);
 
                     message = xString + " " + yString;
                     sendMessage(message);
-
-
-                    /*
-                    String result = "";
-
-                    if (result.equals("hit")) {
-                        bgOpponent.markCellHit();
-                    } else {
-                        bgOpponent.markCellMissed();
-                    }*/
-
-                    //passa il turno tramite bluetooth
-                    //itsMyTurn = false;
-
-
                 }
             }
             return false;
@@ -213,6 +222,19 @@ public class GameActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Exit match")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);;
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 }

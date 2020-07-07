@@ -1,13 +1,13 @@
 package it.qzeroq.battleship.activities;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -24,20 +24,11 @@ import it.qzeroq.battleship.database.GameHistoryActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Debugging
+    // debugging
     private static final String TAG = "btsample";
 
-    private static final int CREATE_MATCH = 1;
-    private static final int CONNECT_MATCH = 2;
-    private static final int REQUEST_ENABLE_BT = 1;
-    boolean q = false;
+    // layout holder
     Holder holder;
-    BluetoothAdapter mBluetoothAdapter;
-
-    //WaitingDialog waitingDialog = new WaitingDialog(MainActivity.this);
-
-    //Handler handler = new Handler();
-    //BluetoothService bs = new BluetoothService(handler);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,17 +36,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Log.e(TAG, "MainActivity: ON CREATE");
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        holder = new Holder();
-        requestGPS();   //-------------meglio metterla quando si ricercano dispositivi---------------
-        checkBluetooth();
 
+        holder = new Holder();
+
+        // location request to find nearby Bluetooth devices
+        requestGPS();
     }
 
+    /**
+     * Every time the app is launched it checks that it has permission
+     * to access the location and, if not, asks the user if he wants to grant it.
+     */
     private void requestGPS(){
         int MY_PERMISSION_LOCATION = 0;
-        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, MY_PERMISSION_LOCATION);
+        if(ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSION_LOCATION);
         }
 
     }
@@ -64,7 +62,10 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int[] grantResults)
     {
         if (grantResults.length > 0 && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, this.getResources().getText(R.string.no_permission), Toast.LENGTH_LONG).show();
+            Toast.makeText(this,
+                    this.getResources().getText(R.string.no_permission),
+                    Toast.LENGTH_LONG)
+                    .show();
         }
     }
 
@@ -72,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         Button btnStart;
         Button btnSetting;
         Button btnWait;
-
 
         Holder(){
             btnStart = findViewById(R.id.btnCreate);
@@ -86,10 +86,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            //Handler handler = new Handler();
-            //BluetoothService bs = new BluetoothService(handler);
-
-
             if(v.getId() == R.id.btnConnect) {
                 Log.d(TAG, "MainActivity: click on btnConnect");
                 Intent i = new Intent(MainActivity.this, ChooseActivity.class);
@@ -106,47 +102,23 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }
-
-
     }
 
     @Override
     public void onBackPressed() {
-
+        new AlertDialog.Builder(this)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setTitle("Closing Activity")
+                .setMessage("Are you sure you want to exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
-    private void checkBluetooth() {
-        Log.d(TAG, "checkBluetooth(): start");
-
-        if (mBluetoothAdapter == null) {
-            //Bluetooth not supported by the device
-            Toast.makeText(MainActivity.this, "This device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
-            Log.d(TAG, "checkBluetooth(): btAdapter == null");
-            finish();
-        }
-        else {
-            //request to enable Bluetooth if it isn't on
-            if (!mBluetoothAdapter.isEnabled()) {
-                Log.d(TAG, "checkBluetooth(): start request to enable BT");
-                Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(i, REQUEST_ENABLE_BT);
-            }
-        }
-    }
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //result of request if BT is enabled or not
-        if (requestCode == REQUEST_ENABLE_BT) {
-            if (resultCode == RESULT_OK) {
-                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT OK");
-                Toast.makeText(this, "Bluetooth is enable", Toast.LENGTH_SHORT).show();
-                //setupChat();
-//                q = true;
-            } else {
-                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT CANCELED");
-                Toast.makeText(this, "Bluetooth enabling cancelled. Leaving the chat", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
-    }
 }

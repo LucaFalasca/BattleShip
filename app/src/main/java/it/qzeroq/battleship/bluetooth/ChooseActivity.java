@@ -2,7 +2,6 @@ package it.qzeroq.battleship.bluetooth;
 
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -32,31 +31,29 @@ import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.activities.MainActivity;
 import it.qzeroq.battleship.activities.PositionShipActivity;
 
-
 /**
- * This is the main Activity that displays the current chat session.
+ * This is the activity by which the "client" user
+ * chooses which "server" user to connect to.
  */
+
 public class ChooseActivity extends AppCompatActivity {
-    // Debugging
+
+    // debugging
     private static final String TAG = "btsample";
 
-    // Message types sent from the BluetoothChatService Handler
+    // message types sent from the BluetoothService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_WRITE = 3;
     public static final int MESSAGE_DEVICE_NAME = 4;
     public static final int MESSAGE_TOAST = 5;
 
-    // Key names received from the BluetoothChatService Handler
+    // key names received from the BluetoothService Handler
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
 
-    // Intent request codes
-//    private static final int REQUEST_ENABLE_BT = 1;
-    private static final int PAIR_BT_DEVICE = 2;
-
-    private static final int CREATE_MATCH = 1;
-    private static final int CONNECT_MATCH = 2;
+    // request code for Bluetooth enabling
+    private static final int REQUEST_ENABLE_BT = 1;
 
     // Layout Views
     private ListView mConversationView;
@@ -101,6 +98,8 @@ public class ChooseActivity extends AppCompatActivity {
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        checkBluetooth();
+
         holder = new Holder();
 //        else if (match == CREATE_MATCH) {
 //            setContentView(R.layout.activity_main); // così sotto rimane mostrato il layout della mainactivity
@@ -124,12 +123,12 @@ public class ChooseActivity extends AppCompatActivity {
 
     }
 
-    /*private void checkBluetooth() {
+    private void checkBluetooth() {
         Log.d(TAG, "checkBluetooth(): start");
 
         if (mBluetoothAdapter == null) {
             //Bluetooth not supported by the device
-            Toast.makeText(this, "This device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
+            Toast.makeText(ChooseActivity.this, "This device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
             Log.d(TAG, "checkBluetooth(): btAdapter == null");
             finish();
         }
@@ -141,7 +140,23 @@ public class ChooseActivity extends AppCompatActivity {
                 startActivityForResult(i, REQUEST_ENABLE_BT);
             }
         }
-    }*/
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //result of request if BT is enabled or not
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode == RESULT_OK) {
+                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT OK");
+                Toast.makeText(this, "Bluetooth is enable", Toast.LENGTH_SHORT).show();
+                //setupChat();
+            } else {
+                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT CANCELED");
+                Toast.makeText(this, "Bluetooth enabling cancelled. Leaving the game", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        }
+    }
 
     @Override
     public synchronized void onResume() {
@@ -269,6 +284,7 @@ public class ChooseActivity extends AppCompatActivity {
                     while(true){
                         if(mChatService.getState() == BluetoothService.STATE_CONNECTED){
                             Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
+                            i.putExtra("itsMyTurn", false);
                             startActivity(i);
                             break;
                         }
