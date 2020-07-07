@@ -26,7 +26,8 @@ public class WaitActivity extends AppCompatActivity {
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        mChatService = new BluetoothService(mHandler);
+        mChatService = BluetoothService.getInstance();
+        mChatService.setHandler(mHandler);
         mChatService.start();
 
         Intent dIntent =  new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);

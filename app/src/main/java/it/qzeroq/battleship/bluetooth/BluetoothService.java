@@ -51,7 +51,7 @@ public class BluetoothService {
      * Constructor. Prepares a new BluetoothChat session.
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public BluetoothService(Handler handler) {
+    private BluetoothService(Handler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         mHandler = handler;

@@ -2,6 +2,7 @@ package it.qzeroq.battleship.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -12,9 +13,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
-import it.qzeroq.battleship.enums.Rotation;
 
 public class BattleGridView extends GridLayout {
 
@@ -368,7 +370,7 @@ public class BattleGridView extends GridLayout {
         return null;
     }
 
-    private int getXShip(Ship ship){
+    public int getXShip(Ship ship){
         for(int i = 0; i < GRID_SIZE; i++){
             for(int j = 0; j < GRID_SIZE; j++){
                 if(ships[i][j] == ship){
@@ -379,7 +381,7 @@ public class BattleGridView extends GridLayout {
         return -1;
     }
 
-    private int getYShip(Ship ship){
+    public int getYShip(Ship ship){
         for(int i = 0; i < GRID_SIZE; i++){
             for(int j = 0; j < GRID_SIZE; j++){
                 if(ships[i][j] == ship){
@@ -392,5 +394,19 @@ public class BattleGridView extends GridLayout {
 
     public Ship[][] getShips() {
         return ships;
+    }
+
+    public ArrayList<Ship> getShipPlaced(){
+        ArrayList<Ship> shipList = new ArrayList<>();
+
+        for(int i = 0; i < GRID_SIZE; i++){
+            for(int j = 0; j < GRID_SIZE; j++){
+                Ship ship = ships[i][j];
+                if(ship != null){
+                    shipList.add(ship);
+                }
+            }
+        }
+        return shipList;
     }
 }

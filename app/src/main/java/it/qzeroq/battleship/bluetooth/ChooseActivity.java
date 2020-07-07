@@ -178,7 +178,8 @@ public class ChooseActivity extends AppCompatActivity {
 
 
         // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = new BluetoothService(mHandler);
+        mChatService = BluetoothService.getInstance();
+        mChatService.setHandler(mHandler);
 
         // Initialize the buffer for outgoing messages
         //mOutStringBuffer = new StringBuffer();

@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -67,8 +68,18 @@ public class PositionShipActivity extends AppCompatActivity {
                     */
                     if (enemyFinish) {
                         Intent i = new Intent(getApplicationContext(), GameActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("ships", holder.battleGridView.getShips());
+                        ArrayList<Ship> ships = holder.battleGridView.getShipPlaced();
+                        i.putParcelableArrayListExtra("ships", ships);
+                        ArrayList<Integer> x = new ArrayList<>();
+                        ArrayList<Integer> y = new ArrayList<>();
+                        for(int k = 0; k < ships.size(); k++){
+                            x.add(holder.battleGridView.getXShip(ships.get(k)));
+                            y.add(holder.battleGridView.getYShip(ships.get(k)));
+                        }
+
+
+                        i.putIntegerArrayListExtra("x", x);
+                        i.putIntegerArrayListExtra("y", y);
                         startActivity(i);
                     }
                     break;
@@ -84,8 +95,19 @@ public class PositionShipActivity extends AppCompatActivity {
                         Intent i = new Intent(getApplicationContext(), GameActivity.class);
 
                         //bisogna vedere se funziona
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("ships", holder.battleGridView.getShips());
+                        ArrayList<Ship> ships = holder.battleGridView.getShipPlaced();
+                        i.putParcelableArrayListExtra("ships", ships);
+                        ArrayList<Integer> x = new ArrayList<>();
+                        ArrayList<Integer> y = new ArrayList<>();
+                        for(int k = 0; k < ships.size(); k++){
+                            x.add(holder.battleGridView.getXShip(ships.get(k)));
+                            y.add(holder.battleGridView.getYShip(ships.get(k)));
+                        }
+
+
+                        i.putIntegerArrayListExtra("x", x);
+                        i.putIntegerArrayListExtra("y", y);
+
                         startActivity(i);
                     }
                     break;

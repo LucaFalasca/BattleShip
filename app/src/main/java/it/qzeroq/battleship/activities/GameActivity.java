@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.bluetooth.BluetoothService;
@@ -50,8 +52,13 @@ public class GameActivity extends AppCompatActivity {
         i = getIntent();
 
         //tocca vedere se funziona
-        ships = (Ship[][]) i.getExtras().getSerializable("ships");
-        holder.bgMine.replaceAllShip(ships);
+        ArrayList<Ship> ships = i.getParcelableArrayListExtra("ships");
+        ArrayList<Integer> x = i.getIntegerArrayListExtra("x");
+        ArrayList<Integer> y = i.getIntegerArrayListExtra("y");
+
+        for(int k = 0; k < ships.size(); k++){
+            holder.bgMine.placeShip(new Ship(this, ships.get(k).getLength(), ships.get(k).getRotation()), x.get(k), y.get(k));
+        }
 
 
         bluetoothService = BluetoothService.getInstance();
