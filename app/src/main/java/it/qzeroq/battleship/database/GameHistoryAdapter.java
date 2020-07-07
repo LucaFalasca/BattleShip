@@ -4,6 +4,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -27,7 +28,12 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull GameHistoryAdapter.Holder holder, int position) {
-        holder.fill(matchList.get(position));
+        if(matchList != null){
+            holder.fill(matchList.get(position));
+        }
+        else{
+            System.out.println("VABBE CONTA CEH FN");
+        }
     }
 
     @Override

@@ -11,11 +11,11 @@ public class MatchRepository {
 
     private MatchDao matchDao;
     private LiveData<List<Match>> allMatches;
-    private MatchRoom partiteDB;
+    private MatchRoom matchDB;
 
     public MatchRepository(Application application){
-        partiteDB = MatchRoom.getInstance(application);
-        matchDao = partiteDB.partiteDao();
+        matchDB = MatchRoom.getInstance(application);
+        matchDao = matchDB.matchDao();
         allMatches = matchDao.getAllMatch();
     }
 

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class GameHistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rv_game_history_activity);
+        setContentView(R.layout.game_history_activity);
         matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
         new Holder();
     }
@@ -38,12 +39,12 @@ public class GameHistoryActivity extends AppCompatActivity {
     }
 
     class Holder{
-        RecyclerView rvSeeDatabase;
+        RecyclerView rvDatabase;
         Holder(){
-            rvSeeDatabase = findViewById(R.id.rvDatabse);
-            RecyclerView.LayoutManager lManager = new GridLayoutManager(GameHistoryActivity.this, 3);
-            rvSeeDatabase.setLayoutManager(lManager);
-            rvSeeDatabase.setAdapter(adapter);
+            rvDatabase = findViewById(R.id.rvDatabse);
+            RecyclerView.LayoutManager lManager = new GridLayoutManager(GameHistoryActivity.this, 1);
+            rvDatabase.setLayoutManager(lManager);
+            rvDatabase.setAdapter(adapter);
         }
     }
 }
