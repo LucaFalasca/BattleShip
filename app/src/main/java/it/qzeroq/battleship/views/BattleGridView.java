@@ -3,7 +3,9 @@ package it.qzeroq.battleship.views;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -12,6 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
+
+import org.apache.http.conn.ConnectTimeoutException;
 
 import java.util.ArrayList;
 
@@ -36,6 +42,7 @@ public class BattleGridView extends GridLayout {
     private TextView uselessCell;
     private int side;
     private int font;
+    private int textColor;
 
     // Constructors
 
@@ -56,6 +63,9 @@ public class BattleGridView extends GridLayout {
         selectionCellWrong = attributes.getDrawable(R.styleable.BattleGridView_selection_cell_wrong);
         hittedCell = attributes.getDrawable(R.styleable.BattleGridView_hitted_cell);
         missedCell = attributes.getDrawable(R.styleable.BattleGridView_missed_cell);
+        font = attributes.getResourceId(R.styleable.BattleGridView_font, R.font.nugie_romantic);
+        textColor = attributes.getColor(R.styleable.BattleGridView_text_color, ContextCompat.getColor(context, R.color.colorAccent));
+
         attributes.recycle();
 
         init();
@@ -261,6 +271,10 @@ public class BattleGridView extends GridLayout {
                         columns[k] = new TextView(context);
                         columns[k].setText(String.valueOf(k + 1));
                         columns[k].setGravity(Gravity.CENTER);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            columns[i].setTypeface(getResources().getFont(font));
+                        }
+                        columns[k].setTextColor(textColor);
                         this.addView(columns[k]);
                     }
                 }
@@ -268,6 +282,10 @@ public class BattleGridView extends GridLayout {
                     rows[i] = new TextView(context);
                     rows[i].setText(Character.toString((char) (65 + i)));
                     rows[i].setGravity(Gravity.CENTER);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        rows[i].setTypeface(getResources().getFont(font));
+                    }
+                    rows[i].setTextColor(textColor);
                     this.addView(rows[i]);
                 }
                 cells[j][i] = new ImageView(context);

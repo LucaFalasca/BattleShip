@@ -42,6 +42,7 @@ public class PositionShipActivity extends AppCompatActivity {
 
     Boolean finish = false;
     Boolean enemyFinish = false;
+    Boolean itsMyTurn;
 
     //String writeMessage;
     String readMessage;
@@ -93,6 +94,7 @@ public class PositionShipActivity extends AppCompatActivity {
                     }
                     if (finish) {
                         Intent i = new Intent(getApplicationContext(), GameActivity.class);
+                        i.putExtra("itsMyTurn", itsMyTurn);
 
                         //bisogna vedere se funziona
                         ArrayList<Ship> ships = holder.battleGridView.getShipPlaced();
@@ -121,6 +123,9 @@ public class PositionShipActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_position_ship);
         holder = new Holder(this);
+
+        Intent i = getIntent();
+        itsMyTurn = i.getBooleanExtra("itsMyTurn", false);
 
         bluetoothService = BluetoothService.getInstance();
         bluetoothService.setHandler(handler);
