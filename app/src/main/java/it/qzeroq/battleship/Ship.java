@@ -3,6 +3,7 @@ package it.qzeroq.battleship;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
@@ -108,6 +109,17 @@ public class Ship implements Parcelable {
         else{
             rotation = Rotation.ROTATION_0;
         }
+        applyRotationOnSprite();
+    }
+
+    private void applyRotationOnSprite(){
+        for(int i = 0; i < length; i++){
+            rotate(sprites[i], getAngleRotation());
+        }
+    }
+
+    private void rotate(Drawable sprite, int angleRotation) {
+
     }
 
     public int getAngleRotation(){
