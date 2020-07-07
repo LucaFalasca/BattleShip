@@ -163,6 +163,7 @@ public class PositionShipActivity extends AppCompatActivity {
         Button btnConfirm;
         float xClick, yClick;
         boolean q = false;
+        int startX, startY;
 
         @SuppressLint("ClickableViewAccessibility")
         Holder(Context context){
@@ -218,10 +219,14 @@ public class PositionShipActivity extends AppCompatActivity {
         public void onClick(View v) {
             if(v.getId() == R.id.btnConfirm) {
                 //bluetoothService.write();
-                String message = "Finished positioning";
-                sendMessage(message);
 
-                finish = true;
+                if (battleGridView.getNumberOfShipPlaced() == 7) {
+                    String message = "Finished positioning";
+                    sendMessage(message);
+                    finish = true;
+                } else{
+                    Toast.makeText(getApplicationContext(), "Place all the ships to continue", Toast.LENGTH_SHORT).show();
+                }
             }
             else {
                 int[] coords = calculateIndexes(xClick, yClick, battleGridView);
@@ -293,13 +298,17 @@ public class PositionShipActivity extends AppCompatActivity {
                     y = c[1];
 
                     if(x < 0 || y < 0 || y > 9 || x > 9 || !battleGrid.placeShip(ship, x, y)) {
-                        addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));
+                        //addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));
                         return false;
                     }
 
                     return true;
 
                 case DragEvent.ACTION_DRAG_STARTED:
+                    ship = (Ship) event.getLocalState();
+                    c = calculateIndexes(event.getX(), event.getY(), battleGridView, ship);
+                    startX = c[0];
+                    startY = c[1];
 
                 case DragEvent.ACTION_DRAG_ENTERED:
                     return true;
@@ -307,11 +316,8 @@ public class PositionShipActivity extends AppCompatActivity {
                 case DragEvent.ACTION_DRAG_ENDED:
                     if(!event.getResult()){
                         if(q){
-                            /*c = calculateIndexes(startX, startY, battleGridView);
-                            x = c[0];
-                            y = c[1];*/
                             ship = (Ship) event.getLocalState();
-                            battleGridView.placeShip(ship, 1, 1);
+                            battleGridView.placeShip(ship, startX, startY);
                         }else {
                             ship = (Ship) event.getLocalState();
                             addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));

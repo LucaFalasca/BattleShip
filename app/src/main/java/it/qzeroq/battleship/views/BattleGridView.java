@@ -409,4 +409,8 @@ public class BattleGridView extends GridLayout {
         }
         return shipList;
     }
+
+    public int getNumberOfShipPlaced(){
+        return getShipPlaced().size();
+    }
 }
