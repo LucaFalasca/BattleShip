@@ -13,4 +13,10 @@
     <string name="data">mm/dd/yyyy</string>
     <string name="number_ship_lost" translatable="false">x</string>
     <string name="number_ship_hitted" translatable="false">y</string>
+    <string name="count_sw_four" translatable="false">x 1</string>
+    <string name="count_sw_one" translatable="false">x 3</string>
+    <string name="count_sw_three" translatable="false">x 1</string>
+    <string name="count_sw_two" translatable="false">x 2</string>
+    <string name="btn_confirm">Confirm</string>
+    <string name="position_ship_title">Place your ships</string>
 </resources>

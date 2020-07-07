@@ -9,12 +9,14 @@
     </style>
 
     <style name="BattleGridDefault">
-        <item name="background_cell">@drawable/animation</item>
+        <item name="background_cell">@drawable/background_cell_sea_4</item>
         <item name="frame_cell">@drawable/frame_cell</item>
         <item name="selection_cell">@drawable/selection_cell</item>4
         <item name="selection_cell_wrong">@drawable/selection_cell_wrong</item>
         <item name="hitted_cell">@drawable/hitted_cell</item>
         <item name="missed_cell">@drawable/missed_cell</item>
+        <item name="font">@font/nugie_romantic</item>
+        <item name="text_color">@color/colorAccent</item>
     </style>
 
     <style name="ShipDefault">
