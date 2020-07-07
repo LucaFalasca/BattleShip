@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.activities.MainActivity;
@@ -39,7 +38,7 @@ public class WaitActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 while(true){
-                    if(mChatService.getState() == BluetoothService.STATE_CONNECTED){
+                    if(BluetoothService.getState() == BluetoothService.STATE_CONNECTED){
                         Intent i = new Intent(WaitActivity.this, PositionShipActivity.class);
                         startActivity(i);
                         break;

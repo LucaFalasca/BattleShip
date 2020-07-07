@@ -10,4 +10,5 @@
     <string name="game_result">Vinta/Persa</string>
     <string name="devicename">Nome dispositivo avversario</string>
     <string name="data">gg/mm/aaaa</string>
+    <string name="no_prev">Non ci sono device precedentemente accoppiati</string>
 </resources>

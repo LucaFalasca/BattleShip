@@ -58,11 +58,7 @@ public class ChooseActivity extends AppCompatActivity {
     private static final int CREATE_MATCH = 1;
     private static final int CONNECT_MATCH = 2;
 
-    // Layout Views
-    private ListView mConversationView;
-    private EditText mOutEditText;
-    private Button mSendButton;
-    private Button btn_searchDevice;
+
 
     // Name of the connected device
     private String mConnectedDeviceName = null;
@@ -222,7 +218,7 @@ public class ChooseActivity extends AppCompatActivity {
      */
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothService.STATE_CONNECTED) {
+        if (BluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             onBackPressed();
             return;
@@ -236,7 +232,6 @@ public class ChooseActivity extends AppCompatActivity {
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
         }
     }
 
@@ -267,7 +262,7 @@ public class ChooseActivity extends AppCompatActivity {
                     mChatService.connect(targetDevice);
 
                     while(true){
-                        if(mChatService.getState() == BluetoothService.STATE_CONNECTED){
+                        if(BluetoothService.getState() == BluetoothService.STATE_CONNECTED){
                             Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
                             startActivity(i);
                             break;
@@ -367,7 +362,7 @@ public class ChooseActivity extends AppCompatActivity {
                 lvPrevDevices.setOnItemClickListener(this);
             }
             else {
-                tvNoPrevDevices.setText("No previously connected devices.");
+                tvNoPrevDevices.setText(getResources().getString(R.string.no_prev));
             }
 
             //setting the adapter for the ListView
@@ -417,7 +412,7 @@ public class ChooseActivity extends AppCompatActivity {
 
                     mChatService.connect(targetDevice);
                     while(true){
-                        if(mChatService.getState() == BluetoothService.STATE_CONNECTED){
+                        if(BluetoothService.getState() == BluetoothService.STATE_CONNECTED){
                             Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
                             startActivity(i);
                             break;

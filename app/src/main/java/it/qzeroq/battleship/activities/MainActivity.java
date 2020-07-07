@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private static final int CREATE_MATCH = 1;
     private static final int CONNECT_MATCH = 2;
     private static final int REQUEST_ENABLE_BT = 1;
-    boolean q = false;
     Holder holder;
     BluetoothAdapter mBluetoothAdapter;
 

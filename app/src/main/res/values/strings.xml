@@ -13,4 +13,5 @@
     <string name="data">mm/dd/yyyy</string>
     <string name="number_ship_lost" translatable="false">x</string>
     <string name="number_ship_hitted" translatable="false">y</string>
+    <string name="no_prev">No previously connected devices.</string>
 </resources>

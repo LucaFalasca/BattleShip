@@ -7,7 +7,20 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "Matches")
 public class Match {
 
-    public Match(String date, String opponentDevice, String nShipHit,String nShipLost, String matchResult){
+    @PrimaryKey(autoGenerate = true)
+    private int idMatch;
+
+    private String date;
+
+    private String opponentDevice;
+
+    private String nShipHit;
+
+    private String nShipLost;
+
+    private String matchResult;
+
+    public Match(String date,  String opponentDevice, String nShipHit, String nShipLost, String matchResult){
         this.date = date;
         this.matchResult = matchResult;
         this.nShipHit = nShipHit;
@@ -15,31 +28,11 @@ public class Match {
         this.opponentDevice = opponentDevice;
     }
 
-    @PrimaryKey(autoGenerate = true)
-    @NonNull
-    private int idMatch;
-
-    @NonNull
-    private String date;
-
-    @NonNull
-    private String opponentDevice;
-
-    @NonNull
-    private String nShipHit;
-
-    @NonNull
-    private String nShipLost;
-
-    @NonNull
-    private String matchResult;
-
-    @NonNull
     public void setIdMatch(int idMatch) {
         this.idMatch = idMatch;
     }
 
-    @NonNull
+
     public int getIdMatch() {
         return idMatch;
     }
@@ -69,13 +62,13 @@ public class Match {
         return nShipLost;
     }
 
-    public void setNShipLost(@NonNull String nShipLost) {
+    /*public void setNShipLost(@NonNull String nShipLost) {
         this.nShipLost = nShipLost;
     }
 
     public void setMatchResult(@NonNull String matchResult) {
         this.matchResult = matchResult;
-    }
+    }*/
 
 
 

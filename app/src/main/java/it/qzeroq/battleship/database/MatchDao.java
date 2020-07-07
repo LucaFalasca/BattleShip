@@ -14,6 +14,6 @@ public interface MatchDao {
     @Insert
     void insert(Match partita);
 
-    @Query(("SELECT * FROM `Matches`"))
+    @Query("SELECT * FROM `Matches`")
     LiveData<List<Match>> getAllMatch();
 }

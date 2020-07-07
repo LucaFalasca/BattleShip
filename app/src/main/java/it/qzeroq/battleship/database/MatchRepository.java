@@ -11,10 +11,9 @@ public class MatchRepository {
 
     private MatchDao matchDao;
     private LiveData<List<Match>> allMatches;
-    private MatchRoom matchDB;
 
     public MatchRepository(Application application){
-        matchDB = MatchRoom.getInstance(application);
+        MatchRoom matchDB = MatchRoom.getInstance(application);
         matchDao = matchDB.matchDao();
         allMatches = matchDao.getAllMatch();
     }
