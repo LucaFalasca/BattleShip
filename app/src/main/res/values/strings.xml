@@ -2,7 +2,6 @@
     <string name="app_name">BattleShip</string>
     <string name="start">Create match</string>
     <string name="wait">Connect to the match</string>
-    <string name="setting">Settings</string>
     <string name="logo" translatable="false">Logo</string>
     <string name="no_permission">Without the permission, you cannot play at this game</string>
     <string name="not_connected">Connection expired</string>
@@ -20,4 +19,10 @@
     <string name="btn_confirm">Confirm</string>
     <string name="position_ship_title">Place your ships</string>
     <string name="no_prev">No previously connected devices.</string>
+    <string name="example_text_et_fire" translatable="false">Ex: B2</string>
+    <string name="btn_fire">Open fire</string>
+    <string name="btn_surrender">Surrender</string>
+    <string name="tv_connected_devide">Previously connected devices</string>
+    <string name="tv_discovered_devices">Discovered devices</string>
+    <string name="tv_game_history">Game History</string>
 </resources>

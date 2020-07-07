@@ -26,7 +26,7 @@ public class Ship implements Parcelable {
         switch(length){
             case 1:
                 sprites = new Drawable[]{
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
+                        ContextCompat.getDrawable(context, R.drawable.ic_crop_16_9_black_24dp)
                 };
                 break;
             case 2:

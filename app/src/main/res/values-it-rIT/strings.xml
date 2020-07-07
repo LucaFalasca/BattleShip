@@ -3,7 +3,6 @@
     <string name="app_name">Battaglia Navale</string>
     <string name="start">Crea partita</string>
     <string name="wait">Connetti alla partita</string>
-    <string name="setting">Impostazioni</string>
     <string name="no_permission">Senza concedere il permesso all\'app, non puoi giocare</string>
     <string name="not_connected">Connessione scaduta</string>
     <string name="waiting">In attesa di nemico…</string>
@@ -13,4 +12,9 @@
     <string name="btn_confirm">Conferma</string>
     <string name="position_ship_title">Posiziona le tue navi</string>
     <string name="no_prev">Non ci sono device precedentemente accoppiati</string>
+    <string name="btn_fire">Spara</string>
+    <string name="btn_surrender">Arrenditi</string>
+    <string name="tv_connected_devide">Dispositivi precedemente connessi</string>
+    <string name="tv_discovered_devices">Dispositivi trovati</string>
+    <string name="tv_game_history">Cronologia partite</string>
 </resources>

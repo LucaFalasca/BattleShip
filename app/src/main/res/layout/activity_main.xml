@@ -24,8 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="64dp"
         android:backgroundTint="@color/colorAccent"
-        android:text="@string/setting"
         android:fontFamily="@font/nugie_romantic"
+        android:text="@string/tv_game_history"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
