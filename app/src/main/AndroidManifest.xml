@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".bluetooth.WaitActivity"></activity>
         <activity android:name=".activities.GameActivity" />
-        <activity android:name=".activities.SettingsActivity" />
+        <activity android:name=".database.GameHistoryActivity" />
         <activity android:name=".activities.PositionShipActivity" />
         <activity android:name=".bluetooth.ChooseActivity" />
         <activity android:name=".bluetooth.DaCancellare" />
