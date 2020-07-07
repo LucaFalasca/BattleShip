@@ -185,6 +185,9 @@ public class GameActivity extends AppCompatActivity {
                     message = xString + " " + yString;
                     sendMessage(message);
                 }
+                else {
+                    Toast.makeText(getApplicationContext(), "Turn of the enemy", Toast.LENGTH_SHORT).show();
+                }
             }
             return false;
         }
