@@ -26,6 +26,8 @@ public class BattleGridView extends GridLayout {
     private Drawable frameCell;
     private Drawable selectionCell;
     private Drawable selectionCellWrong;
+    private Drawable hittedCell;
+    private Drawable missedCell;
     private Context context;
     private ImageView[][] cells = new ImageView[GRID_SIZE][GRID_SIZE];
     private Ship[][] ships = new Ship[GRID_SIZE][GRID_SIZE];
@@ -33,6 +35,7 @@ public class BattleGridView extends GridLayout {
     private TextView[] rows = new TextView[GRID_SIZE];
     private TextView uselessCell;
     private int side;
+    private int font;
 
     // Constructors
 
@@ -51,6 +54,8 @@ public class BattleGridView extends GridLayout {
         frameCell = attributes.getDrawable(R.styleable.BattleGridView_frame_cell);
         selectionCell = attributes.getDrawable(R.styleable.BattleGridView_selection_cell);
         selectionCellWrong = attributes.getDrawable(R.styleable.BattleGridView_selection_cell_wrong);
+        hittedCell = attributes.getDrawable(R.styleable.BattleGridView_hitted_cell);
+        missedCell = attributes.getDrawable(R.styleable.BattleGridView_missed_cell);
         attributes.recycle();
 
         init();
@@ -160,22 +165,22 @@ public class BattleGridView extends GridLayout {
     /**
      * Add a mark that represent that this cell was a sea cell
      */
-    public void markCellMissed(){
-
+    public void markCellMissed(int x, int y){
+        cells[x][y].setForeground(missedCell);
     }
 
     /**
      * Add a mark that represent that this cell was a ship cell
      */
-    public void markCellHit(){
-
+    public void markCellHit(int x, int y){
+        cells[x][y].setForeground(hittedCell);
     }
 
     /**
      * Remove a mark from cell
      */
-    public void removeMarkCell(){
-
+    public void removeMarkCell(int x, int y){
+        cells[x][y].setForeground(frameCell);
     }
 
     /**

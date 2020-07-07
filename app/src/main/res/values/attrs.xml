@@ -5,6 +5,9 @@
         <attr name="frame_cell" format="reference" />
         <attr name="selection_cell" format="reference" />
         <attr name="selection_cell_wrong" format="reference" />
+        <attr name="hitted_cell" format="reference" />
+        <attr name="missed_cell" format="reference" />
+
     </declare-styleable>
 
     <declare-styleable name="ShipView">
