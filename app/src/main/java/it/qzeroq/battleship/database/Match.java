@@ -34,12 +34,19 @@ public class Match {
     @NonNull
     private String matchResult;
 
+    @NonNull
     public void setIdMatch(int idMatch) {
         this.idMatch = idMatch;
     }
 
+    @NonNull
     public int getIdMatch() {
         return idMatch;
+    }
+
+    @NonNull
+    public String getMatchResult() {
+        return matchResult;
     }
 
     @NonNull
@@ -47,41 +54,30 @@ public class Match {
         return date;
     }
 
-    public void setOpponentDevice(@NonNull String opponentDevice) {
-        this.opponentDevice = opponentDevice;
-    }
-
     @NonNull
     public String getOpponentDevice() {
         return opponentDevice;
     }
 
-    public void setnShipHit(@NonNull String nShipHit) {
-        this.nShipHit = nShipHit;
-    }
-
     @NonNull
-    public String getnShipHit() {
+    public String getNShipHit() {
         return nShipHit;
     }
 
-    public void setnShipLost(@NonNull String nShipLost) {
-        this.nShipLost = nShipLost;
+    @NonNull
+    public String getNShipLost() {
+        return nShipLost;
     }
 
-    @NonNull
-    public String getnShipLost() {
-        return nShipLost;
+    public void setNShipLost(@NonNull String nShipLost) {
+        this.nShipLost = nShipLost;
     }
 
     public void setMatchResult(@NonNull String matchResult) {
         this.matchResult = matchResult;
     }
 
-    @NonNull
-    public String getMatchResult() {
-        return matchResult;
-    }
+
 
 
 

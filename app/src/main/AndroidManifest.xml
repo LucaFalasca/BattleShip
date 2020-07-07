@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".bluetooth.WaitActivity"></activity>
+        <activity android:name=".bluetooth.WaitActivity" />
         <activity android:name=".activities.GameActivity" />
         <activity android:name=".database.GameHistoryActivity" />
         <activity android:name=".activities.PositionShipActivity" />

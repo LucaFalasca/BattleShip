@@ -19,6 +19,7 @@ import android.widget.Toast;
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.bluetooth.ChooseActivity;
 import it.qzeroq.battleship.bluetooth.WaitActivity;
+import it.qzeroq.battleship.database.GameHistoryActivity;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             }
             else if(v.getId() == R.id.btnSetting){
                 Log.d(TAG, "MainActivity: click on btnSetting");
-                Intent intent = new Intent(MainActivity.this, PositionShipActivity.class);
+                Intent intent = new Intent(MainActivity.this, GameHistoryActivity.class);
                 startActivity(intent);
             }
         }

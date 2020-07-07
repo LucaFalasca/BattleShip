@@ -15,7 +15,7 @@ import it.qzeroq.battleship.R;
 
 public class GameHistoryActivity extends AppCompatActivity {
 
-    GameHistoryAdaoter adapter = new GameHistoryAdaoter();
+    GameHistoryAdapter adapter = new GameHistoryAdapter();
 
     MatchViewModel matchViewModel;
     @Override

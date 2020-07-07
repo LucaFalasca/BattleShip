@@ -9,26 +9,24 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import it.qzeroq.battleship.R;
 
-public class GameHistoryAdaoter extends RecyclerView.Adapter<GameHistoryAdaoter.Holder>{
+public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.Holder>{
     private List<Match> matchList = new ArrayList<>();
 
     @NonNull
     @Override
-    public GameHistoryAdaoter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GameHistoryAdapter.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ConstraintLayout cl = (ConstraintLayout) LayoutInflater.from(parent.getContext()).inflate(R.layout.rv_game_history_activity,parent,false);
         return new Holder(cl);
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GameHistoryAdaoter.Holder holder, int position) {
+    public void onBindViewHolder(@NonNull GameHistoryAdapter.Holder holder, int position) {
         holder.fill(matchList.get(position));
     }
 
@@ -60,8 +58,8 @@ public class GameHistoryAdaoter extends RecyclerView.Adapter<GameHistoryAdaoter.
         private void fill(Match match){
             tvName.setText(match.getOpponentDevice());
             tvData.setText(match.getDate());
-            tvNShipLost.setText(match.getnShipLost());
-            tvNShipHitted.setText(match.getnShipHit());
+            tvNShipLost.setText(match.getNShipLost());
+            tvNShipHitted.setText(match.getNShipHit());
             tvGameResult.setText(match.getMatchResult());
 
         }
