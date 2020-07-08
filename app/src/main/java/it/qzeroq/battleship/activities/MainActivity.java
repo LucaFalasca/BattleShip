@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSION_LOCATION);
         }
-
     }
 
     @Override
@@ -74,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         Button btnSetting;
         Button btnWait;
 
-        Holder(){
+        Holder() {
             btnStart = findViewById(R.id.btnCreate);
             btnSetting = findViewById(R.id.btnSetting);
             btnWait = findViewById(R.id.btnConnect);
