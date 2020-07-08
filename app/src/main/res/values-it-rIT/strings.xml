@@ -21,4 +21,6 @@
     <string name="lose">Persa</string>
     <string name="win">Vinta</string>
     <string name="surrender">Arreso</string>
+    <string name="hitted">Numero di barche affondate:</string>
+    <string name="lost">Numero di barche perse:</string>
 </resources>
