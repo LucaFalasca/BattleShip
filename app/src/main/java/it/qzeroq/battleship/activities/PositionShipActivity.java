@@ -144,7 +144,7 @@ public class PositionShipActivity extends AppCompatActivity {
 
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (bluetoothService.getState() != bluetoothService.STATE_CONNECTED) {
+        if (BluetoothService.getState() != bluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }

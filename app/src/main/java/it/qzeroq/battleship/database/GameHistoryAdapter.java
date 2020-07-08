@@ -28,6 +28,7 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
     @Override
     public void onBindViewHolder(@NonNull GameHistoryAdapter.Holder holder, int position) {
         holder.fill(matchList.get(position));
+                
 
     }
 
