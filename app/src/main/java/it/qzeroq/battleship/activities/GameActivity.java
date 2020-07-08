@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -192,15 +193,20 @@ public class GameActivity extends AppCompatActivity {
     class Holder implements View.OnTouchListener, View.OnClickListener{
         BattleGridView bgMine;
         BattleGridView bgOpponent;
+        Button btnFire;
         Button btnSurrender;
+        EditText etCoords;
 
         @SuppressLint("ClickableViewAccessibility")
         Holder() {
             bgMine = findViewById(R.id.bgMine);
             bgOpponent = findViewById(R.id.bgEnemy);
             btnSurrender = findViewById(R.id.btnSurrender);
+            btnFire = findViewById(R.id.btnFire);
+            etCoords = findViewById(R.id.etCoords);
 
             btnSurrender.setOnClickListener(this);
+            btnFire.setOnClickListener(this);
             bgOpponent.setOnTouchListener(this);
 
             if (itsMyTurn)
@@ -286,6 +292,23 @@ public class GameActivity extends AppCompatActivity {
                 database(result);
 
 
+            }
+            else if(v.getId() == R.id.btnFire){
+                if(itsMyTurn) {
+                    if (true) {
+                        String coordinate = etCoords.getText().toString();
+                        String y = String.valueOf(((int) coordinate.charAt(0)) -  64);
+                        String x = coordinate.substring(1, 2);
+
+                        message = x + " " + y;
+                        sendMessage(message);
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Wrong Coordinates", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Turn of the enemy", Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
