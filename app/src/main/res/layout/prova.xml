@@ -2,8 +2,10 @@
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tv"
-    android:textColor="#FFF"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:textSize="18sp"
-    android:padding="5dp"/>
+    android:fontFamily="@font/nugie_romantic"
+    android:padding="10dp"
+    android:text="@string/devicename"
+    android:textColor="@android:color/white"
+    android:textSize="18sp" />
