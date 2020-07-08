@@ -6,6 +6,6 @@
     android:layout_height="fill_parent"
     android:fontFamily="@font/nugie_romantic"
     android:padding="10dp"
-    android:text="@string/devicename"
+    android:text="@string/app_name"
     android:textColor="@android:color/white"
     android:textSize="18sp" />

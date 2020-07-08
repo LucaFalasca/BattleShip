@@ -45,23 +45,20 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
         notifyDataSetChanged();
     }
 
-    class Holder extends RecyclerView.ViewHolder {
+    static class Holder extends RecyclerView.ViewHolder {
         TextView tvGameResult;
         TextView tvData;
-        TextView tvName;
         TextView tvNShipLost;
         TextView tvNShipHitted;
         Holder(@NonNull View ItemView){
             super(ItemView);
             tvGameResult = itemView.findViewById(R.id.tvGameResult);
             tvData = itemView.findViewById(R.id.tvData);
-            tvName = itemView.findViewById(R.id.tvName);
             tvNShipHitted = itemView.findViewById(R.id.tvNShipHitted);
             tvNShipLost = itemView.findViewById(R.id.tvNShipLost);
         }
 
         private void fill(Match match){
-            tvName.setText(match.getOpponentDevice());
             tvData.setText(match.getDate());
             tvNShipLost.setText(match.getNShipLost());
             tvNShipHitted.setText(match.getNShipHit());

@@ -30,4 +30,6 @@
     <string name="lose">Lost</string>
     <string name="win">Win</string>
     <string name="surrender">Surrender</string>
+    <string name="hitted">Number of ship hitted:</string>
+    <string name="lost">Number of ship lost:</string>
 </resources>

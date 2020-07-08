@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="height_rv_layout">130dp</dimen>
+    <dimen name="height_rv_layout">100dp</dimen>
 </resources>
