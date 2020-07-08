@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import it.qzeroq.battleship.ShadowBuilderRotation;
+import it.qzeroq.battleship.WaitingDialog;
 import it.qzeroq.battleship.bluetooth.BluetoothService;
 import it.qzeroq.battleship.views.BattleGridView;
 import it.qzeroq.battleship.R;
@@ -229,6 +230,10 @@ public class PositionShipActivity extends AppCompatActivity {
                     String message = "Finished positioning";
                     sendMessage(message);
                     finish = true;
+                    if (!enemyFinish) {
+                        WaitingDialog waitingDialog = new WaitingDialog(PositionShipActivity.this);
+                        waitingDialog.startWaitingDialog();
+                    }
                 } else{
                     Toast.makeText(getApplicationContext(), "Place all the ships to continue", Toast.LENGTH_SHORT).show();
                 }

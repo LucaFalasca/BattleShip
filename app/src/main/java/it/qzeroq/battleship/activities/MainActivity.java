@@ -24,9 +24,6 @@ import it.qzeroq.battleship.database.GameHistoryActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    // debugging
-    private static final String TAG = "btsample";
-
     // layout holder
     Holder holder;
 
@@ -34,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Log.e(TAG, "MainActivity: ON CREATE");
 
         holder = new Holder();
 
@@ -57,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param permissions
+     * @param grantResults
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int[] grantResults)
     {
@@ -86,17 +87,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if(v.getId() == R.id.btnConnect) {
-                Log.d(TAG, "MainActivity: click on btnConnect");
                 Intent i = new Intent(MainActivity.this, ChooseActivity.class);
                 startActivity(i);
             }
             else if(v.getId() == R.id.btnCreate){
-                Log.d(TAG, "MainActivity: click on btnCreate");
                 Intent i = new Intent(MainActivity.this, WaitActivity.class);
                 startActivity(i);
             }
             else if(v.getId() == R.id.btnSetting){
-                Log.d(TAG, "MainActivity: click on btnSetting");
                 Intent intent = new Intent(MainActivity.this, GameHistoryActivity.class);
                 startActivity(intent);
             }

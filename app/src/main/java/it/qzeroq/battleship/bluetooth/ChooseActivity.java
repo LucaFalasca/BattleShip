@@ -257,6 +257,7 @@ public class ChooseActivity extends AppCompatActivity {
 
                     while(true){
                         if(BluetoothService.getState() == BluetoothService.STATE_CONNECTED){
+                            Toast.makeText(getApplicationContext(), "Connected to " + targetDevice.getName(), Toast.LENGTH_SHORT).show();
                             Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
                             i.putExtra("itsMyTurn", false);
                             startActivity(i);

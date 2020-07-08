@@ -2,11 +2,10 @@ package it.qzeroq.battleship.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.GridLayout;
@@ -14,15 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
-
-import org.apache.http.conn.ConnectTimeoutException;
 
 import java.util.ArrayList;
 
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
+
 
 public class BattleGridView extends GridLayout {
 
@@ -177,6 +174,7 @@ public class BattleGridView extends GridLayout {
      */
     public void markCellMissed(int x, int y){
         cells[x][y].setForeground(missedCell);
+        Log.d("btsample", "MISSED   [x][y] = " + x + y);
     }
 
     /**
@@ -184,6 +182,7 @@ public class BattleGridView extends GridLayout {
      */
     public void markCellHit(int x, int y){
         cells[x][y].setForeground(hittedCell);
+        Log.d("btsample", "HIT    [x][y] = " + x + y);
     }
 
     /**

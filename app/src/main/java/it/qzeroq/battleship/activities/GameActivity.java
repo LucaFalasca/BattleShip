@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +37,11 @@ public class GameActivity extends AppCompatActivity {
     String writeMessage;
     String readMessage;
 
-    Ship[][] ships;
+    //Ship[][] ships;
 
     int[] coord;
 
-    //Boolean hit;
+    private StringBuffer mOutStringBuffer;
 
     Intent i;
 
@@ -62,12 +63,18 @@ public class GameActivity extends AppCompatActivity {
         ArrayList<Integer> x = i.getIntegerArrayListExtra("x");
         ArrayList<Integer> y = i.getIntegerArrayListExtra("y");
 
+        assert ships != null;
         for(int k = 0; k < ships.size(); k++){
+            assert x != null;
+            assert y != null;
             holder.bgMine.placeShip(new Ship(this, ships.get(k).getLength(), ships.get(k).getRotation()), x.get(k), y.get(k));
         }
 
         bluetoothService = BluetoothService.getInstance();
         bluetoothService.setHandler(handler);
+
+        if (itsMyTurn)
+            Toast.makeText(getApplicationContext(), "tour turn", Toast.LENGTH_LONG).show();
     }
 
     @SuppressLint("HandlerLeak")
@@ -156,7 +163,7 @@ public class GameActivity extends AppCompatActivity {
             bluetoothService.write(send);
 
             // Reset out string buffer to zero
-            //mOutStringBuffer.setLength(0);
+            mOutStringBuffer.setLength(0);
         }
     }
 
@@ -168,12 +175,17 @@ public class GameActivity extends AppCompatActivity {
             bgMine = findViewById(R.id.bgMine);
             bgOpponent = findViewById(R.id.bgEnemy);
             bgOpponent.setOnTouchListener(this);
+
+            if (itsMyTurn)
+                Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_LONG).show();
         }
 
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if(event.getAction() == MotionEvent.ACTION_UP) {
+                Log.d("btsample", "------------------tocco---------");
                 if (itsMyTurn) {
+                    //Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_SHORT).show();
                     int x = (int) event.getX();
                     int y = (int) event.getY();
 
@@ -186,7 +198,7 @@ public class GameActivity extends AppCompatActivity {
                     sendMessage(message);
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Turn of the enemy", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Turn of the enemy", Toast.LENGTH_LONG).show();
                 }
             }
             return false;

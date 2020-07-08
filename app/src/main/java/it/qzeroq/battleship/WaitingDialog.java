@@ -30,7 +30,7 @@ public class WaitingDialog {
             @Override
             public void onClick(View v) {
                 dismissWaitingDialog();
-                activity.onBackPressed();   //-------VEDERE SE FUNZIONA---------
+                activity.onBackPressed();
             }
         });
 
