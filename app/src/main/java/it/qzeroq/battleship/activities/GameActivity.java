@@ -85,9 +85,9 @@ public class GameActivity extends AppCompatActivity {
         bluetoothService.setHandler(handler);
 
         if (itsMyTurn)
-            Toast.makeText(getApplicationContext(), "tour turn", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "tour turn", Toast.LENGTH_SHORT).show();
         else
-            Toast.makeText(getApplicationContext(), "enemy's turn", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "enemy's turn", Toast.LENGTH_SHORT).show();
     }
 
     @SuppressLint("HandlerLeak")
@@ -111,10 +111,10 @@ public class GameActivity extends AppCompatActivity {
                     // construct a string from the valid bytes in the buffer
                     readMessage = new String(readBuf, 0, msg.arg1);
 
-                    switch (message) {
+                    switch (readMessage) {
                         case "your turn":
                             itsMyTurn = true;
-                            Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_SHORT).show();
                             break;
                         case "HIT":
                             hit(coord);
@@ -169,6 +169,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String message) {
+        Log.d("btsample", "send message");
+
         // Check that we're actually connected before trying anything
         if (BluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
@@ -179,10 +181,11 @@ public class GameActivity extends AppCompatActivity {
         if (message.length() > 0) {
             // Get the message bytes and tell the BluetoothChatService to write
             byte[] send = message.getBytes();
+            Log.d("btsample", "---------bytes " + send);
             bluetoothService.write(send);
 
             // Reset out string buffer to zero
-            mOutStringBuffer.setLength(0);
+            //mOutStringBuffer.setLength(0);
         }
     }
 
@@ -224,8 +227,10 @@ public class GameActivity extends AppCompatActivity {
 
                     coord = calculateIndexes(x, y, bgOpponent);
 
-                    String xString = String.valueOf(x);
-                    String yString = String.valueOf(y);
+                    String xString = String.valueOf(coord[0]);
+                    String yString = String.valueOf(coord[1]);
+
+                    Log.d("btsample", "x-y = " + coord[0] + " " + coord[1]);
 
                     message = xString + " " + yString;
                     sendMessage(message);
