@@ -44,18 +44,14 @@ public class GameActivity extends AppCompatActivity {
     BluetoothService bluetoothService;
 
     String message;
-
     String result;
-
     String writeMessage;
     String readMessage;
 
     Ship[][] ships;
-
     int[] coord;
 
     private StringBuffer mOutStringBuffer;
-
     private MediaPlayer mediaPlayer;
 
     Intent i;

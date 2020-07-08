@@ -1,4 +1,4 @@
-package it.qzeroq.battleship.database;
+package it.qzeroq.battleship.activities;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +12,9 @@ import android.os.Bundle;
 import java.util.List;
 
 import it.qzeroq.battleship.R;
+import it.qzeroq.battleship.database.GameHistoryAdapter;
+import it.qzeroq.battleship.database.Match;
+import it.qzeroq.battleship.database.MatchViewModel;
 
 public class GameHistoryActivity extends AppCompatActivity {
 
