@@ -142,7 +142,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void miss(int[] coord) {
-        mediaPlayer = MediaPlayer.create(this,R.raw.MIssingShip);
+        mediaPlayer = MediaPlayer.create(this,R.raw.missingship);
         mediaPlayer.start();
         holder.bgOpponent.markCellMissed(coord[0], coord[1]);
 
