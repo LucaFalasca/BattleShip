@@ -14,6 +14,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,6 +27,7 @@ import android.widget.ToggleButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -132,8 +134,10 @@ public class GameActivity extends AppCompatActivity {
                             miss(coord);
                             break;
                         case "YOU WIN":
+                            mediaPlayer = MediaPlayer.create(GameActivity.this,R.raw.victory);
+                            mediaPlayer.start();
                             Toast.makeText(getApplicationContext(), "You win!", Toast.LENGTH_SHORT).show();
-                            finishGame();
+                            finishGame(getResources().getString(R.string.win));
                             break;
                         default:
                             String[] coordString = readMessage.split(" ");
@@ -151,10 +155,6 @@ public class GameActivity extends AppCompatActivity {
         }
     };
 
-    private void finishGame(){
-        stopConnection();
-
-    }
 
     private void checkVictory() {
         int sunkenShip = holder.bgMine.getNumberOfSunkenShip();
@@ -162,8 +162,22 @@ public class GameActivity extends AppCompatActivity {
         if(sunkenShip == 7){
             sendMessage("YOU WIN");
             Toast.makeText(getApplicationContext(), "You Lose!", Toast.LENGTH_SHORT).show();
-            finishGame();
+            mediaPlayer = MediaPlayer.create(this,R.raw.lose);
+            mediaPlayer.start();
+            finishGame(getResources().getString(R.string.win));
         }
+    }
+
+    private void finishGame(String result){
+        MatchViewModel matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
+        Date date;
+        date = Calendar.getInstance().getTime();
+        String data = date.toString();
+        String nOfShipLost = String.valueOf(holder.bgMine.getNumberOfSunkenShip());
+        String nOfShipHit = String.valueOf(holder.bgOpponent.getNumberOfSunkenShip());
+        Match match = new Match(data, nOfShipHit, nOfShipLost, result);
+        matchViewModel.insert(match);
+        stopConnection();
     }
 
     private void stopConnection() {
@@ -325,13 +339,9 @@ public class GameActivity extends AppCompatActivity {
                 //mediaPlayer = MediaPlayer.create(GameActivity.this);
                 //mediaPlayer.start();
                 sendMessage("YOU WIN");
-                finishGame();
-
-
-
-                /*result = getResources().getString(R.string.surrender);
-                database(result);*/
-
+                mediaPlayer = MediaPlayer.create(GameActivity.this,R.raw.lose);
+                mediaPlayer.start();
+                finishGame(getResources().getString(R.string.surrender));
 
             }
             else if(v.getId() == R.id.btnFire){
@@ -368,15 +378,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void database(String result){
-        MatchViewModel matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(getResources().getString(R.string.pattern), Locale.ITALY);
-        String data = dateFormat.toString();
-        String nOfShipLost = "0";
-        String nOfShipHit = "0";
-        Match match = new Match(data, nOfShipHit, nOfShipLost, result);
-        matchViewModel.insert(match);
-    }
+
 
     @Override
     public void onBackPressed() {

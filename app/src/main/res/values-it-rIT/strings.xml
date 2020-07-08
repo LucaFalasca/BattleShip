@@ -23,4 +23,6 @@
     <string name="surrender">Arreso</string>
     <string name="hitted">Numero di barche affondate:</string>
     <string name="lost">Numero di barche perse:</string>
+    <string name="enemy_turn">É il turno dell\'avversario</string>
+    <string name="your_turn">É il tuo turno</string>
 </resources>
