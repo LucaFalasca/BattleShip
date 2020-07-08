@@ -123,6 +123,10 @@ public class GameActivity extends AppCompatActivity {
                         case "MISS":
                             miss(coord);
                             break;
+                        case "YOU WIN":
+                            Toast.makeText(getApplicationContext(), "You win!", Toast.LENGTH_SHORT).show();
+                            stopConnection();
+                            break;
                         default:
                             String[] coordString = readMessage.split(" ");
                             coord = new int[]{Integer.parseInt(coordString[0]), Integer.parseInt(coordString[1])};
@@ -131,12 +135,27 @@ public class GameActivity extends AppCompatActivity {
                             int y = coord[1];
 
                             checkShip(x, y);
+                            checkVictory();
                             break;
                     }
                     break;
             }
         }
     };
+
+    private void checkVictory() {
+        int sunkenShip = holder.bgMine.getNumberOfSunkenShip();
+        System.out.println("Affondate: " + sunkenShip);
+        if(sunkenShip == 7){
+            sendMessage("YOU WIN");
+            Toast.makeText(getApplicationContext(), "You Lose!", Toast.LENGTH_SHORT).show();
+            stopConnection();
+        }
+    }
+
+    private void stopConnection() {
+        bluetoothService.stop();
+    }
 
     private void hit(int[] coord) {
         mediaPlayer = MediaPlayer.create(this,R.raw.hittingship);
@@ -285,7 +304,7 @@ public class GameActivity extends AppCompatActivity {
                 Toast.makeText(GameActivity.this, getResources().getString(R.string.game_over),Toast.LENGTH_LONG).show();
                 //mediaPlayer = MediaPlayer.create(GameActivity.this);
                 //mediaPlayer.start();
-                //stoppare i thread
+                bluetoothService.stop();
 
 
                 result = getResources().getString(R.string.surrender);
@@ -297,7 +316,7 @@ public class GameActivity extends AppCompatActivity {
                 if(itsMyTurn) {
                     if (true) {
                         String coordinate = etCoords.getText().toString();
-                        String y = String.valueOf(((int) coordinate.charAt(0)) -  64);
+                        String y = String.valueOf(((int) coordinate.charAt(0)) -  65);
                         String x = coordinate.substring(1, 2);
 
                         message = x + " " + y;

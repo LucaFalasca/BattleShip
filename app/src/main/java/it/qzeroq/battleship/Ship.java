@@ -41,7 +41,7 @@ public class Ship implements Parcelable {
             switch (length) {
                 case 1:
                     sprites = new Drawable[]{
-                            ContextCompat.getDrawable(context, R.drawable.ship_l2_horizontal_s1_72)
+                            ContextCompat.getDrawable(context, R.drawable.ship_l1_horizontal_s1_72)
                     };
                     break;
                 case 2:
@@ -71,7 +71,7 @@ public class Ship implements Parcelable {
             switch (length) {
                 case 1:
                     sprites = new Drawable[]{
-                            ContextCompat.getDrawable(context, R.drawable.ship_l2_vertical_s1_72)
+                            ContextCompat.getDrawable(context, R.drawable.ship_l1_vertical_s1_72)
                     };
                     break;
                 case 2:
