@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#9FABEC</color>
     <color name="activity_background">#131F65</color>
+    <color name="color_enemy_turn">#433C3C</color>
+    <color name="text_color_enemy_turn">#FFFFFF</color>
+    <color name="color_my_turn">#AA8514</color>
+    <color name="text_color_my_turn">#000000</color>
 </resources>

@@ -2,10 +2,10 @@
 <resources>
     <string name="app_name">Battaglia Navale</string>
     <string name="start">Crea partita</string>
-    <string name="wait">Connetti alla partita</string>
+    <string name="wait">Connettiti ad una partita</string>
     <string name="no_permission">Senza concedere il permesso all\'app, non puoi giocare</string>
     <string name="not_connected">Connessione scaduta</string>
-    <string name="waiting">In attesa di nemico…</string>
+    <string name="waiting">In attesa dell\'avversario…</string>
     <string name="game_result">Vinta/Persa</string>
     <string name="device_name">Nome dispositivo avversario</string>
     <string name="data">gg/mm/aaaa</string>

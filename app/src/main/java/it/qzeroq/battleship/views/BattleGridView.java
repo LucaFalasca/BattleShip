@@ -2,7 +2,6 @@ package it.qzeroq.battleship.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -14,10 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
-
-import org.apache.http.conn.ConnectTimeoutException;
 
 import java.util.ArrayList;
 

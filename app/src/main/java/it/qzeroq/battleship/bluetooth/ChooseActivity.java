@@ -62,16 +62,16 @@ public class ChooseActivity extends AppCompatActivity {
     // Member object for the chat services
     private BluetoothService mChatService = null;
 
-    BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
-    ArrayList<BluetoothDevice> discoveredDeviceList = new ArrayList<>();
+    ArrayList<BluetoothDevice> discoveredDeviceList;
     ArrayList<String> discoveredDeviceName = new ArrayList<>();
     ArrayAdapter<String> discoveredArrayAdapter;
-    Set<BluetoothDevice> prevDevices = btAdapter.getBondedDevices();
+    Set<BluetoothDevice> prevDevices;
     ArrayList<BluetoothDevice> prevDeviceList;
     ArrayList<String> prevDeviceName = new ArrayList<>();
     ArrayAdapter<String> prevArrayAdapter;
 
     IntentFilter filter = new IntentFilter();
+
 
     Holder holder;
 
@@ -80,13 +80,14 @@ public class ChooseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choosedevice);
 
-        holder = new Holder();
+
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        checkBluetooth();
+        if(checkBluetooth()){
+            setup();
+        }
 
-        //holder = new Holder();
     }
 
 
@@ -100,14 +101,13 @@ public class ChooseActivity extends AppCompatActivity {
 
     }
 
-    private void checkBluetooth() {
+    private boolean checkBluetooth() {
         Log.d(TAG, "checkBluetooth(): start");
 
         if (mBluetoothAdapter == null) {
             //Bluetooth not supported by the device
             Toast.makeText(ChooseActivity.this, "This device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
             Log.d(TAG, "checkBluetooth(): btAdapter == null");
-            finish();
         }
         else {
             //request to enable Bluetooth if it isn't on
@@ -115,8 +115,10 @@ public class ChooseActivity extends AppCompatActivity {
                 Log.d(TAG, "checkBluetooth(): start request to enable BT");
                 Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(i, REQUEST_ENABLE_BT);
+                return false;
             }
         }
+        return true;
     }
 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -126,13 +128,27 @@ public class ChooseActivity extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT OK");
                 Toast.makeText(this, "Bluetooth is enable", Toast.LENGTH_SHORT).show();
-                //setupChat();
+                setup();
             } else {
                 Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT CANCELED");
                 Toast.makeText(this, "Bluetooth enabling cancelled. Leaving the game", Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
+    }
+
+    private void setup() {
+        discoveredDeviceList = new ArrayList<>();
+        discoveredDeviceName = new ArrayList<>();
+        prevDevices = mBluetoothAdapter.getBondedDevices();
+
+        holder = new Holder();
+
+        filter = new IntentFilter();
+
+        mBluetoothAdapter.startDiscovery();
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(receiver, filter);
     }
 
     @Override
@@ -164,7 +180,7 @@ public class ChooseActivity extends AppCompatActivity {
     private void setupConnection() {
         Log.d(TAG, "setupChat()");
 
-        findDevice();
+
         /*Intent i = new Intent(getApplicationContext(), ChooseDeviceActivity.class);
         startActivityForResult(i, PAIR_BT_DEVICE);*/
 
@@ -175,12 +191,6 @@ public class ChooseActivity extends AppCompatActivity {
 
         // Initialize the buffer for outgoing messages
         //mOutStringBuffer = new StringBuffer();
-    }
-
-    private void findDevice() {
-        btAdapter.startDiscovery();
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(receiver, filter);
     }
 
 
@@ -277,10 +287,12 @@ public class ChooseActivity extends AppCompatActivity {
                 Log.d(TAG, "ChooseDevice BroadcastReceiver: device found " + device.getName()+" "+ device.getAddress() );
 
                 if(!(discoveredDeviceList.contains(device)) && !(prevDeviceList.contains(device))) {
-                    discoveredDeviceName.add(device.getName());
-                    discoveredDeviceList.add(device);
+                    if(device.getName() != null) {
+                        discoveredDeviceName.add(device.getName());
+                        discoveredDeviceList.add(device);
 
-                    discoveredArrayAdapter.notifyDataSetChanged();
+                        discoveredArrayAdapter.notifyDataSetChanged();
+                    }
                 }
             }
         }
@@ -371,7 +383,7 @@ public class ChooseActivity extends AppCompatActivity {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            btAdapter.cancelDiscovery();
+            mBluetoothAdapter.cancelDiscovery();
 
             //putting the information of the chosen device into the Intent
             if (parent.getId() == R.id.lvPrevDevices) {

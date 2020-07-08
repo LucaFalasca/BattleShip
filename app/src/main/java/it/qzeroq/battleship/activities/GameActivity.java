@@ -2,11 +2,14 @@ package it.qzeroq.battleship.activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,8 +19,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,7 +70,7 @@ public class GameActivity extends AppCompatActivity {
         mediaPlayer = MediaPlayer.create(this,R.raw.startgame);
         mediaPlayer.start();
 
-        holder = new Holder();
+        holder = new Holder(this);
 
         i = getIntent();
         itsMyTurn = i.getBooleanExtra("itsMyTurn", false);
@@ -85,10 +90,12 @@ public class GameActivity extends AppCompatActivity {
         bluetoothService = BluetoothService.getInstance();
         bluetoothService.setHandler(handler);
 
-        if (itsMyTurn)
+        if (itsMyTurn) {
             Toast.makeText(getApplicationContext(), "tour turn", Toast.LENGTH_SHORT).show();
+        }
         else
             Toast.makeText(getApplicationContext(), "enemy's turn", Toast.LENGTH_SHORT).show();
+        holder.btnTurn.setChecked(itsMyTurn);
     }
 
     @SuppressLint("HandlerLeak")
@@ -115,6 +122,7 @@ public class GameActivity extends AppCompatActivity {
                     switch (readMessage) {
                         case "your turn":
                             itsMyTurn = true;
+                            holder.btnTurn.setChecked(itsMyTurn);
                             Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_SHORT).show();
                             break;
                         case "HIT":
@@ -125,7 +133,7 @@ public class GameActivity extends AppCompatActivity {
                             break;
                         case "YOU WIN":
                             Toast.makeText(getApplicationContext(), "You win!", Toast.LENGTH_SHORT).show();
-                            stopConnection();
+                            finishGame();
                             break;
                         default:
                             String[] coordString = readMessage.split(" ");
@@ -143,13 +151,18 @@ public class GameActivity extends AppCompatActivity {
         }
     };
 
+    private void finishGame(){
+        stopConnection();
+
+    }
+
     private void checkVictory() {
         int sunkenShip = holder.bgMine.getNumberOfSunkenShip();
         System.out.println("Affondate: " + sunkenShip);
         if(sunkenShip == 7){
             sendMessage("YOU WIN");
             Toast.makeText(getApplicationContext(), "You Lose!", Toast.LENGTH_SHORT).show();
-            stopConnection();
+            finishGame();
         }
     }
 
@@ -163,6 +176,7 @@ public class GameActivity extends AppCompatActivity {
         holder.bgOpponent.markCellHit(coord[0], coord[1]);
 
         itsMyTurn = false;
+        holder.btnTurn.setChecked(itsMyTurn);
 
         sendMessage("your turn");
     }
@@ -173,6 +187,7 @@ public class GameActivity extends AppCompatActivity {
         holder.bgOpponent.markCellMissed(coord[0], coord[1]);
 
         itsMyTurn = false;
+        holder.btnTurn.setChecked(itsMyTurn);
 
         sendMessage("your turn");
     }
@@ -209,24 +224,29 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    class Holder implements View.OnTouchListener, View.OnClickListener{
+    class Holder implements View.OnTouchListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener{
+        Context context;
         BattleGridView bgMine;
         BattleGridView bgOpponent;
         Button btnFire;
         Button btnSurrender;
         EditText etCoords;
+        ToggleButton btnTurn;
 
         @SuppressLint("ClickableViewAccessibility")
-        Holder() {
+        Holder(Context context) {
+            this.context = context;
             bgMine = findViewById(R.id.bgMine);
             bgOpponent = findViewById(R.id.bgEnemy);
             btnSurrender = findViewById(R.id.btnSurrender);
             btnFire = findViewById(R.id.btnFire);
             etCoords = findViewById(R.id.etCoords);
+            btnTurn = findViewById(R.id.btnTurn);
 
             btnSurrender.setOnClickListener(this);
             btnFire.setOnClickListener(this);
             bgOpponent.setOnTouchListener(this);
+            btnTurn.setOnCheckedChangeListener(this);
 
             if (itsMyTurn)
                 Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_LONG).show();
@@ -304,20 +324,24 @@ public class GameActivity extends AppCompatActivity {
                 Toast.makeText(GameActivity.this, getResources().getString(R.string.game_over),Toast.LENGTH_LONG).show();
                 //mediaPlayer = MediaPlayer.create(GameActivity.this);
                 //mediaPlayer.start();
-                bluetoothService.stop();
+                sendMessage("YOU WIN");
+                finishGame();
 
 
-                result = getResources().getString(R.string.surrender);
-                database(result);
+
+                /*result = getResources().getString(R.string.surrender);
+                database(result);*/
 
 
             }
             else if(v.getId() == R.id.btnFire){
                 if(itsMyTurn) {
-                    if (true) {
+                    if (etCoords.getText().toString().matches("[A-J]+[1-10]")) {
                         String coordinate = etCoords.getText().toString();
                         String y = String.valueOf(((int) coordinate.charAt(0)) -  65);
-                        String x = coordinate.substring(1, 2);
+                        String x = String.valueOf(Integer.parseInt(coordinate.substring(1, 2)) - 1);
+
+                        coord = new int[]{Integer.parseInt(x), Integer.parseInt(y)};
 
                         message = x + " " + y;
                         sendMessage(message);
@@ -328,6 +352,18 @@ public class GameActivity extends AppCompatActivity {
                 else{
                     Toast.makeText(getApplicationContext(), "Turn of the enemy", Toast.LENGTH_LONG).show();
                 }
+            }
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if(isChecked) {
+                buttonView.setBackgroundResource(R.color.color_my_turn);
+                buttonView.setTextColor(ContextCompat.getColor(context, R.color.text_color_my_turn));
+            }
+            else {
+                buttonView.setBackgroundResource(R.color.color_enemy_turn);
+                buttonView.setTextColor(ContextCompat.getColor(context, R.color.text_color_enemy_turn));
             }
         }
     }

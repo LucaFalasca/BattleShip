@@ -32,4 +32,6 @@
     <string name="surrender">Surrender</string>
     <string name="hitted">Number of ship hitted:</string>
     <string name="lost">Number of ship lost:</string>
+    <string name="enemy_turn">It\'s Enemy Turn!</string>
+    <string name="your_turn">It\'s Your turn!</string>
 </resources>
