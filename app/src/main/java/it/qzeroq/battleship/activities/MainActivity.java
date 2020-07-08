@@ -24,6 +24,9 @@ import it.qzeroq.battleship.database.GameHistoryActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    // debugging
+    private static final String TAG = "btsample";
+
     // layout holder
     Holder holder;
 
@@ -95,7 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
             else if(v.getId() == R.id.btnSetting){
-                Intent intent = new Intent(MainActivity.this, GameHistoryActivity.class);
+                Log.d(TAG, "MainActivity: click on btnSetting");
+                Intent intent = new Intent(MainActivity.this, GameActivity.class);
                 startActivity(intent);
             }
         }

@@ -2,11 +2,12 @@ package it.qzeroq.battleship.activities;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,18 +15,22 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.bluetooth.BluetoothService;
-import it.qzeroq.battleship.database.GameHistoryActivity;
+import it.qzeroq.battleship.database.Match;
+import it.qzeroq.battleship.database.MatchViewModel;
 import it.qzeroq.battleship.views.BattleGridView;
 
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_READ;
-import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_STATE_CHANGE;
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_WRITE;
 
 public class GameActivity extends AppCompatActivity {
@@ -34,14 +39,18 @@ public class GameActivity extends AppCompatActivity {
 
     String message;
 
+    String result;
+
     String writeMessage;
     String readMessage;
 
-    //Ship[][] ships;
+    Ship[][] ships;
 
     int[] coord;
 
     private StringBuffer mOutStringBuffer;
+
+    private MediaPlayer mediaPlayer;
 
     Intent i;
 
@@ -52,6 +61,8 @@ public class GameActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        mediaPlayer = MediaPlayer.create(this,R.raw.startgame);
+        mediaPlayer.start();
 
         holder = new Holder();
 
@@ -98,24 +109,26 @@ public class GameActivity extends AppCompatActivity {
                     // construct a string from the valid bytes in the buffer
                     readMessage = new String(readBuf, 0, msg.arg1);
 
-                    if (message.equals("your turn")) {
-                        itsMyTurn = true;
-                        Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_LONG).show();
-                    }
-                    else if (message.equals("HIT")) {
-                        hit(coord);
-                    }
-                    else if (message.equals("MISS")) {
-                        miss(coord);
-                    }
-                    else {
-                        String[] coordString = readMessage.split(" ");
-                        coord = new int[]{Integer.parseInt(coordString[0]), Integer.parseInt(coordString[1])};
+                    switch (message) {
+                        case "your turn":
+                            itsMyTurn = true;
+                            Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_LONG).show();
+                            break;
+                        case "HIT":
+                            hit(coord);
+                            break;
+                        case "MISS":
+                            miss(coord);
+                            break;
+                        default:
+                            String[] coordString = readMessage.split(" ");
+                            coord = new int[]{Integer.parseInt(coordString[0]), Integer.parseInt(coordString[1])};
 
-                        int x = coord[0];
-                        int y = coord[1];
+                            int x = coord[0];
+                            int y = coord[1];
 
-                        checkShip(x, y);
+                            checkShip(x, y);
+                            break;
                     }
                     break;
             }
@@ -123,6 +136,8 @@ public class GameActivity extends AppCompatActivity {
     };
 
     private void hit(int[] coord) {
+        mediaPlayer = MediaPlayer.create(this,R.raw.hittingship);
+        mediaPlayer.start();
         holder.bgOpponent.markCellHit(coord[0], coord[1]);
 
         itsMyTurn = false;
@@ -131,6 +146,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void miss(int[] coord) {
+        mediaPlayer = MediaPlayer.create(this,R.raw.missingship);
+        mediaPlayer.start();
         holder.bgOpponent.markCellMissed(coord[0], coord[1]);
 
         itsMyTurn = false;
@@ -151,7 +168,7 @@ public class GameActivity extends AppCompatActivity {
 
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (bluetoothService.getState() != bluetoothService.STATE_CONNECTED) {
+        if (BluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -167,25 +184,30 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    class Holder implements View.OnTouchListener{
+    class Holder implements View.OnTouchListener, View.OnClickListener{
         BattleGridView bgMine;
         BattleGridView bgOpponent;
+        Button btnSurrender;
 
+        @SuppressLint("ClickableViewAccessibility")
         Holder() {
             bgMine = findViewById(R.id.bgMine);
             bgOpponent = findViewById(R.id.bgEnemy);
+            btnSurrender = findViewById(R.id.btnSurrender);
+
+            btnSurrender.setOnClickListener(this);
             bgOpponent.setOnTouchListener(this);
 
             if (itsMyTurn)
                 Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_LONG).show();
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             if(event.getAction() == MotionEvent.ACTION_UP) {
                 Log.d("btsample", "------------------tocco---------");
                 if (itsMyTurn) {
-                    //Toast.makeText(getApplicationContext(), "Your turn", Toast.LENGTH_SHORT).show();
                     int x = (int) event.getX();
                     int y = (int) event.getY();
 
@@ -233,6 +255,31 @@ public class GameActivity extends AppCompatActivity {
             return new int[]{xIndex, yIndex};
         }
 
+        @Override
+        public void onClick(View v) {
+            if(v.getId() == R.id.btnSurrender){
+                Toast.makeText(GameActivity.this, getResources().getString(R.string.game_over),Toast.LENGTH_LONG).show();
+                //mediaPlayer = MediaPlayer.create(GameActivity.this);
+                //mediaPlayer.start();
+                //stoppare i thread
+
+
+                result = getResources().getString(R.string.surrender);
+                database(result);
+
+
+            }
+        }
+    }
+
+    private void database(String result){
+        MatchViewModel matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(getResources().getString(R.string.pattern), Locale.ITALY);
+        String data = dateFormat.toString();
+        String nOfShipLost = "0";
+        String nOfShipHit = "0";
+        Match match = new Match(data, nOfShipHit, nOfShipLost, result);
+        matchViewModel.insert(match);
     }
 
     @Override
@@ -246,7 +293,7 @@ public class GameActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);;
+                        startActivity(intent);
                     }
                 })
                 .setNegativeButton("No", null)

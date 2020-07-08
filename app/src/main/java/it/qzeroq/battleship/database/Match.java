@@ -12,20 +12,17 @@ public class Match {
 
     private String date;
 
-    private String opponentDevice;
-
     private String nShipHit;
 
     private String nShipLost;
 
     private String matchResult;
 
-    public Match(String date,  String opponentDevice, String nShipHit, String nShipLost, String matchResult){
+    public Match(String date, String nShipHit, String nShipLost, String matchResult){
         this.date = date;
         this.matchResult = matchResult;
         this.nShipHit = nShipHit;
         this.nShipLost = nShipLost;
-        this.opponentDevice = opponentDevice;
     }
 
     public void setIdMatch(int idMatch) {
@@ -48,11 +45,6 @@ public class Match {
     }
 
     @NonNull
-    public String getOpponentDevice() {
-        return opponentDevice;
-    }
-
-    @NonNull
     public String getNShipHit() {
         return nShipHit;
     }
@@ -62,23 +54,23 @@ public class Match {
         return nShipLost;
     }
 
-    /*public void setNShipLost(@NonNull String nShipLost) {
+    public void setNShipLost(@NonNull String nShipLost) {
         this.nShipLost = nShipLost;
     }
 
     public void setMatchResult(@NonNull String matchResult) {
         this.matchResult = matchResult;
-    }*/
+    }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
 
+    public void setnShipHit(String nShipHit) {
+        this.nShipHit = nShipHit;
+    }
 
-
-
-
-
-
-
-
-
-
+    public void setnShipLost(String nShipLost) {
+        this.nShipLost = nShipLost;
+    }
 }

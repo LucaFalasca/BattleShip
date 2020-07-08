@@ -7,14 +7,18 @@
     <string name="not_connected">Connessione scaduta</string>
     <string name="waiting">In attesa di nemico…</string>
     <string name="game_result">Vinta/Persa</string>
-    <string name="devicename">Nome dispositivo avversario</string>
+    <string name="device_name">Nome dispositivo avversario</string>
     <string name="data">gg/mm/aaaa</string>
     <string name="btn_confirm">Conferma</string>
     <string name="position_ship_title">Posiziona le tue navi</string>
     <string name="no_prev">Non ci sono device precedentemente accoppiati</string>
     <string name="btn_fire">Spara</string>
     <string name="btn_surrender">Arrenditi</string>
-    <string name="tv_connected_devide">Dispositivi precedemente connessi</string>
+    <string name="tv_connected_device">Dispositivi precedemente connessi</string>
     <string name="tv_discovered_devices">Dispositivi trovati</string>
     <string name="tv_game_history">Cronologia partite</string>
+    <string name="game_over">Ti sei arreso</string>
+    <string name="lose">Persa</string>
+    <string name="win">Vinta</string>
+    <string name="surrender">Arreso</string>
 </resources>

@@ -8,7 +8,7 @@
     <string name="waiting">Waiting for enemy…</string>
 
     <string name="game_result">Win/Lose</string>
-    <string name="devicename">Opponent device</string>\
+    <string name="device_name">Opponent device</string>\
     <string name="data">mm/dd/yyyy</string>
     <string name="number_ship_lost" translatable="false">x</string>
     <string name="number_ship_hitted" translatable="false">y</string>
@@ -22,7 +22,12 @@
     <string name="example_text_et_fire" translatable="false">Ex: B2</string>
     <string name="btn_fire">Open fire</string>
     <string name="btn_surrender">Surrender</string>
-    <string name="tv_connected_devide">Previously connected devices</string>
+    <string name="tv_connected_device">Previously connected devices</string>
     <string name="tv_discovered_devices">Discovered devices</string>
     <string name="tv_game_history">Game History</string>
+    <string name="game_over">You surrender the game</string>
+    <string name="pattern" translatable="false">dd-mm-yy</string>
+    <string name="lose">Lost</string>
+    <string name="win">Win</string>
+    <string name="surrender">Surrender</string>
 </resources>

@@ -17,8 +17,8 @@ public class MatchViewModel extends AndroidViewModel {
         allMatches = matchRepository.getAllMatches();
     }
 
-    public void insert(Match partita){
-        matchRepository.insert(partita);
+    public void insert(Match match){
+        matchRepository.insert(match);
     }
 
     public LiveData<List<Match>> getAllMatches(){
