@@ -19,7 +19,6 @@ import android.widget.Toast;
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.bluetooth.ChooseActivity;
 import it.qzeroq.battleship.bluetooth.WaitActivity;
-import it.qzeroq.battleship.database.GameHistoryActivity;
 
 
 public class MainActivity extends AppCompatActivity {
