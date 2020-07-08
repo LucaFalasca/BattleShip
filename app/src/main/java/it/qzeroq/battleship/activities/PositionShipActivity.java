@@ -71,6 +71,7 @@ public class PositionShipActivity extends AppCompatActivity {
                     if (enemyFinish) {
                         Intent i = new Intent(getApplicationContext(), GameActivity.class);
                         ArrayList<Ship> ships = holder.battleGridView.getShipPlaced();
+                        i.putExtra("itsMyTurn", itsMyTurn);
                         i.putParcelableArrayListExtra("ships", ships);
                         ArrayList<Integer> x = new ArrayList<>();
                         ArrayList<Integer> y = new ArrayList<>();

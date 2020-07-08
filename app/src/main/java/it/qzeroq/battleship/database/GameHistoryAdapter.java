@@ -60,13 +60,15 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
             tvNShipLost = itemView.findViewById(R.id.tvNShipLost);
         }
 
+
         private void fill(Match match){
-            tvName.setText(match.getOpponentDevice());
+            //tvName.setText(match.getOpponentDevice());
             tvData.setText(match.getDate());
             tvNShipLost.setText(match.getNShipLost());
             tvNShipHitted.setText(match.getNShipHit());
             tvGameResult.setText(match.getMatchResult());
 
         }
+
     }
 }

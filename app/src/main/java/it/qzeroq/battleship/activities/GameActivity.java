@@ -86,6 +86,8 @@ public class GameActivity extends AppCompatActivity {
 
         if (itsMyTurn)
             Toast.makeText(getApplicationContext(), "tour turn", Toast.LENGTH_LONG).show();
+        else
+            Toast.makeText(getApplicationContext(), "enemy's turn", Toast.LENGTH_LONG).show();
     }
 
     @SuppressLint("HandlerLeak")
@@ -205,11 +207,20 @@ public class GameActivity extends AppCompatActivity {
         @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent event) {
+
+            int x = (int) event.getX();
+            int y = (int) event.getY();
+
+            if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                Log.d("btsample", "------------------tocco1-------------");
+                return true;
+            }
+
             if(event.getAction() == MotionEvent.ACTION_UP) {
-                Log.d("btsample", "------------------tocco---------");
+                Log.d("btsample", "------------------tocco3-------------");
                 if (itsMyTurn) {
-                    int x = (int) event.getX();
-                    int y = (int) event.getY();
+                    //int x = (int) event.getX();
+                    //int y = (int) event.getY();
 
                     coord = calculateIndexes(x, y, bgOpponent);
 
@@ -218,10 +229,12 @@ public class GameActivity extends AppCompatActivity {
 
                     message = xString + " " + yString;
                     sendMessage(message);
+
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Turn of the enemy", Toast.LENGTH_LONG).show();
                 }
+                return true;
             }
             return false;
         }
