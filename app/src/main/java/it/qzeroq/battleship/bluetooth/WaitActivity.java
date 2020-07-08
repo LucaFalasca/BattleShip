@@ -49,7 +49,7 @@ public class WaitActivity extends AppCompatActivity {
             public void run() {
                 super.run();
                 while(true){
-                    if(mChatService.getState() == BluetoothService.STATE_CONNECTED){
+                    if(BluetoothService.getState() == BluetoothService.STATE_CONNECTED){
                         Intent i = new Intent(WaitActivity.this, PositionShipActivity.class);
                         i.putExtra("itsMyTurn", true);
                         startActivity(i);
