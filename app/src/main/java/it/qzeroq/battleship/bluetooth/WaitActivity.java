@@ -1,10 +1,12 @@
 package it.qzeroq.battleship.bluetooth;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import it.qzeroq.battleship.R;
+import it.qzeroq.battleship.WaitingDialog;
 import it.qzeroq.battleship.activities.MainActivity;
 import it.qzeroq.battleship.activities.PositionShipActivity;
 
@@ -22,6 +25,8 @@ public class WaitActivity extends AppCompatActivity {
 
     BluetoothAdapter mBluetoothAdapter;
     BluetoothService mChatService;
+
+    WaitingDialog waitingDialog;
 
     private static final int REQUEST_ENABLE_BT = 1;
 
@@ -44,12 +49,16 @@ public class WaitActivity extends AppCompatActivity {
         dIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
         startActivity(dIntent);
 
+        waitingDialog = new WaitingDialog(WaitActivity.this);
+        waitingDialog.startWaitingDialog();
+
         new Thread(){
             @Override
             public void run() {
                 super.run();
                 while(true){
-                    if(BluetoothService.getState() == BluetoothService.STATE_CONNECTED){
+                    if(mChatService.getState() == BluetoothService.STATE_CONNECTED){
+                        waitingDialog.dismissWaitingDialog();
                         Intent i = new Intent(WaitActivity.this, PositionShipActivity.class);
                         i.putExtra("itsMyTurn", true);
                         startActivity(i);
@@ -60,7 +69,6 @@ public class WaitActivity extends AppCompatActivity {
         }.start();
 
 
-
     }
 
     @Override
@@ -69,15 +77,6 @@ public class WaitActivity extends AppCompatActivity {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }
-
-    // The Handler that gets information back from the BluetoothChatService
-    @SuppressLint("HandlerLeak")
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-
-        }
-    };
 
     private void checkBluetooth() {
         Log.d(TAG, "checkBluetooth(): start");
@@ -113,7 +112,5 @@ public class WaitActivity extends AppCompatActivity {
             }
         }
     }
-
-
 
 }

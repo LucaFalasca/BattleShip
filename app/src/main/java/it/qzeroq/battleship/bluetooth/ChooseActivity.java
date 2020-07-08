@@ -55,22 +55,12 @@ public class ChooseActivity extends AppCompatActivity {
     // request code for Bluetooth enabling
     private static final int REQUEST_ENABLE_BT = 1;
 
-
-
-    // Name of the connected device
-    private String mConnectedDeviceName = null;
     // Device
     private BluetoothDevice targetDevice;
-    // Array adapter for the conversation thread
-    private ArrayAdapter<String> mConversationArrayAdapter;
-    // String buffer for outgoing messages
-    private StringBuffer mOutStringBuffer;
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
     private BluetoothService mChatService = null;
-    private int match = 0;
-
 
     BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();
     ArrayList<BluetoothDevice> discoveredDeviceList = new ArrayList<>();
@@ -81,8 +71,6 @@ public class ChooseActivity extends AppCompatActivity {
     ArrayList<String> prevDeviceName = new ArrayList<>();
     ArrayAdapter<String> prevArrayAdapter;
 
-    //WaitingDialog waitingDialog = new WaitingDialog(ChooseActivity.this);
-
     IntentFilter filter = new IntentFilter();
 
     Holder holder;
@@ -92,20 +80,13 @@ public class ChooseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choosedevice);
 
+        holder = new Holder();
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         checkBluetooth();
 
-        holder = new Holder();
-//        else if (match == CREATE_MATCH) {
-//            setContentView(R.layout.activity_main); // così sotto rimane mostrato il layout della mainactivity
-//            waitingDialog.startWaitingDialog();
-//        }
-
-        // Get local Bluetooth adapter
-//        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        //checkBluetooth();
-
+        //holder = new Holder();
     }
 
 
@@ -245,8 +226,6 @@ public class ChooseActivity extends AppCompatActivity {
             byte[] send = message.getBytes();
             mChatService.write(send);
 
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
         }
     }
 
@@ -289,14 +268,14 @@ public class ChooseActivity extends AppCompatActivity {
                 if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
                     Log.d(TAG, "BluetoothChat BroadcastReceiver pairing device");
                     Toast.makeText(getApplicationContext(), "Pairing device.", Toast.LENGTH_LONG).show();
-
                 }
             }
-            else if(BluetoothDevice.ACTION_FOUND.equals(action)){
+            else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 assert device != null;
                 Log.d(TAG, "ChooseDevice BroadcastReceiver: device found " + device.getName()+" "+ device.getAddress() );
-                if(!(discoveredDeviceName.contains(device)) && !(prevDeviceList.contains(device))) {
+
+                if(!(discoveredDeviceList.contains(device)) && !(prevDeviceList.contains(device))) {
                     discoveredDeviceName.add(device.getName());
                     discoveredDeviceList.add(device);
 
@@ -327,7 +306,7 @@ public class ChooseActivity extends AppCompatActivity {
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Me:  " + writeMessage);
+                    //mConversationArrayAdapter.add("Me:  " + writeMessage);
                     Log.d(TAG, "BluetoothChat WriteBuf");
                     break;
                 case MESSAGE_READ:
@@ -336,7 +315,7 @@ public class ChooseActivity extends AppCompatActivity {
                     String readMessage = new String(readBuf, 0, msg.arg1);
 
 
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     Log.d(TAG, "BluetoothChat readBuf");
                     break;
                 /*case MESSAGE_DEVICE_NAME:
@@ -373,7 +352,7 @@ public class ChooseActivity extends AppCompatActivity {
                 for (BluetoothDevice device : prevDeviceList) {
                     prevDeviceName.add(device.getName());
                 }
-                prevArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, prevDeviceName);
+                prevArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.prova, prevDeviceName);
                 lvPrevDevices.setAdapter(prevArrayAdapter);
                 lvPrevDevices.setOnItemClickListener(this);
             }
@@ -382,7 +361,7 @@ public class ChooseActivity extends AppCompatActivity {
             }
 
             //setting the adapter for the ListView
-            discoveredArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, discoveredDeviceName);
+            discoveredArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.prova, discoveredDeviceName);
             lvDiscoveredDevices.setAdapter(discoveredArrayAdapter);
             lvDiscoveredDevices.setOnItemClickListener(this);
 
@@ -404,8 +383,6 @@ public class ChooseActivity extends AppCompatActivity {
             }
             pairDevice(targetDevice);
         }
-
-
 
     }
 

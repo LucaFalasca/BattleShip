@@ -15,11 +15,11 @@ public class WaitingDialog {
     private AlertDialog waitDialog;
     private ImageButton btnCancel;
 
-    WaitingDialog(Activity activity) {
+    public WaitingDialog(Activity activity) {
         this.activity = activity;
     }
 
-    void startWaitingDialog() {
+    public void startWaitingDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 
         LayoutInflater inflater =  activity.getLayoutInflater();
@@ -40,7 +40,7 @@ public class WaitingDialog {
         waitDialog.show();
     }
 
-    void dismissWaitingDialog() {
+    public void dismissWaitingDialog() {
         waitDialog.dismiss();
     }
 

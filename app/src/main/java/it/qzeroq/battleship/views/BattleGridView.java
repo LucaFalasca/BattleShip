@@ -2,8 +2,7 @@ package it.qzeroq.battleship.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -14,10 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
-
-import org.apache.http.conn.ConnectTimeoutException;
 
 import java.util.ArrayList;
 
@@ -26,7 +22,7 @@ import it.qzeroq.battleship.Ship;
 
 public class BattleGridView extends GridLayout {
 
-    private final int CELL_SIDE = 50;
+    private final int CELL_SIDE = 30;
     public final int GRID_SIZE = 10;
     private Drawable backgroundCell;
     private Drawable frameCell;
@@ -340,22 +336,6 @@ public class BattleGridView extends GridLayout {
 
     // Getters and Setters
 
-    public Drawable getBackgroundCell() {
-        return backgroundCell;
-    }
-
-    public void setBackgroundCell(Drawable backgroundCell) {
-        this.backgroundCell = backgroundCell;
-    }
-
-    public Drawable getFrameCell() {
-        return frameCell;
-    }
-
-    public void setFrameCell(Drawable frameCell) {
-        this.frameCell = frameCell;
-    }
-
     private void setSizeCells(int side) {
         for(int i = 0; i < 10; i++) {
             setSideView(side, columns[i]);
@@ -435,5 +415,29 @@ public class BattleGridView extends GridLayout {
 
     public int getNumberOfShipPlaced(){
         return getShipPlaced().size();
+    }
+
+    public int getNumberOfSunkenShip(){
+        int c = 0;
+        ArrayList<Ship> shipPlaced = getShipPlaced();
+        boolean q;
+        for(int i = 0; i < shipPlaced.size(); i++){
+            q = true;
+            Ship ship = shipPlaced.get(i);
+            int[][] coords = calculateCoordsOfShip(ship, getXShip(ship), getYShip(ship));
+            int[] xCoords = coords[0];
+            int[] yCoords = coords[1];
+
+            for(int k = 0; k < xCoords.length; k++){
+                int x = xCoords[k];
+                int y = yCoords[k];
+                if(cells[x][y].getForeground() == frameCell){
+                    q = false;
+                    break;
+                }
+            }
+            if(q) c++;
+        }
+        return c;
     }
 }
