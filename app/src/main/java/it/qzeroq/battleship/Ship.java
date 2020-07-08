@@ -1,9 +1,12 @@
 package it.qzeroq.battleship;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.database.MatrixCursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
@@ -23,42 +26,77 @@ public class Ship implements Parcelable {
     private Context context;
 
     public Ship(Context context, int length){
-        switch(length){
-            case 1:
-                sprites = new Drawable[]{
-                        ContextCompat.getDrawable(context, R.drawable.ic_crop_16_9_black_24dp)
-                };
-                break;
-            case 2:
-                sprites = new Drawable[]{
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                };
-                break;
-            case 3:
-                sprites = new Drawable[]{
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
-                };
-                break;
-            case 4:
-                sprites = new Drawable[]{
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova),
-                        ContextCompat.getDrawable(context, R.drawable.ic_prova)
-                };
-                break;
-        }
-        this.length = length;
-        rotation = Rotation.ROTATION_0;
-        this.context = context;
+        this(context, length, Rotation.ROTATION_0);
     }
 
-    public Ship(Context context, int lengthShip, Rotation rotation){
-        this(context, lengthShip);
+    public Ship(Context context, int length, Rotation rotation){
+        this.context = context;
+        this.length = length;
         this.rotation = rotation;
+        setSprites(length, rotation);
+    }
+
+    private void setSprites(int length, Rotation rotation) {
+        if (rotation == Rotation.ROTATION_0) {
+            switch (length) {
+                case 1:
+                    sprites = new Drawable[]{
+                            ContextCompat.getDrawable(context, R.drawable.ic_crop_16_9_black_24dp)
+                    };
+                    break;
+                case 2:
+                    sprites = new Drawable[]{
+                            ContextCompat.getDrawable(context, R.drawable.ship_l2_horizontal_s1_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l2_horizontal_s2_72),
+                    };
+                    break;
+                case 3:
+                    sprites = new Drawable[]{
+                            ContextCompat.getDrawable(context, R.drawable.ship_l3_horizontal_s1_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l3_horizontal_s2_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l3_horizontal_s3_72)
+                    };
+                    break;
+                case 4:
+                    sprites = new Drawable[]{
+                            ContextCompat.getDrawable(context, R.drawable.ship_l4_horizontal_s1_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l4_horizontal_s2_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l4_horizontal_s3_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l4_horizontal_s4_72)
+                    };
+                    break;
+            }
+        }
+        else if(rotation == Rotation.ROTATION_90){
+            switch (length) {
+                case 1:
+                    sprites = new Drawable[]{
+                            ContextCompat.getDrawable(context, R.drawable.ic_crop_16_9_black_24dp)
+                    };
+                    break;
+                case 2:
+                    sprites = new Drawable[]{
+                            ContextCompat.getDrawable(context, R.drawable.ship_l2_vertical_s1_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l2_vertical_s2_72),
+                    };
+                    break;
+                case 3:
+                    sprites = new Drawable[]{
+                            ContextCompat.getDrawable(context, R.drawable.ship_l3_vertical_s1_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l3_vertical_s2_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l3_vertical_s3_72)
+                    };
+                    break;
+                case 4:
+                    sprites = new Drawable[]{
+                            ContextCompat.getDrawable(context, R.drawable.ship_l4_vertical_s1_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l4_vertical_s2_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l4_vertical_s3_72),
+                            ContextCompat.getDrawable(context, R.drawable.ship_l4_vertical_s4_72)
+                    };
+                    break;
+            }
+        }
     }
 
     protected Ship(Parcel in) {
@@ -109,17 +147,18 @@ public class Ship implements Parcelable {
         else{
             rotation = Rotation.ROTATION_0;
         }
-        applyRotationOnSprite();
+        setSprites(length, rotation);
     }
 
-    private void applyRotationOnSprite(){
-        for(int i = 0; i < length; i++){
-            rotate(sprites[i], getAngleRotation());
-        }
-    }
+    private Drawable rotate(Drawable sprite, int angleRotation) {
+        Matrix m = new Matrix();
+        m.postRotate(angleRotation);
 
-    private void rotate(Drawable sprite, int angleRotation) {
+        BitmapDrawable bd = (BitmapDrawable) sprite;
+        Bitmap bitmap = bd.getBitmap();
 
+        Bitmap rotatedBitap = Bitmap.createBitmap(bitmap, 0, 0, sprite.getIntrinsicWidth(), sprite.getIntrinsicHeight(), m, true);
+        return new BitmapDrawable(Resources.getSystem(), rotatedBitap);
     }
 
     public int getAngleRotation(){
