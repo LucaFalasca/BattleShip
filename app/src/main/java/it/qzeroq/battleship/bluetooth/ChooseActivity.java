@@ -352,7 +352,7 @@ public class ChooseActivity extends AppCompatActivity {
                 for (BluetoothDevice device : prevDeviceList) {
                     prevDeviceName.add(device.getName());
                 }
-                prevArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, prevDeviceName);
+                prevArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.prova, prevDeviceName);
                 lvPrevDevices.setAdapter(prevArrayAdapter);
                 lvPrevDevices.setOnItemClickListener(this);
             }
@@ -361,7 +361,7 @@ public class ChooseActivity extends AppCompatActivity {
             }
 
             //setting the adapter for the ListView
-            discoveredArrayAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, discoveredDeviceName);
+            discoveredArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.prova, discoveredDeviceName);
             lvDiscoveredDevices.setAdapter(discoveredArrayAdapter);
             lvDiscoveredDevices.setOnItemClickListener(this);
 
