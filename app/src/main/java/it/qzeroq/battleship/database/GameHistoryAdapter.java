@@ -27,12 +27,8 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull GameHistoryAdapter.Holder holder, int position) {
-        if(matchList != null){
-            holder.fill(matchList.get(position));
-        }
-        else{
-            System.out.println("VABBE CONTA CEH FN");
-        }
+        holder.fill(matchList.get(position));
+
     }
 
     @Override
