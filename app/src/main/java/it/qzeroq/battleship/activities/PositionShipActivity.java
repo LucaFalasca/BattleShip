@@ -128,6 +128,8 @@ public class PositionShipActivity extends AppCompatActivity {
         // Check that we're actually connected before trying anything
         if (BluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
             return;
         }
 
