@@ -44,6 +44,8 @@ public class GameActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private Holder holder;
     private boolean itsMyTurn;
+    private int enemySunkenShip;
+    private boolean iWin = false;
 
     @SuppressLint("HandlerLeak")
     private final Handler handler = new Handler() {
@@ -53,6 +55,7 @@ public class GameActivity extends AppCompatActivity {
                 byte[] readBuf = (byte[]) msg.obj;
                 // construct a string from the valid bytes in the buffer
                 String readMessage = new String(readBuf, 0, msg.arg1);
+
 
                 switch (readMessage) {
                     case "your turn":
@@ -65,20 +68,34 @@ public class GameActivity extends AppCompatActivity {
                         miss(coord);
                         break;
                     case "YOU WIN":
+                        iWin = true;
+                        GameActivity.this.sendMessage("SHIP LOST " + holder.bgMine.getNumberOfSunkenShip());
                         mediaPlayer = MediaPlayer.create(GameActivity.this, R.raw.victory);
                         mediaPlayer.start();
                         Toast.makeText(getApplicationContext(), "You win!", Toast.LENGTH_SHORT).show();
-                        finishGame(getResources().getString(R.string.win));
                         break;
                     default:
-                        String[] coordString = readMessage.split(" ");
-                        coord = new int[]{Integer.parseInt(coordString[0]), Integer.parseInt(coordString[1])};
+                        if(readMessage.startsWith("SHIP LOST")){
+                            enemySunkenShip = Integer.parseInt(readMessage.substring(readMessage.length() - 1));
+                            if(iWin){
+                                finishGame(getResources().getString(R.string.win));
+                            }
+                            else{
+                                GameActivity.this.sendMessage("SHIP LOST " + holder.bgMine.getNumberOfSunkenShip());
+                                finishGame(getResources().getString(R.string.lose));
+                            }
 
-                        int x = coord[0];
-                        int y = coord[1];
+                        }
+                        else {
+                            String[] coordString = readMessage.split(" ");
+                            coord = new int[]{Integer.parseInt(coordString[0]), Integer.parseInt(coordString[1])};
 
-                        checkShip(x, y);
-                        checkVictory();
+                            int x = coord[0];
+                            int y = coord[1];
+
+                            checkShip(x, y);
+                            checkVictory();
+                        }
                         break;
                 }
             }
@@ -158,9 +175,8 @@ public class GameActivity extends AppCompatActivity {
         if(sunkenShip == 7){
             sendMessage("YOU WIN");
             Toast.makeText(getApplicationContext(), "You Lose!", Toast.LENGTH_SHORT).show();
-            mediaPlayer = MediaPlayer.create(this,R.raw.lose);
+            mediaPlayer = MediaPlayer.create(this, R.raw.lose);
             mediaPlayer.start();
-            finishGame(getResources().getString(R.string.win));
         }
     }
 
@@ -170,7 +186,7 @@ public class GameActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         String data = DateFormat.getDateInstance(DateFormat.SHORT).format(calendar.getTime());
         String nOfShipLost = String.valueOf(holder.bgMine.getNumberOfSunkenShip());
-        String nOfShipHit = String.valueOf(holder.bgOpponent.getNumberOfSunkenShip());
+        String nOfShipHit = String.valueOf(enemySunkenShip);
         Match match = new Match(data, nOfShipHit, nOfShipLost, result);
         matchViewModel.insert(match);
         //DA TESTARE
@@ -178,7 +194,7 @@ public class GameActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.match_over)
                     .setMessage(getResources().getString(R.string.game_win))
-                    .setPositiveButton("Finish", new DialogInterface.OnClickListener()
+                    .setPositiveButton(R.string.finish, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -191,7 +207,7 @@ public class GameActivity extends AppCompatActivity {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.match_over)
                     .setMessage(getResources().getString(R.string.game_lose))
-                    .setPositiveButton("Finish", new DialogInterface.OnClickListener()
+                    .setPositiveButton(R.string.finish, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

@@ -28,4 +28,6 @@
     <string name="game_win">Hai vinto la partita!</string>
     <string name="game_lose">Hai perso :(</string>
     <string name="btnFinish">Fine</string>
+    <string name="match_over">Partita conclusa</string>
+    <string name="finish">Vai al menù principale</string>
 </resources>

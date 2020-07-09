@@ -1,5 +1,6 @@
 package it.qzeroq.battleship.database;
 
+import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -51,8 +53,8 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
             super(ItemView);
             tvGameResult = itemView.findViewById(R.id.tvGameResult);
             tvData = itemView.findViewById(R.id.tvData);
-            tvNShipHit = itemView.findViewById(R.id.tvNShipLost);
-            tvNShipLost = itemView.findViewById(R.id.tvNShipHit);
+            tvNShipHit = itemView.findViewById(R.id.tvNShipHit);
+            tvNShipLost = itemView.findViewById(R.id.tvNShipLost);
         }
 
         private void fill(Match match){
@@ -60,7 +62,7 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
             tvNShipLost.setText(match.getNShipLost());
             tvNShipHit.setText(match.getNShipHit());
 
-            if(match.getMatchResult().equals(R.string.win))
+            if(match.getMatchResult().equals(Resources.getSystem().getString(R.string.win)))
                 tvGameResult.setTextColor(itemView.getContext().getColor(R.color.text_win));
             else
                 tvGameResult.setTextColor(itemView.getContext().getColor(R.color.text_lose));
