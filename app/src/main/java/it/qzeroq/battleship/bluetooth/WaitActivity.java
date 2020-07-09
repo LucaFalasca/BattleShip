@@ -36,7 +36,7 @@ public class WaitActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choosedevice);
+        setContentView(R.layout.activity_wait);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -58,7 +58,7 @@ public class WaitActivity extends AppCompatActivity {
                     String readMessage = new String(readBuf, 0, msg.arg1);
 
                     if ("connected".equals(readMessage)) {
-                        //i.putExtra("itsMyTurn", true);
+                        i.putExtra("itsMyTurn", true);
                         startActivity(i);
                     }
                     break;
