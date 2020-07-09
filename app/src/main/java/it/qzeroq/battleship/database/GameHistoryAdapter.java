@@ -1,6 +1,5 @@
 package it.qzeroq.battleship.database;
 
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +61,7 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
             tvNShipLost.setText(match.getNShipLost());
             tvNShipHit.setText(match.getNShipHit());
 
-            if(match.getMatchResult().equals(Resources.getSystem().getString(R.string.win)))
+            if(match.getMatchResult().equals(R.string.win))
                 tvGameResult.setTextColor(itemView.getContext().getColor(R.color.text_win));
             else
                 tvGameResult.setTextColor(itemView.getContext().getColor(R.color.text_lose));

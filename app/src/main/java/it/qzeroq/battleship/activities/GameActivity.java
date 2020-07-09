@@ -94,7 +94,6 @@ public class GameActivity extends AppCompatActivity {
                             int y = coord[1];
 
                             checkShip(x, y);
-                            checkVictory();
                         }
                         break;
                 }
@@ -134,7 +133,8 @@ public class GameActivity extends AppCompatActivity {
     private void checkShip(int x, int y) {
         if (holder.bgMine.thereIsAShipAt(x, y)) {
             holder.bgMine.markCellHit(x, y);
-            sendMessage("HIT");
+            if(!checkVictory())
+                sendMessage("HIT");
         }
         else {
             holder.bgMine.markCellMissed(x, y);
@@ -169,7 +169,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private void checkVictory() {
+    private boolean checkVictory() {
         int sunkenShip = holder.bgMine.getNumberOfSunkenShip();
         System.out.println("Affondate: " + sunkenShip);
         if(sunkenShip == 7){
@@ -177,7 +177,9 @@ public class GameActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "You Lose!", Toast.LENGTH_SHORT).show();
             mediaPlayer = MediaPlayer.create(this, R.raw.lose);
             mediaPlayer.start();
+            return true;
         }
+        return false;
     }
 
     private void finishGame(String result){
