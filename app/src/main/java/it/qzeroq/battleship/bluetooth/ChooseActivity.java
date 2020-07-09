@@ -253,40 +253,30 @@ public class ChooseActivity extends AppCompatActivity {
                 switch (msg.arg1) {
                     case BluetoothService.STATE_CONNECTED:
                         ChooseActivity.this.sendMessage("connected");
-                        Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
-                        i.putExtra("itsMyTurn", false);
-                        startActivity(i);
+
                         break;
                     case BluetoothService.STATE_CONNECTING:
                     case BluetoothService.STATE_LISTEN:
                     case BluetoothService.STATE_NONE:
                         break;
                 }
-                    /*case MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    //mConversationArrayAdapter.add("Me:  " + writeMessage);
-                    Log.d(TAG, "BluetoothChat WriteBuf");
-                    break;
-                case MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
-
-
-                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
-                    Log.d(TAG, "BluetoothChat readBuf");
-                    break;
-                case MESSAGE_DEVICE_NAME:
-                    // save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-                    Toast.makeText(getApplicationContext(), "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                    break;
-                case MESSAGE_TOAST:
-                    Toast.makeText(getApplicationContext(), msg.getData().getString(TOAST),
-                            Toast.LENGTH_SHORT).show();
-                    break;*/
+                switch (msg.what) {
+                    case MESSAGE_WRITE:
+                        byte[] writeBuf = (byte[]) msg.obj;
+                        // construct a string from the buffer
+                        String writeMessage = new String(writeBuf);
+                        break;
+                    case MESSAGE_READ:
+                        byte[] readBuf = (byte[]) msg.obj;
+                        // construct a string from the valid bytes in the buffer
+                        String readMessage = new String(readBuf, 0, msg.arg1);
+                        if ("connected".equals(readMessage)) {
+                            Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
+                            i.putExtra("itsMyTurn", false);
+                            startActivity(i);
+                        }
+                        break;
+                }
             }
         }
     };
@@ -334,11 +324,9 @@ public class ChooseActivity extends AppCompatActivity {
 
             //putting the information of the chosen device into the Intent
             if (parent.getId() == R.id.lvPrevDevices) {
-                Log.d(TAG, "ChooseDevice onItemClick(): device = " + prevDeviceList.get(position).getName());
                 targetDevice = prevDeviceList.get(position);
             }
             else if (parent.getId() == R.id.lvDiscoveredDevices) {
-                Log.d(TAG, "ChooseDevice onItemClick(): device = " + discoveredDeviceList.get(position).getName());
                 targetDevice = discoveredDeviceList.get(position);
             }
             pairDevice(targetDevice);
@@ -348,25 +336,21 @@ public class ChooseActivity extends AppCompatActivity {
 
 
     private void pairDevice(BluetoothDevice targetDevice){
-        if (targetDevice == null)
-            Log.d(TAG, "BluetoothChat onActivityResult: target device is null");
+        if (targetDevice == null){
+            Toast.makeText(getApplicationContext(), "Can't paired with that device.", Toast.LENGTH_LONG).show();
+        }
         else {
             try {
                 if (targetDevice.createBond()) {
-                    Log.d(TAG, "BluetoothChat onActivityResult: createBond()");
                     filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
                     registerReceiver(receiver, filter);
 
-//                    mChatService.connect(targetDevice);
-
                 } else if (mBluetoothAdapter.getBondedDevices().contains(targetDevice)) {
                     Toast.makeText(getApplicationContext(), "Device already paired.", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "BluetoothChat onActivityResult: device already paired");
 
                     mChatService.connect(targetDevice);
 
                 } else {
-                    Log.d(TAG, "BluetoothChat onActivityResult: unable to pair device");
                     Toast.makeText(getApplicationContext(), "Unable to pair device.", Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
@@ -374,56 +358,4 @@ public class ChooseActivity extends AppCompatActivity {
             }
         }
     }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //result of request if BT is enabled or not
-       *//* if (requestCode == REQUEST_ENABLE_BT) {
-            if (resultCode == RESULT_OK) {
-                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT OK");
-                Toast.makeText(this, "Bluetooth is enable", Toast.LENGTH_SHORT).show();
-                //setupChat();
-            }
-            else {
-                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT CANCELED");
-                Toast.makeText(this, "Bluetooth enabling cancelled. Leaving the chat", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }*//*
-        //result of the choice for the player2 BT device
-        if (requestCode == PAIR_BT_DEVICE) {
-            if (resultCode == RESULT_OK) {
-                Log.d(TAG, "BluetoothChat onActivityResult: PAIR_BT_DEVICE OK");
-                assert data != null;
-                // get the BluetoothDevice object
-                targetDevice = data.getParcelableExtra("device");
-                if (targetDevice == null)
-                    Log.d(TAG, "BluetoothChat onActivityResult: target device is null");
-                else {
-                    try {
-                        if (targetDevice.createBond()) {
-                            Log.d(TAG, "BluetoothChat onActivityResult: createBond()");
-                            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-                            registerReceiver(receiver, filter);
-
-                            mChatService.connect(targetDevice);
-
-                        } else if (mBluetoothAdapter.getBondedDevices().contains(targetDevice)) {
-                            Toast.makeText(getApplicationContext(), "Device already paired.", Toast.LENGTH_LONG).show();
-                            Log.d(TAG, "BluetoothChat onActivityResult: device already paired");
-
-                            mChatService.connect(targetDevice);
-
-                        } else {
-                            Log.d(TAG, "BluetoothChat onActivityResult: unable to pair device");
-                            Toast.makeText(getApplicationContext(), "Unable to pair device.", Toast.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, String.valueOf(e));
-                    }
-                }
-            }
-        }
-    }*/
 }
