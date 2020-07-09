@@ -36,14 +36,10 @@ public class PositionShipActivity extends AppCompatActivity {
 
     BluetoothService bluetoothService;
 
-    // Reset out string buffer to zero and clear the edit text field
-    //private StringBuffer mOutStringBuffer = new StringBuffer();
-
     Boolean finish = false;
     Boolean enemyFinish = false;
     Boolean itsMyTurn;
 
-    //String writeMessage;
     String readMessage;
 
     Holder holder;
@@ -55,17 +51,6 @@ public class PositionShipActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MESSAGE_WRITE:
-                    /*
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-
-                    writeMessage = new String(writeBuf);
-                    if (writeMessage.equals(readMessage)) {
-                        Intent i = new Intent(getApplicationContext(), GameActivity.class);
-                        //i.putExtra("ships", ); ------------VARIABILE CONTENENTE POSIZIONE DELLE NAVI------------
-                        startActivity(i);
-                    }
-                    */
                     if (enemyFinish) {
                         Intent i = new Intent(getApplicationContext(), GameActivity.class);
                         ArrayList<Ship> ships = holder.battleGridView.getShipPlaced();
@@ -73,11 +58,11 @@ public class PositionShipActivity extends AppCompatActivity {
                         i.putParcelableArrayListExtra("ships", ships);
                         ArrayList<Integer> x = new ArrayList<>();
                         ArrayList<Integer> y = new ArrayList<>();
+
                         for(int k = 0; k < ships.size(); k++){
                             x.add(holder.battleGridView.getXShip(ships.get(k)));
                             y.add(holder.battleGridView.getYShip(ships.get(k)));
                         }
-
 
                         i.putIntegerArrayListExtra("x", x);
                         i.putIntegerArrayListExtra("y", y);
@@ -96,7 +81,6 @@ public class PositionShipActivity extends AppCompatActivity {
                         Intent i = new Intent(getApplicationContext(), GameActivity.class);
                         i.putExtra("itsMyTurn", itsMyTurn);
 
-                        //bisogna vedere se funziona
                         ArrayList<Ship> ships = holder.battleGridView.getShipPlaced();
                         i.putParcelableArrayListExtra("ships", ships);
                         ArrayList<Integer> x = new ArrayList<>();
@@ -223,8 +207,6 @@ public class PositionShipActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if(v.getId() == R.id.btnConfirm) {
-                //bluetoothService.write();
-
                 if (battleGridView.getNumberOfShipPlaced() == 7) {
                     String message = "Finished positioning";
                     sendMessage(message);

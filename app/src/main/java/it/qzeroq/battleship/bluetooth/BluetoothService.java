@@ -94,7 +94,6 @@ public class BluetoothService {
      * Start the chat service. Specifically start AcceptThread to begin a
      * session in listening (server) mode. Called by the Activity onResume() */
     public synchronized void start() {
-        Log.d(TAG, "BluetoothService start()");
 
         // Cancel any thread attempting to make a connection
         if (mConnectThread != null) {
@@ -122,7 +121,6 @@ public class BluetoothService {
      * @param device  The BluetoothDevice to connect
      */
     public synchronized void connect(BluetoothDevice device) {
-        Log.d(TAG, "BluetoothService connect(): connect to: " + device);
 
         // Cancel any thread attempting to make a connection
         if (mState == STATE_CONNECTING) {
@@ -141,7 +139,6 @@ public class BluetoothService {
         // Start the thread to connect with the given device
         mConnectThread = new ConnectThread(device);
         mConnectThread.start();
-        Log.d(TAG, "BluetoothService connect(): starting connectThread");
 
         setState(STATE_CONNECTING);
     }
@@ -152,7 +149,6 @@ public class BluetoothService {
      * @param device  The BluetoothDevice that has been connected
      */
     public synchronized void connected(BluetoothSocket socket, BluetoothDevice device) {
-        Log.d(TAG, "BluetoothService connected(): starting");
 
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {
@@ -191,7 +187,6 @@ public class BluetoothService {
      * Stop all threads
      */
     public synchronized void stop() {
-        Log.d(TAG, "BluetoothService stop()");
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
@@ -225,7 +220,6 @@ public class BluetoothService {
 
             tmp = mConnectedThread;
         }
-        // Perform the write unsynchronized
         tmp.write(out);
     }
 
@@ -282,7 +276,6 @@ public class BluetoothService {
         }
 
         public void run() {
-            Log.d(TAG, "BluetoothService AcceptThread run(): start" + this);
             BluetoothSocket socket;
 
             // Listen to the server socket if we're not connected
@@ -317,11 +310,9 @@ public class BluetoothService {
                     }
                 }
             }
-            Log.d(TAG, "BluetoothService AcceptThread ended");
         }
 
         public void cancel() {
-            Log.d(TAG, "BluetoothService AcceptThread cancel()");
             try {
                 mmServerSocket.close();
             } catch (IOException e) {
@@ -355,10 +346,6 @@ public class BluetoothService {
         }
 
         public void run() {
-            Log.d(TAG, "BluetoothService ConnectThread run()");
-
-            // Always cancel discovery because it will slow down a connection
-            //mAdapter.cancelDiscovery();
 
             // Make a connection to the BluetoothSocket
             try {
@@ -408,7 +395,6 @@ public class BluetoothService {
         private final OutputStream mmOutStream;
 
         public ConnectedThread(BluetoothSocket socket) {
-            Log.d(TAG, "BluetoothService ConnectedThread constructor: starting");
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -427,7 +413,6 @@ public class BluetoothService {
         }
 
         public void run() {
-            Log.i(TAG, "BluetoothService ConnectedThread run()");
             byte[] buffer = new byte[1024];
             int bytes;
 

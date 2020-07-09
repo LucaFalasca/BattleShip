@@ -13,7 +13,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -232,7 +231,6 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String message) {
-        Log.d("btsample", "send message");
 
         // Check that we're actually connected before trying anything
         if (BluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
