@@ -217,7 +217,6 @@ public class ChooseActivity extends AppCompatActivity {
         // Stop the Bluetooth chat services
         if (bluetoothService != null)
             bluetoothService.stop();
-        Log.e(TAG, "--- ON DESTROY ---");
 
         unregisterReceiver(receiver);
     }

@@ -22,8 +22,6 @@ import it.qzeroq.battleship.bluetooth.WaitActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-
-    // layout holder
     Holder holder;
 
     @Override

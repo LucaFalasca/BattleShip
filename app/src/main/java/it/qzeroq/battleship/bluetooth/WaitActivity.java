@@ -17,15 +17,11 @@ import it.qzeroq.battleship.activities.MainActivity;
 import it.qzeroq.battleship.activities.PositionShipActivity;
 
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_READ;
-import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_DEVICE_NAME;
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_WRITE;
 
 
 public class WaitActivity extends AppCompatActivity {
 
-    private static final String TAG = "btsample";
-
-    String enemyDevice;
 
     BluetoothAdapter mBluetoothAdapter;
     WaitingDialog waitingDialog;
