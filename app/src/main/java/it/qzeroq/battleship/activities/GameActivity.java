@@ -46,6 +46,7 @@ public class GameActivity extends AppCompatActivity {
     private boolean itsMyTurn;
     private int enemySunkenShip;
     private boolean iWin = false;
+    private boolean surrender = false;
 
     @SuppressLint("HandlerLeak")
     private final Handler handler = new Handler() {
@@ -79,6 +80,10 @@ public class GameActivity extends AppCompatActivity {
                             enemySunkenShip = Integer.parseInt(readMessage.substring(readMessage.length() - 1));
                             if(iWin){
                                 finishGame(getResources().getString(R.string.win));
+                            }
+                            else if(surrender){
+                                GameActivity.this.sendMessage("SHIP LOST " + holder.bgMine.getNumberOfSunkenShip());
+                                finishGame(getResources().getString(R.string.surrender));
                             }
                             else{
                                 GameActivity.this.sendMessage("SHIP LOST " + holder.bgMine.getNumberOfSunkenShip());
@@ -354,8 +359,6 @@ public class GameActivity extends AppCompatActivity {
                 sendMessage("YOU WIN");
                 mediaPlayer = MediaPlayer.create(GameActivity.this,R.raw.lose);
                 mediaPlayer.start();
-                finishGame(getResources().getString(R.string.surrender));
-
             }
             else if(v.getId() == R.id.btnFire){
                 if(itsMyTurn) {
