@@ -5,7 +5,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:fontFamily="@font/nugie_romantic"
-    android:padding="10dp"
+    android:padding="@dimen/padding_standard"
     android:text="@string/app_name"
     android:textColor="@android:color/white"
-    android:textSize="18sp" />
+    android:textSize="@dimen/text_size_4" />
