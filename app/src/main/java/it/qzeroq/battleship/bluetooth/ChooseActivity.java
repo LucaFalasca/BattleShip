@@ -80,8 +80,6 @@ public class ChooseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choosedevice);
 
-
-
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if(checkBluetooth()){
@@ -91,15 +89,7 @@ public class ChooseActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.e(TAG, "BluetoothChat ON START");
 
-        if (mChatService == null)
-            setupConnection();
-
-    }
 
     private boolean checkBluetooth() {
         Log.d(TAG, "checkBluetooth(): start");
@@ -108,6 +98,8 @@ public class ChooseActivity extends AppCompatActivity {
             //Bluetooth not supported by the device
             Toast.makeText(ChooseActivity.this, "This device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
             Log.d(TAG, "checkBluetooth(): btAdapter == null");
+            Intent i = new Intent(this, MainActivity.class);
+            startActivity(i);
         }
         else {
             //request to enable Bluetooth if it isn't on
@@ -149,6 +141,8 @@ public class ChooseActivity extends AppCompatActivity {
         mBluetoothAdapter.startDiscovery();
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, filter);
+        mChatService = BluetoothService.getInstance();
+        mChatService.setHandler(mHandler);
     }
 
     @Override
@@ -159,40 +153,49 @@ public class ChooseActivity extends AppCompatActivity {
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        /*if (mChatService != null) {
+        if (mChatService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService.getState() == BluetoothService.STATE_NONE) {
+            if (BluetoothService.getState() == BluetoothService.STATE_NONE) {
                 // Start the Bluetooth chat services
                 mChatService.start();
             }
-        }*/
+        }
+    }
 
-        /*while(true){
-            if(mChatService.getState() == BluetoothService.STATE_CONNECTED){
-                Intent Int = new Intent(ChooseActivity.this, PositionShipActivity.class);
-                startActivity(Int);
-                break;
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                assert device != null;
+                if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
+                    Log.d(TAG, "BluetoothChat BroadcastReceiver paired device");
+                    Toast.makeText(getApplicationContext(), "Paired device.", Toast.LENGTH_LONG).show();
+                    mChatService.connect(targetDevice);
+
+                }
+                if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    Log.d(TAG, "BluetoothChat BroadcastReceiver pairing device");
+                    Toast.makeText(getApplicationContext(), "Pairing device.", Toast.LENGTH_LONG).show();
+                }
             }
-        }*/
-    }
+            else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                assert device != null;
+                Log.d(TAG, "ChooseDevice BroadcastReceiver: device found " + device.getName()+" "+ device.getAddress() );
 
+                if(!(discoveredDeviceList.contains(device)) && !(prevDeviceList.contains(device))) {
+                    if(device.getName() != null) {
+                        discoveredDeviceName.add(device.getName());
+                        discoveredDeviceList.add(device);
 
-    private void setupConnection() {
-        Log.d(TAG, "setupChat()");
-
-
-        /*Intent i = new Intent(getApplicationContext(), ChooseDeviceActivity.class);
-        startActivityForResult(i, PAIR_BT_DEVICE);*/
-
-
-        // Initialize the BluetoothChatService to perform bluetooth connections
-        mChatService = BluetoothService.getInstance();
-        mChatService.setHandler(mHandler);
-
-        // Initialize the buffer for outgoing messages
-        //mOutStringBuffer = new StringBuffer();
-    }
-
+                        discoveredArrayAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        }
+    };
 
     @Override
     public void onDestroy() {
@@ -239,64 +242,7 @@ public class ChooseActivity extends AppCompatActivity {
         }
     }
 
-    // The action listener for the EditText widget, to listen for the return key
-    /*private TextView.OnEditorActionListener mWriteListener =
-            new TextView.OnEditorActionListener() {
-                public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-                    // If the action is a key-up event on the return key, send the message
-                    if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                        String message = view.getText().toString();
-                        sendMessage(message);
-                    }
-                    Log.d(TAG, "END onEditorAction");
-                    return true;
-                }
-            };*/
 
-    private final BroadcastReceiver receiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                assert device != null;
-                if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    Log.d(TAG, "BluetoothChat BroadcastReceiver paired device");
-                    Toast.makeText(getApplicationContext(), "Paired device.", Toast.LENGTH_LONG).show();
-                    mChatService.connect(targetDevice);
-
-                    while(true){
-                        if(BluetoothService.getState() == BluetoothService.STATE_CONNECTED){
-                            Toast.makeText(getApplicationContext(), "Connected to " + targetDevice.getName(), Toast.LENGTH_SHORT).show();
-                            Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
-                            i.putExtra("itsMyTurn", false);
-                            startActivity(i);
-                            break;
-                        }
-                    }
-
-                }
-                if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    Log.d(TAG, "BluetoothChat BroadcastReceiver pairing device");
-                    Toast.makeText(getApplicationContext(), "Pairing device.", Toast.LENGTH_LONG).show();
-                }
-            }
-            else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                assert device != null;
-                Log.d(TAG, "ChooseDevice BroadcastReceiver: device found " + device.getName()+" "+ device.getAddress() );
-
-                if(!(discoveredDeviceList.contains(device)) && !(prevDeviceList.contains(device))) {
-                    if(device.getName() != null) {
-                        discoveredDeviceName.add(device.getName());
-                        discoveredDeviceList.add(device);
-
-                        discoveredArrayAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        }
-    };
 
 
     // The Handler that gets information back from the BluetoothChatService
@@ -309,13 +255,18 @@ public class ChooseActivity extends AppCompatActivity {
                     Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
+                            ChooseActivity.this.sendMessage("connected");
+                            Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
+                            i.putExtra("itsMyTurn", false);
+                            startActivity(i);
+                            break;
                         case BluetoothService.STATE_CONNECTING:
                         case BluetoothService.STATE_LISTEN:
                         case BluetoothService.STATE_NONE:
                             break;
                     }
                     break;
-                case MESSAGE_WRITE:
+                /*case MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);
@@ -331,7 +282,7 @@ public class ChooseActivity extends AppCompatActivity {
                     //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     Log.d(TAG, "BluetoothChat readBuf");
                     break;
-                /*case MESSAGE_DEVICE_NAME:
+                case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                     Toast.makeText(getApplicationContext(), "Connected to " + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
@@ -417,13 +368,6 @@ public class ChooseActivity extends AppCompatActivity {
                     Log.d(TAG, "BluetoothChat onActivityResult: device already paired");
 
                     mChatService.connect(targetDevice);
-                    while(true){
-                        if(BluetoothService.getState() == BluetoothService.STATE_CONNECTED){
-                            Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
-                            startActivity(i);
-                            break;
-                        }
-                    }
 
                 } else {
                     Log.d(TAG, "BluetoothChat onActivityResult: unable to pair device");

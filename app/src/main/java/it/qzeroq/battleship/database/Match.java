@@ -54,23 +54,5 @@ public class Match {
         return nShipLost;
     }
 
-    public void setNShipLost(@NonNull String nShipLost) {
-        this.nShipLost = nShipLost;
-    }
 
-    public void setMatchResult(@NonNull String matchResult) {
-        this.matchResult = matchResult;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public void setnShipHit(String nShipHit) {
-        this.nShipHit = nShipHit;
-    }
-
-    public void setnShipLost(String nShipLost) {
-        this.nShipLost = nShipLost;
-    }
 }

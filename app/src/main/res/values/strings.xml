@@ -8,7 +8,7 @@
     <string name="waiting">Waiting for enemy…</string>
 
     <string name="game_result">Win/Lose</string>
-    <string name="device_name">Opponent device</string>\
+    <string name="device_name">Opponent device</string>
     <string name="data">mm/dd/yyyy</string>
     <string name="number_ship_lost" translatable="false">x</string>
     <string name="number_ship_hitted" translatable="false">y</string>
@@ -34,4 +34,8 @@
     <string name="lost">Number of ship lost:</string>
     <string name="enemy_turn">It\'s Enemy Turn!</string>
     <string name="your_turn">It\'s Your turn!</string>
+    <string name="coord" translatable="false">[A-J]+[1-10]</string>
+    <string name="game_win">You win the game :)</string>
+    <string name="game_lose">You lose this one :(</string>
+    <string name="btnFinish">Finish</string>
 </resources>

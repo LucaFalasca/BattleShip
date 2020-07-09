@@ -9,12 +9,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,11 +23,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 import it.qzeroq.battleship.R;
 import it.qzeroq.battleship.Ship;
@@ -39,7 +35,6 @@ import it.qzeroq.battleship.database.MatchViewModel;
 import it.qzeroq.battleship.views.BattleGridView;
 
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_READ;
-import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_WRITE;
 
 public class GameActivity extends AppCompatActivity {
 
@@ -60,6 +55,8 @@ public class GameActivity extends AppCompatActivity {
 
     Holder holder;
     boolean itsMyTurn;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,11 +85,11 @@ public class GameActivity extends AppCompatActivity {
         bluetoothService = BluetoothService.getInstance();
         bluetoothService.setHandler(handler);
 
-        if (itsMyTurn) {
+        if (itsMyTurn)
             Toast.makeText(getApplicationContext(), "tour turn", Toast.LENGTH_SHORT).show();
-        }
         else
             Toast.makeText(getApplicationContext(), "enemy's turn", Toast.LENGTH_SHORT).show();
+
         holder.btnTurn.setChecked(itsMyTurn);
     }
 
@@ -101,7 +98,7 @@ public class GameActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MESSAGE_WRITE:
+                /*case MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     /*
@@ -109,9 +106,9 @@ public class GameActivity extends AppCompatActivity {
                     if (writeMessage.equals(readMessage)) {
                         //-------NON SO COSA DEBBA FARE-------
                     }
-                    */
 
-                    break;
+
+                    break;*/
                 case MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
@@ -165,14 +162,42 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void finishGame(String result){
+
         MatchViewModel matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
-        Date date;
-        date = Calendar.getInstance().getTime();
-        String data = date.toString();
+        Calendar calendar = Calendar.getInstance();
+        String data = DateFormat.getDateInstance(DateFormat.SHORT).format(calendar.getTime());
         String nOfShipLost = String.valueOf(holder.bgMine.getNumberOfSunkenShip());
         String nOfShipHit = String.valueOf(holder.bgOpponent.getNumberOfSunkenShip());
         Match match = new Match(data, nOfShipHit, nOfShipLost, result);
         matchViewModel.insert(match);
+        //DA TESTARE
+        if(result.equals(getResources().getString(R.string.win))){
+            new AlertDialog.Builder(this)
+                    .setTitle("Match is over")
+                    .setMessage(getResources().getString(R.string.game_win))
+                    .setPositiveButton("Finish", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
+        }else{
+            new AlertDialog.Builder(this)
+                    .setTitle("Match is over")
+                    .setMessage(getResources().getString(R.string.game_lose))
+                    .setPositiveButton("Finish", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .show();
+        }
         stopConnection();
     }
 
@@ -192,7 +217,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void miss(int[] coord) {
-        mediaPlayer = MediaPlayer.create(this,R.raw.missingship);
+        mediaPlayer = MediaPlayer.create(this,R.raw.missing);
         mediaPlayer.start();
         holder.bgOpponent.markCellMissed(coord[0], coord[1]);
 
@@ -332,8 +357,6 @@ public class GameActivity extends AppCompatActivity {
         public void onClick(View v) {
             if(v.getId() == R.id.btnSurrender){
                 Toast.makeText(GameActivity.this, getResources().getString(R.string.game_over),Toast.LENGTH_LONG).show();
-                //mediaPlayer = MediaPlayer.create(GameActivity.this);
-                //mediaPlayer.start();
                 sendMessage("YOU WIN");
                 mediaPlayer = MediaPlayer.create(GameActivity.this,R.raw.lose);
                 mediaPlayer.start();
@@ -342,7 +365,7 @@ public class GameActivity extends AppCompatActivity {
             }
             else if(v.getId() == R.id.btnFire){
                 if(itsMyTurn) {
-                    if (etCoords.getText().toString().matches("[A-J]+[1-10]")) {
+                    if (etCoords.getText().toString().matches(getString(R.string.coord))) {
                         String coordinate = etCoords.getText().toString();
                         String y = String.valueOf(((int) coordinate.charAt(0)) -  65);
                         String x = String.valueOf(Integer.parseInt(coordinate.substring(1, 2)) - 1);

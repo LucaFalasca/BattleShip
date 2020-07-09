@@ -27,8 +27,7 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull GameHistoryAdapter.Holder holder, int position) {
-        holder.fill(matchList.get(position));
-                
+        holder.fill(matchList.get(getItemCount() - 1 - position));
 
     }
 
@@ -46,21 +45,32 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
         TextView tvGameResult;
         TextView tvData;
         TextView tvNShipLost;
-        TextView tvNShipHitted;
+        TextView tvNShipHit;
+
         Holder(@NonNull View ItemView){
             super(ItemView);
             tvGameResult = itemView.findViewById(R.id.tvGameResult);
             tvData = itemView.findViewById(R.id.tvData);
-            tvNShipHitted = itemView.findViewById(R.id.tvNShipHitted);
-            tvNShipLost = itemView.findViewById(R.id.tvNShipLost);
+            tvNShipHit = itemView.findViewById(R.id.tvNShipLost);
+            tvNShipLost = itemView.findViewById(R.id.tvNShipHit);
         }
 
         private void fill(Match match){
             tvData.setText(match.getDate());
             tvNShipLost.setText(match.getNShipLost());
-            tvNShipHitted.setText(match.getNShipHit());
+            tvNShipHit.setText(match.getNShipHit());
+
+            if(match.getMatchResult().equals(R.string.win))
+                tvGameResult.setTextColor(itemView.getContext().getColor(R.color.text_win));
+            else
+                tvGameResult.setTextColor(itemView.getContext().getColor(R.color.text_lose));
+
             tvGameResult.setText(match.getMatchResult());
 
+
         }
+
+
     }
+
 }

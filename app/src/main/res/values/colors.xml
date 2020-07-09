@@ -8,4 +8,6 @@
     <color name="text_color_enemy_turn">#FFFFFF</color>
     <color name="color_my_turn">#AA8514</color>
     <color name="text_color_my_turn">#000000</color>
+    <color name="text_lose">#9E0B0F</color>
+    <color name="text_win">#00A651</color>
 </resources>

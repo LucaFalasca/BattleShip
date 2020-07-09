@@ -186,6 +186,7 @@ public class BluetoothService {
         setState(STATE_CONNECTED);
     }
 
+
     /**
      * Stop all threads
      */

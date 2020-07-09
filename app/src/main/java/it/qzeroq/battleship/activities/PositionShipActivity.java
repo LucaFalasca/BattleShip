@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -31,7 +30,6 @@ import it.qzeroq.battleship.Ship;
 import it.qzeroq.battleship.views.ShipView;
 
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_READ;
-import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_STATE_CHANGE;
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_WRITE;
 
 public class PositionShipActivity extends AppCompatActivity {
