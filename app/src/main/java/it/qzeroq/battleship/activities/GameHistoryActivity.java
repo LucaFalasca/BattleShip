@@ -18,7 +18,7 @@ import it.qzeroq.battleship.database.MatchViewModel;
 
 public class GameHistoryActivity extends AppCompatActivity {
 
-    GameHistoryAdapter adapter = new GameHistoryAdapter();
+    GameHistoryAdapter adapter;
 
     MatchViewModel matchViewModel;
     @Override
@@ -26,6 +26,7 @@ public class GameHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_history_activity);
         matchViewModel = new ViewModelProvider(this).get(MatchViewModel.class);
+        adapter = new GameHistoryAdapter();
         new Holder();
     }
 

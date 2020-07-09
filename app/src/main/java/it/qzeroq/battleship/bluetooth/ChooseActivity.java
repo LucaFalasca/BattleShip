@@ -238,12 +238,6 @@ public class ChooseActivity extends AppCompatActivity {
      * @param message  A string of text to send.
      */
     private void sendMessage(String message) {
-        // Check that we're actually connected before trying anything
-        if (BluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
-            Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
-            onBackPressed();
-            return;
-        }
 
         // Check that there's actually something to send
         if (message.length() > 0) {
@@ -267,7 +261,6 @@ public class ChooseActivity extends AppCompatActivity {
                 switch (msg.arg1) {
                     case BluetoothService.STATE_CONNECTED:
                         ChooseActivity.this.sendMessage("connected");
-
                         break;
                     case BluetoothService.STATE_CONNECTING:
                     case BluetoothService.STATE_LISTEN:

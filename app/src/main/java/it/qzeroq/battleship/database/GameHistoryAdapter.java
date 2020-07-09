@@ -3,6 +3,7 @@ package it.qzeroq.battleship.database;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,11 +42,12 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
         notifyDataSetChanged();
     }
 
-    static class Holder extends RecyclerView.ViewHolder {
+    class Holder extends RecyclerView.ViewHolder {
         TextView tvGameResult;
         TextView tvData;
         TextView tvNShipLost;
         TextView tvNShipHit;
+        Button btnCancel;
 
         Holder(@NonNull View ItemView){
             super(ItemView);
@@ -53,18 +55,13 @@ public class GameHistoryAdapter extends RecyclerView.Adapter<GameHistoryAdapter.
             tvData = itemView.findViewById(R.id.tvData);
             tvNShipHit = itemView.findViewById(R.id.tvNShipHit);
             tvNShipLost = itemView.findViewById(R.id.tvNShipLost);
+            btnCancel = itemView.findViewById(R.id.btnCancel);
         }
 
         private void fill(Match match){
             tvData.setText(match.getDate());
             tvNShipLost.setText(match.getNShipLost());
             tvNShipHit.setText(match.getNShipHit());
-
-            if(match.getMatchResult().equals(R.string.win))
-                tvGameResult.setTextColor(itemView.getContext().getColor(R.color.text_win));
-            else
-                tvGameResult.setTextColor(itemView.getContext().getColor(R.color.text_lose));
-
             tvGameResult.setText(match.getMatchResult());
 
 

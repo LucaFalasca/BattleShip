@@ -45,36 +45,7 @@ public class WaitActivity extends AppCompatActivity {
 
     }
 
-    @SuppressLint("HandlerLeak")
-    private final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            Intent i = new Intent(WaitActivity.this, PositionShipActivity.class);
-            switch (msg.what) {
-                case MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    new String(writeBuf);
-                    break;
-                case MESSAGE_READ:
-                    byte[] readBuf = (byte[]) msg.obj;
-                    // construct a string from the valid bytes in the buffer
-                    String readMessage = new String(readBuf, 0, msg.arg1);
 
-                    if ("connected".equals(readMessage)) {
-                        WaitActivity.this.sendMessage("connected");
-                        i.putExtra("itsMyTurn", true);
-                        startActivity(i);
-                    }
-                    break;
-                case MESSAGE_DEVICE_NAME:
-                    enemyDevice = msg.getData().getString("device_name","null");
-                    i.putExtra("enemyDevice", enemyDevice);
-                    Toast.makeText(getApplicationContext(), "Connected to " + enemyDevice, Toast.LENGTH_SHORT).show();
-                    break;
-            }
-        }
-    };
 
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
@@ -105,6 +76,33 @@ public class WaitActivity extends AppCompatActivity {
         waitingDialog.startWaitingDialog();
         bluetoothService.setHandler(handler);
     }
+
+    @SuppressLint("HandlerLeak")
+    private final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    new String(writeBuf);
+                    break;
+                case MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+
+                    if ("connected".equals(readMessage)) {
+                        WaitActivity.this.sendMessage("connected");
+                        Intent i = new Intent(WaitActivity.this, PositionShipActivity.class);
+                        i.putExtra("itsMyTurn", true);
+                        startActivity(i);
+                    }
+                    break;
+            }
+        }
+    };
+
     @Override
     public void onBackPressed() {
         bluetoothService.stop();

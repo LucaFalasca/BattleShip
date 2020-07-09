@@ -12,22 +12,24 @@ class MatchRepository {
     private MatchDao matchDao;
     private LiveData<List<Match>> allMatches;
 
-    MatchRepository(Application application){
+    MatchRepository(Application application) {
         MatchRoom matchDB = MatchRoom.getInstance(application);
         matchDao = matchDB.matchDao();
         allMatches = matchDao.getAllMatch();
     }
 
-    void insert(Match partita){
-        new InsertAsynTask(matchDao).execute(partita);
+    void insert(Match match) {
+        new InsertAsynTask(matchDao).execute(match);
     }
 
-    LiveData<List<Match>> getAllMatches(){
+
+    LiveData<List<Match>> getAllMatches() {
         return allMatches;
     }
 
     private static class InsertAsynTask extends AsyncTask<Match, Void, Void> {
         private MatchDao matchDao;
+
         InsertAsynTask(MatchDao matchDao) {
             this.matchDao = matchDao;
         }
@@ -39,3 +41,4 @@ class MatchRepository {
         }
     }
 }
+

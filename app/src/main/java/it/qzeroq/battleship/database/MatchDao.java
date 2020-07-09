@@ -2,6 +2,7 @@ package it.qzeroq.battleship.database;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 
@@ -16,4 +17,5 @@ public interface MatchDao {
 
     @Query("SELECT * FROM `Matches`")
     LiveData<List<Match>> getAllMatch();
+
 }
