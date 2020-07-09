@@ -15,8 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -316,7 +314,7 @@ public class ChooseActivity extends AppCompatActivity {
                 for (BluetoothDevice device : prevDeviceList) {
                     prevDeviceName.add(device.getName());
                 }
-                prevArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.prova, prevDeviceName);
+                prevArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.row_list_view, prevDeviceName);
                 lvPrevDevices.setAdapter(prevArrayAdapter);
                 lvPrevDevices.setOnItemClickListener(this);
             }
@@ -325,7 +323,7 @@ public class ChooseActivity extends AppCompatActivity {
             }
 
             //setting the adapter for the ListView
-            discoveredArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.prova, discoveredDeviceName);
+            discoveredArrayAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.row_list_view, discoveredDeviceName);
             lvDiscoveredDevices.setAdapter(discoveredArrayAdapter);
             lvDiscoveredDevices.setOnItemClickListener(this);
 

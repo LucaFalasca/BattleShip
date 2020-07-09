@@ -39,4 +39,5 @@
     <string name="btnFinish">Finish</string>
     <string name="match_over">Game Over</string>
     <string name="finish">Go to the main menu</string>
+    <string name="cont_descr_exit" translatable="false">exit</string>
 </resources>

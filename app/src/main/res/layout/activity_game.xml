@@ -59,7 +59,8 @@
         android:text="@string/btn_fire"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etCoords" />
+        app:layout_constraintTop_toBottomOf="@+id/etCoords"
+        tools:ignore="SmallSp" />
 
     <Button
         android:id="@+id/btnSurrender"
@@ -71,7 +72,8 @@
         android:text="@string/btn_surrender"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="SmallSp" />
 
     <ToggleButton
         android:id="@+id/btnTurn"
@@ -90,5 +92,6 @@
         android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/btnSurrender"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnFire" />
+        app:layout_constraintTop_toBottomOf="@+id/btnFire"
+        tools:ignore="SmallSp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
