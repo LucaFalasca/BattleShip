@@ -22,8 +22,6 @@ import it.qzeroq.battleship.bluetooth.WaitActivity;
 
 public class MainActivity extends AppCompatActivity {
 
-    // debugging
-    private static final String TAG = "btsample";
 
     // layout holder
     Holder holder;

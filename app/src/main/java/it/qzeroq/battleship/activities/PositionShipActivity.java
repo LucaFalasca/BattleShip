@@ -136,9 +136,6 @@ public class PositionShipActivity extends AppCompatActivity {
             // Get the message bytes and tell the BluetoothChatService to write
             byte[] send = message.getBytes();
             bluetoothService.write(send);
-
-            // Reset out string buffer to zero
-            //mOutStringBuffer.setLength(0);
         }
     }
 

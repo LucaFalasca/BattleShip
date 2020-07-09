@@ -58,7 +58,7 @@ public class ChooseActivity extends AppCompatActivity {
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
-    private BluetoothService mChatService = null;
+    private BluetoothService bluetoothService = null;
 
     ArrayList<BluetoothDevice> discoveredDeviceList;
     ArrayList<String> discoveredDeviceName = new ArrayList<>();
@@ -86,23 +86,17 @@ public class ChooseActivity extends AppCompatActivity {
 
     }
 
-
-
-
     private boolean checkBluetooth() {
-        Log.d(TAG, "checkBluetooth(): start");
 
         if (mBluetoothAdapter == null) {
             //Bluetooth not supported by the device
             Toast.makeText(ChooseActivity.this, "This device doesn't support Bluetooth", Toast.LENGTH_LONG).show();
-            Log.d(TAG, "checkBluetooth(): btAdapter == null");
             Intent i = new Intent(this, MainActivity.class);
             startActivity(i);
         }
         else {
             //request to enable Bluetooth if it isn't on
             if (!mBluetoothAdapter.isEnabled()) {
-                Log.d(TAG, "checkBluetooth(): start request to enable BT");
                 Intent i = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(i, REQUEST_ENABLE_BT);
                 return false;
@@ -116,11 +110,9 @@ public class ChooseActivity extends AppCompatActivity {
         //result of request if BT is enabled or not
         if (requestCode == REQUEST_ENABLE_BT) {
             if (resultCode == RESULT_OK) {
-                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT OK");
                 Toast.makeText(this, "Bluetooth is enable", Toast.LENGTH_SHORT).show();
                 setup();
             } else {
-                Log.d(TAG, "BluetoothChat onActivityResult: REQUEST_ENABLE_BT CANCELED");
                 Toast.makeText(this, "Bluetooth enabling cancelled. Leaving the game", Toast.LENGTH_SHORT).show();
                 finish();
             }
@@ -139,25 +131,8 @@ public class ChooseActivity extends AppCompatActivity {
         mBluetoothAdapter.startDiscovery();
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, filter);
-        mChatService = BluetoothService.getInstance();
-        mChatService.setHandler(mHandler);
-    }
-
-    @Override
-    public synchronized void onResume() {
-        super.onResume();
-        Log.e(TAG, "BluetoothChat ON RESUME");
-
-        // Performing this check in onResume() covers the case in which BT was
-        // not enabled during onStart(), so we were paused to enable it...
-        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (mChatService != null) {
-            // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (BluetoothService.getState() == BluetoothService.STATE_NONE) {
-                // Start the Bluetooth chat services
-                mChatService.start();
-            }
-        }
+        bluetoothService = BluetoothService.getInstance();
+        bluetoothService.setHandler(mHandler);
     }
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -168,20 +143,17 @@ public class ChooseActivity extends AppCompatActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 assert device != null;
                 if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
-                    Log.d(TAG, "BluetoothChat BroadcastReceiver paired device");
                     Toast.makeText(getApplicationContext(), "Paired device.", Toast.LENGTH_LONG).show();
-                    mChatService.connect(targetDevice);
+                    bluetoothService.connect(targetDevice);
 
                 }
                 if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    Log.d(TAG, "BluetoothChat BroadcastReceiver pairing device");
                     Toast.makeText(getApplicationContext(), "Pairing device.", Toast.LENGTH_LONG).show();
                 }
             }
             else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 assert device != null;
-                Log.d(TAG, "ChooseDevice BroadcastReceiver: device found " + device.getName()+" "+ device.getAddress() );
 
                 if(!(discoveredDeviceList.contains(device)) && !(prevDeviceList.contains(device))) {
                     if(device.getName() != null) {
@@ -195,13 +167,56 @@ public class ChooseActivity extends AppCompatActivity {
         }
     };
 
+    private void pairDevice(BluetoothDevice targetDevice){
+        if (targetDevice == null){
+            Toast.makeText(getApplicationContext(), "Can't paired with that device.", Toast.LENGTH_LONG).show();
+        }
+        else {
+            try {
+                if (targetDevice.createBond()) {
+                    filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+                    registerReceiver(receiver, filter);
+
+                } else if (mBluetoothAdapter.getBondedDevices().contains(targetDevice)) {
+                    Toast.makeText(getApplicationContext(), "Device already paired.", Toast.LENGTH_LONG).show();
+
+                    bluetoothService.connect(targetDevice);
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Unable to pair device.", Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, String.valueOf(e));
+            }
+        }
+    }
+
+    @Override
+    public synchronized void onResume() {
+        super.onResume();
+        Log.e(TAG, "BluetoothChat ON RESUME");
+
+        // Performing this check in onResume() covers the case in which BT was
+        // not enabled during onStart(), so we were paused to enable it...
+        // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
+        if (bluetoothService != null) {
+            // Only if the state is STATE_NONE, do we know that we haven't started already
+            if (BluetoothService.getState() == BluetoothService.STATE_NONE) {
+                // Start the Bluetooth chat services
+                bluetoothService.start();
+            }
+        }
+    }
+
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
 
         // Stop the Bluetooth chat services
-        if (mChatService != null)
-            mChatService.stop();
+        if (bluetoothService != null)
+            bluetoothService.stop();
         Log.e(TAG, "--- ON DESTROY ---");
 
         unregisterReceiver(receiver);
@@ -210,9 +225,8 @@ public class ChooseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mChatService != null)
-            mChatService.stop();
-        Log.e(TAG, "--- ONBACKPRESSED ---");
+        if (bluetoothService != null)
+            bluetoothService.stop();
 
         unregisterReceiver(receiver);
         Intent i = new Intent(ChooseActivity.this, MainActivity.class);
@@ -235,7 +249,7 @@ public class ChooseActivity extends AppCompatActivity {
         if (message.length() > 0) {
             // Get the message bytes and tell the BluetoothChatService to write
             byte[] send = message.getBytes();
-            mChatService.write(send);
+            bluetoothService.write(send);
 
         }
     }
@@ -248,8 +262,8 @@ public class ChooseActivity extends AppCompatActivity {
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == MESSAGE_STATE_CHANGE) {
-                Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+            switch (msg.what) {
+                case MESSAGE_STATE_CHANGE:
                 switch (msg.arg1) {
                     case BluetoothService.STATE_CONNECTED:
                         ChooseActivity.this.sendMessage("connected");
@@ -260,25 +274,24 @@ public class ChooseActivity extends AppCompatActivity {
                     case BluetoothService.STATE_NONE:
                         break;
                 }
-                switch (msg.what) {
-                    case MESSAGE_WRITE:
-                        byte[] writeBuf = (byte[]) msg.obj;
-                        // construct a string from the buffer
-                        String writeMessage = new String(writeBuf);
-                        break;
-                    case MESSAGE_READ:
-                        byte[] readBuf = (byte[]) msg.obj;
-                        // construct a string from the valid bytes in the buffer
-                        String readMessage = new String(readBuf, 0, msg.arg1);
-                        if ("connected".equals(readMessage)) {
-                            Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
-                            i.putExtra("itsMyTurn", false);
-                            startActivity(i);
-                        }
-                        break;
+                break;
+                case MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    new String(writeBuf);
+                    break;
+                case MESSAGE_READ:
+                    byte[] readBuf = (byte[]) msg.obj;
+                    // construct a string from the valid bytes in the buffer
+                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    if ("connected".equals(readMessage)) {
+                        Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
+                        i.putExtra("itsMyTurn", false);
+                        startActivity(i);
+                    }
+                    break;
                 }
             }
-        }
     };
 
     class Holder implements AdapterView.OnItemClickListener {
@@ -335,27 +348,5 @@ public class ChooseActivity extends AppCompatActivity {
     }
 
 
-    private void pairDevice(BluetoothDevice targetDevice){
-        if (targetDevice == null){
-            Toast.makeText(getApplicationContext(), "Can't paired with that device.", Toast.LENGTH_LONG).show();
-        }
-        else {
-            try {
-                if (targetDevice.createBond()) {
-                    filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-                    registerReceiver(receiver, filter);
 
-                } else if (mBluetoothAdapter.getBondedDevices().contains(targetDevice)) {
-                    Toast.makeText(getApplicationContext(), "Device already paired.", Toast.LENGTH_LONG).show();
-
-                    mChatService.connect(targetDevice);
-
-                } else {
-                    Toast.makeText(getApplicationContext(), "Unable to pair device.", Toast.LENGTH_LONG).show();
-                }
-            } catch (Exception e) {
-                Log.e(TAG, String.valueOf(e));
-            }
-        }
-    }
 }

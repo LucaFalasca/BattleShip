@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.Toast;
 
 import it.qzeroq.battleship.R;
@@ -19,6 +18,8 @@ import it.qzeroq.battleship.activities.PositionShipActivity;
 
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_READ;
 import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_DEVICE_NAME;
+import static it.qzeroq.battleship.bluetooth.ChooseActivity.MESSAGE_WRITE;
+
 
 public class WaitActivity extends AppCompatActivity {
 
@@ -27,8 +28,6 @@ public class WaitActivity extends AppCompatActivity {
     String enemyDevice;
 
     BluetoothAdapter mBluetoothAdapter;
-    BluetoothService mChatService;
-
     WaitingDialog waitingDialog;
     BluetoothService bluetoothService;
     private static final int REQUEST_ENABLE_BT = 1;
@@ -52,6 +51,11 @@ public class WaitActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             Intent i = new Intent(WaitActivity.this, PositionShipActivity.class);
             switch (msg.what) {
+                case MESSAGE_WRITE:
+                    byte[] writeBuf = (byte[]) msg.obj;
+                    // construct a string from the buffer
+                    new String(writeBuf);
+                    break;
                 case MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
@@ -84,14 +88,14 @@ public class WaitActivity extends AppCompatActivity {
         if (message.length() > 0) {
             // Get the message bytes and tell the BluetoothChatService to write
             byte[] send = message.getBytes();
-            mChatService.write(send);
+            bluetoothService.write(send);
 
         }
     }
 
     private void setup(){
-        mChatService = BluetoothService.getInstance();
-        mChatService.start();
+        bluetoothService = BluetoothService.getInstance();
+        bluetoothService.start();
 
         Intent dIntent =  new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
         dIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
@@ -99,19 +103,17 @@ public class WaitActivity extends AppCompatActivity {
 
         waitingDialog = new WaitingDialog(WaitActivity.this);
         waitingDialog.startWaitingDialog();
-        bluetoothService = BluetoothService.getInstance();
         bluetoothService.setHandler(handler);
     }
     @Override
     public void onBackPressed() {
-        mChatService.stop();
+        bluetoothService.stop();
         mBluetoothAdapter.cancelDiscovery();
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
     }
 
     private boolean checkBluetooth() {
-        Log.d(TAG, "checkBluetooth(): start");
 
         if (mBluetoothAdapter == null) {
             //Bluetooth not supported by the device
