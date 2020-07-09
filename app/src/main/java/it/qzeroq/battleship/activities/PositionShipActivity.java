@@ -142,7 +142,7 @@ public class PositionShipActivity extends AppCompatActivity {
 
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
-        if (BluetoothService.getState() != bluetoothService.STATE_CONNECTED) {
+        if (BluetoothService.getState() != BluetoothService.STATE_CONNECTED) {
             Toast.makeText(this, R.string.not_connected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -306,12 +306,8 @@ public class PositionShipActivity extends AppCompatActivity {
                     x = c[0];
                     y = c[1];
 
-                    if(x < 0 || y < 0 || y > 9 || x > 9 || !battleGrid.placeShip(ship, x, y)) {
-                        //addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));
-                        return false;
-                    }
-
-                    return true;
+                    //addOneToCount(Objects.requireNonNull(tvCounts.get(ship.getLength())));
+                    return x >= 0 && y >= 0 && y <= 9 && x <= 9 && battleGrid.placeShip(ship, x, y);
 
                 case DragEvent.ACTION_DRAG_STARTED:
                     ship = (Ship) event.getLocalState();

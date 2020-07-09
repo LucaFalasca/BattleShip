@@ -359,6 +359,7 @@ public class GameActivity extends AppCompatActivity {
                 sendMessage("YOU WIN");
                 mediaPlayer = MediaPlayer.create(GameActivity.this,R.raw.lose);
                 mediaPlayer.start();
+                surrender = true;
             }
             else if(v.getId() == R.id.btnFire){
                 if(itsMyTurn) {

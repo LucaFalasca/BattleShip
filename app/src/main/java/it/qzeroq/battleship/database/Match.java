@@ -25,32 +25,32 @@ public class Match {
         this.nShipLost = nShipLost;
     }
 
-    public void setIdMatch(int idMatch) {
+    void setIdMatch(int idMatch) {
         this.idMatch = idMatch;
     }
 
 
-    public int getIdMatch() {
+    int getIdMatch() {
         return idMatch;
     }
 
     @NonNull
-    public String getMatchResult() {
+    String getMatchResult() {
         return matchResult;
     }
 
     @NonNull
-    public String getDate() {
+    String getDate() {
         return date;
     }
 
     @NonNull
-    public String getNShipHit() {
+    String getNShipHit() {
         return nShipHit;
     }
 
     @NonNull
-    public String getNShipLost() {
+    String getNShipLost() {
         return nShipLost;
     }
 

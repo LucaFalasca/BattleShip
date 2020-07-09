@@ -7,28 +7,28 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-public class MatchRepository {
+class MatchRepository {
 
     private MatchDao matchDao;
     private LiveData<List<Match>> allMatches;
 
-    public MatchRepository(Application application){
+    MatchRepository(Application application){
         MatchRoom matchDB = MatchRoom.getInstance(application);
         matchDao = matchDB.matchDao();
         allMatches = matchDao.getAllMatch();
     }
 
-    public void insert(Match partita){
+    void insert(Match partita){
         new InsertAsynTask(matchDao).execute(partita);
     }
 
-    public LiveData<List<Match>> getAllMatches(){
+    LiveData<List<Match>> getAllMatches(){
         return allMatches;
     }
 
     private static class InsertAsynTask extends AsyncTask<Match, Void, Void> {
         private MatchDao matchDao;
-        public InsertAsynTask(MatchDao matchDao) {
+        InsertAsynTask(MatchDao matchDao) {
             this.matchDao = matchDao;
         }
 

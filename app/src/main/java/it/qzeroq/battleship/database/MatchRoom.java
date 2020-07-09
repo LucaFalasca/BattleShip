@@ -12,7 +12,7 @@ public abstract class MatchRoom extends RoomDatabase {
 
     private static MatchRoom matchRoom;
 
-    public static synchronized MatchRoom getInstance(Context context){
+    static synchronized MatchRoom getInstance(Context context){
         if(matchRoom == null){
             matchRoom = Room.databaseBuilder(context.getApplicationContext(),
                     MatchRoom.class,"Matches").fallbackToDestructiveMigration()

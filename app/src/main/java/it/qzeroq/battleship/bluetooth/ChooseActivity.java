@@ -248,23 +248,21 @@ public class ChooseActivity extends AppCompatActivity {
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MESSAGE_STATE_CHANGE:
-                    Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    switch (msg.arg1) {
-                        case BluetoothService.STATE_CONNECTED:
-                            ChooseActivity.this.sendMessage("connected");
-                            Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
-                            i.putExtra("itsMyTurn", false);
-                            startActivity(i);
-                            break;
-                        case BluetoothService.STATE_CONNECTING:
-                        case BluetoothService.STATE_LISTEN:
-                        case BluetoothService.STATE_NONE:
-                            break;
-                    }
-                    break;
-                /*case MESSAGE_WRITE:
+            if (msg.what == MESSAGE_STATE_CHANGE) {
+                Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
+                switch (msg.arg1) {
+                    case BluetoothService.STATE_CONNECTED:
+                        ChooseActivity.this.sendMessage("connected");
+                        Intent i = new Intent(ChooseActivity.this, PositionShipActivity.class);
+                        i.putExtra("itsMyTurn", false);
+                        startActivity(i);
+                        break;
+                    case BluetoothService.STATE_CONNECTING:
+                    case BluetoothService.STATE_LISTEN:
+                    case BluetoothService.STATE_NONE:
+                        break;
+                }
+                    /*case MESSAGE_WRITE:
                     byte[] writeBuf = (byte[]) msg.obj;
                     // construct a string from the buffer
                     String writeMessage = new String(writeBuf);

@@ -2,10 +2,7 @@ package it.qzeroq.battleship;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.database.MatrixCursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -13,8 +10,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.core.content.ContextCompat;
-
-import java.io.Serializable;
 
 import it.qzeroq.battleship.enums.Rotation;
 
@@ -99,7 +94,7 @@ public class Ship implements Parcelable {
         }
     }
 
-    protected Ship(Parcel in) {
+    private Ship(Parcel in) {
         length = in.readInt();
         switch(in.readInt()){
             case 0:
@@ -132,10 +127,6 @@ public class Ship implements Parcelable {
         return length;
     }
 
-    public void setRotation(Rotation rotation) {
-        this.rotation = rotation;
-    }
-
     public Rotation getRotation(){
         return rotation;
     }
@@ -148,17 +139,6 @@ public class Ship implements Parcelable {
             rotation = Rotation.ROTATION_0;
         }
         setSprites(length, rotation);
-    }
-
-    private Drawable rotate(Drawable sprite, int angleRotation) {
-        Matrix m = new Matrix();
-        m.postRotate(angleRotation);
-
-        BitmapDrawable bd = (BitmapDrawable) sprite;
-        Bitmap bitmap = bd.getBitmap();
-
-        Bitmap rotatedBitap = Bitmap.createBitmap(bitmap, 0, 0, sprite.getIntrinsicWidth(), sprite.getIntrinsicHeight(), m, true);
-        return new BitmapDrawable(Resources.getSystem(), rotatedBitap);
     }
 
     public int getAngleRotation(){
