@@ -147,6 +147,8 @@ public class BattleGridView extends GridLayout {
 
     /**
      * Remove a ship from specific point of the grid
+     * * @param x starting x in the grid
+     *      * @param y starting y in the grid
      */
     public void removeShipAt(int xPoint, int yPoint){
         Ship ship = getShipAt(xPoint, yPoint);
@@ -171,6 +173,8 @@ public class BattleGridView extends GridLayout {
 
     /**
      * Add a mark that represent that this cell was a sea cell
+     * @param x x in the grid
+     * @param y y in the grid
      */
     public void markCellMissed(int x, int y){
         cells[x][y].setForeground(missedCell);
@@ -179,6 +183,8 @@ public class BattleGridView extends GridLayout {
 
     /**
      * Add a mark that represent that this cell was a ship cell
+     * @param x x in the grid
+     * @param y y in the grid
      */
     public void markCellHit(int x, int y){
         cells[x][y].setForeground(hittedCell);
@@ -187,6 +193,8 @@ public class BattleGridView extends GridLayout {
 
     /**
      * Remove a mark from cell
+     * @param x x in the grid
+     * @param y y in the grid
      */
     public void removeMarkCell(int x, int y){
         cells[x][y].setForeground(frameCell);
@@ -220,17 +228,6 @@ public class BattleGridView extends GridLayout {
             return true;
         }
         return false;
-    }
-
-    public void replaceAllShip(Ship[][] ships){
-        for(int i = 0; i < GRID_SIZE; i++){
-            for(int j = 0; j < GRID_SIZE; j++){
-                Ship ship = ships[i][j];
-                if(ship != null){
-                    placeShip(ship, i, j);
-                }
-            }
-        }
     }
 
     // Implementation
